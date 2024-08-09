@@ -26,6 +26,7 @@ const EditModal: React.FC<EditModalProps> = ({
   }, []);
 
   const changeDescription = useCallback((value: string) => {
+    console.log('text', value);
     setDescription(value);
   }, []);
 
