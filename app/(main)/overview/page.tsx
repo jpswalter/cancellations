@@ -4,7 +4,7 @@ import Overview from '@/components/Overview/Overview';
 import { ErrorBoundary } from 'react-error-boundary';
 
 export const metadata: Metadata = {
-  title: 'Overview',
+  title: 'ProxyLink: Overview',
 };
 
 const Page: React.FC = () => {

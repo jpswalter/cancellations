@@ -48,7 +48,7 @@ export default function ClientLayout({
               >
                 <div className="flex flex-col gap-y-2">
                   <SidebarButton
-                    link="/"
+                    link="/overview"
                     label="Overview"
                     Icon={FaChartSimple}
                     activePaths={[
