@@ -10,11 +10,13 @@ const Header: FC = () => {
     <header className="bg-white md:border-b-4 border-blue-700 z-10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-8 md:py-4">
-          <img
-            src="/images/Logo.svg"
-            className="w-60 md:mt-6 ml-4 md:mb-4 md:ml-0"
-            alt="ProxyLink logotype"
-          />
+          <Link href="/">
+            <img
+              src="/images/Logo.svg"
+              className="w-60 md:mt-6 ml-4 md:mb-4 md:ml-0"
+              alt="ProxyLink logotype"
+            />
+          </Link>
 
           <nav className="hidden md:block">
             <Link href="/schedule-demo">

@@ -2,7 +2,6 @@
 'use client';
 import { FaCheckCircle } from 'react-icons/fa';
 import LoginForm from '@/components/Login/LoginForm';
-import Link from 'next/link';
 import { FC } from 'react';
 import ResetForm from './ResetForm';
 
@@ -18,29 +17,18 @@ const Login: FC<Props> = ({ type }) => {
     return <LoginForm />;
   };
   return (
-    <div className="bg-blue-900 relative h-full w-full">
-      <div className="absolute z-20 flex h-full w-full flex-col justify-center overflow-y-auto">
-        {/* Top Nav */}
-        <div className="flex items-center gap-5 p-10 font-medium text-white/90">
-          <div className="flex-1" />
-          <div className="hover:text-white/80">
-            <Link href="/terms-of-service">Terms of Service</Link>
-          </div>
-          <div className="hover:text-white/80">
-            <Link href="/privacy-policy">Privacy Policy</Link>
-          </div>
-        </div>
-        {/* Middle Content */}
+    <div className="bg-blue-900 relative h-screen w-screen">
+      <div className="absolute z-20 flex h-screen w-screen flex-col justify-center overflow-y-auto">
         <div className="flex flex-1 justify-center px-14">
           {/* Left Explanatory */}
           <div className="flex flex-1 items-center justify-center p-4">
             <div className="mb-6 flex max-w-[640px] flex-1 flex-col justify-center gap-6">
               <div>
                 <h1 className="text-7xl font-bold text-white mb-2">
-                  Intermediary
+                  ProxyLink
                 </h1>
                 <div className="text-3xl font-medium text-white/85">
-                  Empower your decisions with AI-driven insights
+                  Streamline 3rd-Party Customer Support
                 </div>
               </div>
               <div className="flex">
@@ -49,25 +37,11 @@ const Login: FC<Props> = ({ type }) => {
                 </div>
                 <div>
                   <div className="text-xl font-semibold text-white/85">
-                    Filter, browse, and export analysis results
+                    Enhance Security
                   </div>
                   <div className="text-lg text-white/60">
-                    Easily navigate through your data, apply filters, and export
-                    detailed analysis results for in-depth review and reporting.
-                  </div>
-                </div>
-              </div>
-              <div className="flex">
-                <div className="mr-2 mt-1">
-                  <FaCheckCircle className="text-blue-200 text-xl" />
-                </div>
-                <div>
-                  <div className="text-xl font-semibold text-white/85">
-                    Visualize trends and summaries
-                  </div>
-                  <div className="text-lg text-white/60">
-                    Access comprehensive dashboards to see data summaries,
-                    trends, and charts, helping you grasp insights at a glance.
+                    Ensure that all requests submitted by a proxy are authorized
+                    by your customer.
                   </div>
                 </div>
               </div>
@@ -77,11 +51,25 @@ const Login: FC<Props> = ({ type }) => {
                 </div>
                 <div>
                   <div className="text-xl font-semibold text-white/85">
-                    Make informed decisions with AI insights
+                    Efficiently Resolve Tickets
                   </div>
                   <div className="text-lg text-white/60">
-                    Leverage AI-driven analysis to make strategic decisions,
-                    enhance your operations, and stay ahead of the competition.
+                    The ProxyLink dashboard makes it faster to resolve tickets
+                    submitted by a proxy.
+                  </div>
+                </div>
+              </div>
+              <div className="flex">
+                <div className="mr-2 mt-1">
+                  <FaCheckCircle className="text-blue-200 text-xl" />
+                </div>
+                <div>
+                  <div className="text-xl font-semibold text-white/85">
+                    Visualize Trends
+                  </div>
+                  <div className="text-lg text-white/60">
+                    Access dashboards to see data trends and charts, helping you
+                    grasp insights at a glance.
                   </div>
                 </div>
               </div>
