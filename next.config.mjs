@@ -8,7 +8,11 @@ const nextConfig = {
       : 'http://localhost:3000',
   },
   images: {
-    domains: ['cancellations.vercel.app', 'cancellations-tau.vercel.app'],
+    domains: [
+      'cancellations.vercel.app',
+      'cancellations-tau.vercel.app',
+      'proxylink.co',
+    ],
   },
 };
 
