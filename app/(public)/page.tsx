@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ArrowUp, ArrowDown, Shield, HeartHandshake } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LandingPage() {
   return (
@@ -16,9 +17,11 @@ export default function LandingPage() {
           requests submitted by third-parties (&quot;Proxies&quot;) on behalf of
           your customers.
         </p>
-        <Button color="blue" className="mt-2 h-12">
-          Start for free
-        </Button>
+        <Link href="/schedule-demo">
+          <Button color="blue" className="mt-2 h-12">
+            Start for free
+          </Button>
+        </Link>
       </section>
 
       <section className="p-4 mt-8 md:mt-0">
@@ -80,14 +83,18 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <Button color="blue" className="h-12 mx-auto mt-10 md:mt-20">
-          Schedule a demo
-        </Button>
+        <Link href="/schedule-demo">
+          <Button color="blue" className="h-12 mx-auto mt-10 md:mt-20">
+            Schedule a demo
+          </Button>
+        </Link>
       </section>
 
       <section className="text-center p-4 my-10">
         <h2 className="text-4xl mb-10">Contact a ProxyLink representative</h2>
-        <Button color="blue">Get in touch</Button>
+        <Link href="/schedule-demo">
+          <Button color="blue">Get in touch</Button>
+        </Link>
       </section>
     </main>
   );
