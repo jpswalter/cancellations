@@ -22,6 +22,18 @@ const config = {
     },
     extend: {
       colors: {
+        blue: {
+          50: '#E6F0FF',
+          100: '#CCE0FF',
+          200: '#99C2FF',
+          300: '#66A3FF',
+          400: '#3385FF',
+          500: '#0066FF',
+          600: '#004AAD', // blue from Figma
+          700: '#003D80',
+          800: '#002F52',
+          900: '#001F33',
+        },
         // Tremor's light mode
         tremor: {
           brand: {

@@ -4,8 +4,7 @@ import type { Metadata } from 'next';
 import ClientLayout from '@/components/Layout/Layout';
 
 export const metadata: Metadata = {
-  title: 'Proxz',
-  description: 'Proxz application',
+  title: 'ProxyLink: App',
 };
 
 export default function RootLayout({

@@ -9,11 +9,12 @@ import {
 import { XIcon } from 'lucide-react';
 
 interface DrawerProps {
-  title: string;
+  title?: string;
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
   duration?: 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000;
+  width?: string;
 }
 
 const durationClasses = {
@@ -33,6 +34,7 @@ export const Drawer: React.FC<DrawerProps> = ({
   children,
   title,
   duration = 200,
+  width = 'w-1/2',
 }) => {
   const durationClass = durationClasses[duration];
 
@@ -53,7 +55,9 @@ export const Drawer: React.FC<DrawerProps> = ({
 
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <div
+              className={`pointer-events-none fixed inset-y-0 right-0 flex ${width} w-full pl-10`}
+            >
               <TransitionChild
                 as={Fragment}
                 enter={`transform transition ease-in-out ${durationClass}`}

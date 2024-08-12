@@ -44,7 +44,7 @@ const LoginForm: React.FC = () => {
       }
 
       setError('');
-      router.push('/');
+      router.push('/overview');
     } catch (error) {
       console.error('Error signing in:', error);
       setError('Invalid email or password or session creation failed.');
