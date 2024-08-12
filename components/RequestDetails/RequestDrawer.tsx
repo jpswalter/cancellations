@@ -31,6 +31,8 @@ const RequestDrawer: React.FC<RequestDrawerProps> = ({
       enabled: isOpen && !!request?.id && !!tenantType && !!tenantId,
     });
 
+  console.log('requestWithLog isLogLoading', isLogLoading);
+
   const [isWidgetVisible, setIsWidgetVisible] = useState(false);
   const isActionNeeded: boolean = useMemo(() => {
     return (

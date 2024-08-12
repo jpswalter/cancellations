@@ -92,12 +92,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
               {saveOffer && (
                 <InfoItem label="Save Offer" value={saveOffer.title} />
               )}
-              {saveOffer && (
-                <InfoItem
-                  label="Save Offer Text"
-                  value={saveOffer.description}
-                />
-              )}
               {declineReason && (
                 <InfoItem label="Decline Reason" value={declineReason} />
               )}
