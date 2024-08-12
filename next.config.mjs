@@ -7,6 +7,9 @@ const nextConfig = {
       ? `https://${process.env.VERCEL_URL}`
       : 'http://localhost:3000',
   },
+  images: {
+    domains: ['cancellations.vercel.app', 'cancellations-tau.vercel.app'],
+  },
 };
 
 export default nextConfig;
