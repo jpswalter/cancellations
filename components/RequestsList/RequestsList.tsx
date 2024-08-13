@@ -37,7 +37,7 @@ const RequestsList: React.FC = () => {
           </div>
         </div>
         <div className="p-4 flex flex-col space-y-4 h-full flex-1">
-          <RequestsTable requests={requests} isReadOnly={true} />
+          <RequestsTable requests={requests} />
         </div>
       </div>
     </div>
