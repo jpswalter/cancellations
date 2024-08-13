@@ -3,9 +3,12 @@ import { FC, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Drawer } from '@/components/ui/drawer';
+import { useAuth } from '@/hooks/useAuth';
+import { UserIcon } from 'lucide-react';
 
 const Header: FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { userData } = useAuth();
   return (
     <header className="bg-white md:border-b-4 border-blue-700 z-10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,16 +22,28 @@ const Header: FC = () => {
           </Link>
 
           <nav className="hidden md:block">
-            <Link href="/schedule-demo">
-              <Button color="blue" className="mx-2">
-                Request Demo
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button outline={true} className="mx-2">
-                Login
-              </Button>
-            </Link>
+            {!userData && (
+              <>
+                <Link href="/schedule-demo">
+                  <Button color="blue" className="mx-2">
+                    Request Demo
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button outline={true} className="mx-2">
+                    Login
+                  </Button>
+                </Link>
+              </>
+            )}
+            {userData && (
+              <Link href="/overview" className="underline">
+                {userData.email}
+                <Button outline={true} className="mx-2">
+                  Login
+                </Button>
+              </Link>
+            )}
           </nav>
           <button
             className="md:hidden text-4xl mr-4"
