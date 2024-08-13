@@ -1,6 +1,5 @@
 // file: components/RequestDrawer/RequestDrawer.tsx
 'use client';
-import { useEffect, useMemo, useState } from 'react';
 import { Request, RequestWithLog } from '@/lib/db/schema';
 import RequestActions from '../RequestDetails/RequestActions';
 import RequestCard from '../RequestDetails/RequestCard';
@@ -31,28 +30,9 @@ const RequestDrawer: React.FC<RequestDrawerProps> = ({
       enabled: isOpen && !!request?.id && !!tenantType && !!tenantId,
     });
 
-  const [isWidgetVisible, setIsWidgetVisible] = useState(false);
-  const isActionNeeded: boolean = useMemo(() => {
-    return (
-      (tenantType === 'proxy' &&
-        (request?.declineReason !== null ||
-          request?.status === 'Save Offered')) ||
-      (tenantType === 'provider' &&
-        (request?.status === 'Save Accepted' ||
-          request?.status === 'Save Declined'))
-    );
-  }, [tenantType, request]);
-
-  useEffect(() => {
-    if (isActionNeeded) {
-      setIsWidgetVisible(isActionNeeded);
-    }
-  }, [isActionNeeded, request]);
-
   const queryClient = useQueryClient();
 
   const onFix = () => {
-    setIsWidgetVisible(false);
     onClose();
     queryClient.invalidateQueries({
       queryKey: ['requests', tenantType, tenantId],
@@ -69,9 +49,7 @@ const RequestDrawer: React.FC<RequestDrawerProps> = ({
       <div className="flex flex-col h-full">
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 space-y-4">
-            {isWidgetVisible && request && (
-              <RequestActions request={request} onFix={onFix} />
-            )}
+            {request && <RequestActions request={request} onFix={onFix} />}
             <RequestCard request={request} />
             <RequestHistory request={requestWithLog} isLoading={isLogLoading} />
           </div>

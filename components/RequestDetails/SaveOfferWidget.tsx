@@ -9,7 +9,7 @@ import { parseErrorMessage } from '@/utils/general';
 
 interface SaveOfferWidgetProps {
   request: Request;
-  onFix: () => void;
+  onFix?: () => void;
 }
 
 const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
@@ -51,7 +51,7 @@ const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['request', request.id] });
-      onFix();
+      onFix?.();
     },
     onError: (error: unknown) => {
       setUpdateError(parseErrorMessage(error));
