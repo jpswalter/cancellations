@@ -17,10 +17,7 @@ export async function POST(request: Request) {
 
   // Create a nodemailer transporter
   const transporter = nodemailer.createTransport({
-    host: 'smtp.mail.yahoo.com',
-    port: 465,
-    service: 'yahoo',
-    secure: true,
+    service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -29,7 +26,7 @@ export async function POST(request: Request) {
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: 'sorokinvj@gmail.com',
+    to: 'john@proxylink.co',
     subject: 'New Contact Form Submission on ProxyLink',
     text: `
       New contact form submission:
