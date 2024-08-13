@@ -26,8 +26,15 @@ export const groupChanges = (changes: RequestChange[]): ChangeGroup[] => {
 export const renderHistoryTitle = (group: ChangeGroup): string => {
   const { changedBy, changes } = group;
   const statusChange = changes.find(change => change.field === 'status');
-  if (statusChange && statusChange.newValue === 'Save Offered') {
-    return `Save offer proposed by ${changedBy}`;
+  if (statusChange) {
+    switch (statusChange.newValue) {
+      case 'Save Offered':
+        return `Save offer proposed by ${changedBy}`;
+      case 'Save Confirmed':
+        return `Save offer confirmed by ${changedBy}`;
+      case 'Save Declined':
+        return `Save offer declined by ${changedBy}`;
+    }
   }
 
   const isFirstChange =
@@ -74,13 +81,14 @@ export const renderDescription = (
   const saveOfferChange = changes.find(
     change => change.field === 'saveOffer.title',
   );
-  console.log(saveOfferChange);
-  if (
-    statusChange &&
-    statusChange.newValue === 'Save Offered' &&
-    saveOfferChange
-  ) {
-    return <p>Offer: {saveOfferChange.newValue}</p>;
+  const isSaveOfferChange = [
+    'Save Offered',
+    'Save Confirmed',
+    'Save Declined',
+  ].includes(statusChange?.newValue as string);
+
+  if (isSaveOfferChange) {
+    return <p>Offer: {saveOfferChange?.newValue}</p>;
   }
 
   const declineReasonChange = changes.find(

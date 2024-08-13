@@ -2,13 +2,11 @@ import React, { useState, useMemo } from 'react';
 import { Modal, Button } from '@/components/ui/';
 import { Select as SelectTremor, SelectItem } from '@tremor/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import Markdown from 'react-markdown';
 import { IoMdSave } from 'react-icons/io';
 import { Request, RequestStatus, SaveOffer } from '@/lib/db/schema';
 import { updateRequest } from '@/lib/api/request';
 import { getTenants } from '@/lib/api/tenant';
 import Spinner from '@/components/ui/spinner';
-import { markdownComponents } from '@/utils/md.utils';
 
 interface SaveOfferModalProps {
   isVisible: boolean;
@@ -65,10 +63,13 @@ const SaveOfferModal: React.FC<SaveOfferModalProps> = ({
 
   return (
     <Modal shown={isVisible} onClose={closeModal} title="Save Offer">
-      <div className="space-y-4">
-        <p className="text-gray-600 mb-4">
-          Choose a save offer to retain this customer. The selected offer will
-          be applied to their account.
+      <div className="flex flex-col gap-4">
+        <p className="text-gray-600">
+          Choose a save offer to retain{' '}
+          <span className="font-bold">
+            {request.customerInfo.customerEmail}
+          </span>
+          . The selected offer will be applied to their account.
         </p>
 
         <SelectTremor
@@ -85,16 +86,16 @@ const SaveOfferModal: React.FC<SaveOfferModalProps> = ({
           ))}
         </SelectTremor>
         {selectedOffer && (
-          <div className="prose prose-sm w-full break-words">
-            <Markdown
-              className="prose prose-sm"
-              components={markdownComponents}
-            >
-              {selectedOffer.description}
-            </Markdown>
+          <div>
+            <h3 className="text-xl font-semibold mb-2">
+              What Customer Will See
+            </h3>
+            <p className="break-words whitespace-pre-wrap">
+              {request.saveOffer?.description}
+            </p>
           </div>
         )}
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-end space-x-4 mt-4">
           <Button onClick={closeModal}>Cancel</Button>
           <Button onClick={handleConfirm} color="blue">
             {mutation.isPending ? (

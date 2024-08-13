@@ -31,8 +31,6 @@ const RequestDrawer: React.FC<RequestDrawerProps> = ({
       enabled: isOpen && !!request?.id && !!tenantType && !!tenantId,
     });
 
-  console.log('requestWithLog isLogLoading', isLogLoading);
-
   const [isWidgetVisible, setIsWidgetVisible] = useState(false);
   const isActionNeeded: boolean = useMemo(() => {
     return (
@@ -62,16 +60,17 @@ const RequestDrawer: React.FC<RequestDrawerProps> = ({
   };
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} title="Request Details">
+    <Drawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Request Details"
+      width="w-2/3"
+    >
       <div className="flex flex-col h-full">
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 space-y-4">
             {isWidgetVisible && request && (
-              <RequestActions
-                action="fixDeclineReason"
-                request={request}
-                onFix={onFix}
-              />
+              <RequestActions request={request} onFix={onFix} />
             )}
             <RequestCard request={request} />
             <RequestHistory request={requestWithLog} isLoading={isLogLoading} />

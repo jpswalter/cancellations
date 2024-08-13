@@ -6,7 +6,10 @@ import SaveOfferModal from './SaveOfferModal';
 import { useAuth } from '@/hooks/useAuth';
 import { Request } from '@/lib/db/schema';
 
-const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({ cell }) => {
+const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({
+  cell,
+  row,
+}) => {
   const [isVisibleModal, setIsModalVisible] = useState(false);
   const { userData } = useAuth();
   const isProviderUser = userData?.tenantType === 'provider';
@@ -14,8 +17,9 @@ const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({ cell }) => {
 
   const openModal = () => setIsModalVisible(true);
   const closeModal = () => setIsModalVisible(false);
+  const isFirstOffer = row?.original.saveOffer === undefined;
 
-  if (isProviderUser) {
+  if (isProviderUser && isFirstOffer) {
     return (
       <div onClick={e => e.stopPropagation()}>
         <Button color="blue" onClick={openModal}>

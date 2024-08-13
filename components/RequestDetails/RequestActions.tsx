@@ -1,12 +1,12 @@
 import { CustomerInfoField, Request } from '@/lib/db/schema';
 import FixCustomerInfo from './FixCustomerInfo';
+import SaveOfferWidget from './SaveOfferWidget';
 
 const RequestActions: React.FC<{
-  action: string;
   request: Request;
   onFix: () => void;
-}> = ({ action, request, onFix }) => {
-  if (action === 'fixDeclineReason' && request?.declineReason) {
+}> = ({ request, onFix }) => {
+  if (request?.declineReason) {
     const declineReasonMap: Record<string, CustomerInfoField> = {
       'Wrong Customer Name': 'customerName',
       'Wrong Customer Email': 'customerEmail',
@@ -20,6 +20,10 @@ const RequestActions: React.FC<{
         onFix={onFix}
       />
     );
+  }
+
+  if (request.saveOffer) {
+    return <SaveOfferWidget request={request} onFix={onFix} />;
   }
 
   return null;

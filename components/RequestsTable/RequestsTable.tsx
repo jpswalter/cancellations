@@ -39,18 +39,16 @@ import { useQuery } from '@tanstack/react-query';
 
 interface Props {
   requests: Request[];
-  hasFixButton?: boolean;
   EmptyComponent?: React.ComponentType;
-  isReadOnly?: boolean;
+  isActionsTable?: boolean;
   defaultSort?: { id: string; desc: boolean }[];
 }
 
 const RequestsTable: FC<Props> = ({
   requests,
-  hasFixButton,
   EmptyComponent = EmptyRequestsState,
-  isReadOnly,
-  defaultSort = [{ id: 'dateSubmitted', desc: true }],
+  isActionsTable,
+  defaultSort = [{ id: 'dateResponded', desc: true }],
 }) => {
   const { userData } = useAuth();
   const { data: tenants, isLoading: tenantsLoading } = useQuery({
@@ -77,17 +75,27 @@ const RequestsTable: FC<Props> = ({
 
   const customerInfoColumns = generateCustomerInfoColumns(requests);
   const columns = [
-    ...(hasFixButton && !isProviderUser
+    ...(isActionsTable && !isProviderUser
       ? [
           {
+            header: '',
             accessorKey: 'id',
-            cell: ({ row }: { row: Row<Request> }) => (
-              <div onClick={e => e.stopPropagation()}>
-                <Button onClick={() => toggleDrawer(row.original)} color="blue">
-                  Fix Data
-                </Button>
-              </div>
-            ),
+            cell: ({ row }: { row: Row<Request> }) => {
+              if (row.original.status !== 'Declined') {
+                return '';
+              }
+
+              return (
+                <div onClick={e => e.stopPropagation()}>
+                  <Button
+                    onClick={() => toggleDrawer(row.original)}
+                    color="blue"
+                  >
+                    Fix Data
+                  </Button>
+                </div>
+              );
+            },
           },
         ]
       : []),
@@ -118,13 +126,17 @@ const RequestsTable: FC<Props> = ({
       accessorKey: 'requestType',
       cell: RequestTypeCell,
     },
+    ...(!isActionsTable
+      ? [
+          {
+            header: 'Date Submitted',
+            accessorKey: 'dateSubmitted',
+            cell: DateCell,
+          },
+        ]
+      : []),
     {
-      header: 'Date Submitted',
-      accessorKey: 'dateSubmitted',
-      cell: DateCell,
-    },
-    {
-      header: 'Date Responded',
+      header: 'Last Update',
       accessorKey: 'dateResponded',
       cell: DateCell,
     },
@@ -150,7 +162,7 @@ const RequestsTable: FC<Props> = ({
         cell: Cell<Request, boolean>;
         row: Row<Request>;
       }) => {
-        if (isProviderUser && !isReadOnly) {
+        if (isProviderUser && !isActionsTable) {
           return <ResolveCell cell={cell} />;
         }
         const value = getValue();
@@ -181,7 +193,7 @@ const RequestsTable: FC<Props> = ({
         cell: Cell<Request, string>;
         row: Row<Request>;
       }) => {
-        if (isProviderUser && !isReadOnly) {
+        if (isProviderUser && !isActionsTable) {
           const provider = tenants?.find(
             tenant => tenant.id === row.original.providerTenantId,
           );
@@ -193,7 +205,7 @@ const RequestsTable: FC<Props> = ({
         return getValue();
       },
     },
-    ...(isProviderUser && !isReadOnly
+    ...(isProviderUser && !isActionsTable
       ? [
           {
             id: 'Actions',

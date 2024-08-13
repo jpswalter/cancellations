@@ -6,14 +6,14 @@ const RequestStatus = ({ status }: { status: RequestStatusType }) => {
     Canceled: 'bg-green-100 text-green-800',
     Declined: 'bg-red-100 text-red-800',
     'Save Offered': 'bg-amber-100 text-amber-600',
-    'Save Declined': 'bg-amber-100 text-amber-400',
-    'Save Accepted': 'bg-amber-100 text-amber-500',
+    'Save Declined': 'bg-amber-100 text-red-600',
+    'Save Accepted': 'bg-amber-100 text-green-800',
     'Save Confirmed': 'bg-amber-100 text-amber-800',
   };
 
   return (
     <span
-      className={`px-2 py-1 rounded-full text-xs font-medium ${colorMap[status] ?? ''}`}
+      className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${colorMap[status] ?? ''}`}
     >
       {status}
     </span>

@@ -14,7 +14,6 @@ const RequestHistory: React.FC<RequestHistoryProps> = ({
   request,
   isLoading,
 }) => {
-  console.log('RequestHistory', isLoading);
   const { items, titles } = useTimelineItems(request);
 
   return (

@@ -2,7 +2,7 @@
 import { formatDate } from '@/utils/general';
 import { User, Network } from 'lucide-react';
 import { Radio, RadioGroup, RadioField } from '@/components/ui/radio';
-import { Cell } from '@tanstack/react-table';
+import { Cell, Row } from '@tanstack/react-table';
 import { Request, Tenant } from '@/lib/db/schema';
 import { useFormContext, useController, Controller } from 'react-hook-form';
 import { FC } from 'react';
@@ -12,6 +12,7 @@ import { getDisplayHeader } from '@/utils/template.utils';
 
 export type CellProps<R, T> = {
   cell: Cell<R, T>;
+  row?: Row<R>;
 };
 
 const DateCell: FC<CellProps<Request, string>> = ({ cell }) => {

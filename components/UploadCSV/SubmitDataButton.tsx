@@ -54,7 +54,7 @@ const SubmitDataButton = () => {
         submittedBy: userData.email,
         requestType: 'Cancellation',
         dateSubmitted: new Date().toISOString(),
-        dateResponded: null,
+        dateResponded: new Date().toISOString(),
         proxyTenantId: userData.tenantId,
         providerTenantId: selectedProviderId,
         customerInfo,
