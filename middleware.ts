@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|favicon|images|public).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|login|reset-password|favicon|images|$).*)',
   ],
 };
 
@@ -12,7 +12,6 @@ export const verificationCache = new Map<string, number>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export async function middleware(request: NextRequest) {
-  console.log(`Middleware triggered for: ${request.url}`);
   try {
     const session = request.cookies.get('session')?.value;
     if (!session) {
