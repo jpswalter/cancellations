@@ -12,6 +12,7 @@ import {
   flexRender,
   Row,
   Cell,
+  getSortedRowModel,
 } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -39,6 +40,7 @@ interface Props {
   hasFixButton?: boolean;
   EmptyComponent?: React.ComponentType;
   isReadOnly?: boolean;
+  defaultSort?: { id: string; desc: boolean }[];
 }
 
 const RequestsTable: FC<Props> = ({
@@ -46,6 +48,7 @@ const RequestsTable: FC<Props> = ({
   hasFixButton,
   EmptyComponent = EmptyRequestsState,
   isReadOnly,
+  defaultSort = [{ id: 'dateSubmitted', desc: true }],
 }) => {
   const { userData } = useAuth();
   const isProviderUser = userData?.tenantType === 'provider';
@@ -200,6 +203,10 @@ const RequestsTable: FC<Props> = ({
     data: requests,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting: defaultSort,
+    },
   });
 
   if (!userData) return null;
