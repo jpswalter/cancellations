@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Drawer } from '@/components/ui/drawer';
 import { useAuth } from '@/hooks/useAuth';
-import { UserIcon } from 'lucide-react';
 
 const Header: FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
