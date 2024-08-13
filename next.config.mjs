@@ -9,9 +9,9 @@ const nextConfig = {
   },
   images: {
     domains: [
+      'proxylink.co',
       'cancellations.vercel.app',
       'cancellations-tau.vercel.app',
-      'proxylink.co',
     ],
   },
 };
