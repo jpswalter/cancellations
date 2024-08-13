@@ -49,6 +49,7 @@ const ActionsList: React.FC = () => {
             requests={requests}
             hasFixButton={true}
             EmptyComponent={CongratsEmpty}
+            defaultSort={[{ id: 'dateSubmitted', desc: false }]}
           />
         </div>
       </div>
