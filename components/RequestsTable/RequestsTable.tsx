@@ -59,11 +59,6 @@ const RequestsTable: FC<Props> = ({
     request => request.status === 'Declined',
   );
   const isProviderUser = userData?.tenantType === 'provider';
-  const hasSaveOffers =
-    Number(
-      tenants?.find(t => t.id === userData?.tenantId)?.saveOffers?.length,
-    ) > 0;
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
@@ -141,7 +136,7 @@ const RequestsTable: FC<Props> = ({
       cell: DateCell,
     },
     ...customerInfoColumns,
-    ...(isProviderUser && hasSaveOffers
+    ...(isProviderUser && isActionsTable
       ? [
           {
             header: 'Save Offer',

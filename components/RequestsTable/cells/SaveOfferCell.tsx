@@ -17,7 +17,8 @@ const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({
 
   const openModal = () => setIsModalVisible(true);
   const closeModal = () => setIsModalVisible(false);
-  const isFirstOffer = row?.original.saveOffer === undefined;
+  const isFirstOffer =
+    row?.original.saveOffer === undefined || row?.original.saveOffer === null;
 
   if (isProviderUser && isFirstOffer) {
     return (
