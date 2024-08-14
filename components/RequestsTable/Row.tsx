@@ -28,9 +28,13 @@ const RequestRow: React.FC<RequestRowProps> = ({ row, toggleDrawer }) => {
           const meta = cell.column.columnDef.meta as CustomColumnMeta;
           const isHighlightable = meta?.isHighlightable;
           const width = cell.column.getSize();
-          const cellClassName = clsx(`p-4 whitespace-nowrap text-left`, {
-            'bg-yellow-50': isHighlightable,
-          });
+          const cellClassName = clsx(
+            `p-4 whitespace-nowrap`,
+            {
+              'bg-yellow-50': isHighlightable,
+            },
+            meta?.className ?? 'text-left',
+          );
           return (
             <td
               key={cell.id}

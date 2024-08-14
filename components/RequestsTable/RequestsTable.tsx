@@ -1,6 +1,6 @@
 // file: components/RequestsTable/RequestsTable.tsx
 'use client';
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 import {
   Request,
   RequestStatus as RequestStatusType,
@@ -26,7 +26,6 @@ import SaveOfferCell from './cells/SaveOfferCell';
 import ReportButton from './ReportButton';
 import RequestRow from './Row';
 import { generateCustomerInfoColumns } from './table.utils';
-import { CustomColumnMeta } from '@/constants/app.types';
 import clsx from 'clsx';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import { Button } from '@/components/ui/button';
@@ -36,6 +35,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 import { FaCircleXmark } from 'react-icons/fa6';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
+import { CustomColumnMeta } from '@/constants/app.types';
 
 interface Props {
   requests: Request[];
@@ -55,6 +55,9 @@ const RequestsTable: FC<Props> = ({
     queryKey: ['tenants'],
     queryFn: getTenants,
   });
+  const hasDeclinedRequests = requests.some(
+    request => request.status === 'Declined',
+  );
   const isProviderUser = userData?.tenantType === 'provider';
   const hasSaveOffers =
     Number(
@@ -75,7 +78,7 @@ const RequestsTable: FC<Props> = ({
 
   const customerInfoColumns = generateCustomerInfoColumns(requests);
   const columns = [
-    ...(isActionsTable && !isProviderUser
+    ...(isActionsTable && !isProviderUser && hasDeclinedRequests
       ? [
           {
             header: '',
@@ -101,6 +104,9 @@ const RequestsTable: FC<Props> = ({
       : []),
     {
       header: 'Status',
+      meta: {
+        className: 'text-center',
+      },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
         <RequestStatus status={cell.getValue()} />
@@ -124,17 +130,11 @@ const RequestsTable: FC<Props> = ({
     {
       header: 'Request Type',
       accessorKey: 'requestType',
+      meta: {
+        className: 'text-center',
+      },
       cell: RequestTypeCell,
     },
-    ...(!isActionsTable
-      ? [
-          {
-            header: 'Date Submitted',
-            accessorKey: 'dateSubmitted',
-            cell: DateCell,
-          },
-        ]
-      : []),
     {
       header: 'Last Update',
       accessorKey: 'dateResponded',
@@ -152,7 +152,9 @@ const RequestsTable: FC<Props> = ({
       : []),
     {
       header: 'Successfully Resolved',
-      className: 'text-center', // This centers the header text
+      meta: {
+        className: 'text-center',
+      },
       accessorKey: 'successfullyResolved',
       cell: ({
         getValue,
@@ -162,7 +164,7 @@ const RequestsTable: FC<Props> = ({
         cell: Cell<Request, boolean>;
         row: Row<Request>;
       }) => {
-        if (isProviderUser && !isActionsTable) {
+        if (isProviderUser) {
           return <ResolveCell cell={cell} />;
         }
         const value = getValue();
@@ -246,10 +248,11 @@ const RequestsTable: FC<Props> = ({
                 const isHighlightable = meta?.isHighlightable;
                 const width = header.column.getSize();
                 const headerClassName = clsx(
-                  `p-4 whitespace-nowrap text-left`,
+                  'p-4 whitespace-nowrap',
                   {
                     'bg-yellow-50': isHighlightable,
                   },
+                  meta?.className ?? 'text-left',
                 );
                 return (
                   <th

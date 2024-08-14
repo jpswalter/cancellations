@@ -13,7 +13,7 @@ const RequestStatus = ({ status }: { status: RequestStatusType }) => {
 
   return (
     <span
-      className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${colorMap[status] ?? ''}`}
+      className={`text-center mx-auto px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${colorMap[status] ?? ''}`}
     >
       {status}
     </span>
