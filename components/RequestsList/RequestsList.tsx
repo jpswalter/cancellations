@@ -37,7 +37,10 @@ const RequestsList: React.FC = () => {
           </div>
         </div>
         <div className="p-4 flex flex-col space-y-4 h-full flex-1">
-          <RequestsTable requests={requests} />
+          <RequestsTable
+            requests={requests}
+            defaultSort={[{ id: 'dateResponded', desc: true }]}
+          />
         </div>
       </div>
     </div>

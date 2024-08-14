@@ -41,14 +41,14 @@ interface Props {
   requests: Request[];
   EmptyComponent?: React.ComponentType;
   isActionsTable?: boolean;
-  defaultSort?: { id: string; desc: boolean }[];
+  defaultSort: { id: string; desc: boolean }[];
 }
 
 const RequestsTable: FC<Props> = ({
   requests,
   EmptyComponent = EmptyRequestsState,
   isActionsTable,
-  defaultSort = [{ id: 'dateResponded', desc: true }],
+  defaultSort,
 }) => {
   const { userData } = useAuth();
   const { data: tenants, isLoading: tenantsLoading } = useQuery({

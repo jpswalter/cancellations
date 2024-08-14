@@ -1,3 +1,4 @@
+// file: app/(main)/actions/page.tsx
 import { Metadata } from 'next';
 import { getAuth } from 'firebase-admin/auth';
 import { cookies } from 'next/headers';
