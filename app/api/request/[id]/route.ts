@@ -121,6 +121,7 @@ export async function PATCH(
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
+    console.error('Error updating request:', error);
     return new NextResponse(
       JSON.stringify({
         error: 'Error updating document: ' + parseErrorMessage(error),

@@ -43,8 +43,7 @@ const ResolveCell: React.FC<CellProps<Request, boolean | null>> = ({
     getValues,
     formState: { errors },
   } = useFormContext();
-  const cellValue = cell.getValue() as boolean | null;
-
+  const cellValue = cell.getValue();
   const { field } = useController({
     name: 'successfullyResolved',
     control,

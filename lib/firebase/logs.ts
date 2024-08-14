@@ -62,10 +62,9 @@ export const detectChanges = (
           });
         }
       }
-    } else if (key === 'saveOffer') {
+    } else if (key === 'saveOffer' && currentRequest.saveOffer !== null) {
       // Handle saveOffer separately
-      const currentSaveOffer =
-        currentRequest.saveOffer || ({} as RequestSaveOffer);
+      const currentSaveOffer = currentRequest.saveOffer;
       const updatedSaveOffer = newValue as Partial<RequestSaveOffer>;
       const saveOfferFields: (keyof RequestSaveOffer)[] = [
         'id',
