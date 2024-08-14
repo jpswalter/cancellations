@@ -26,12 +26,15 @@ export const groupChanges = (changes: RequestChange[]): ChangeGroup[] => {
 export const renderHistoryTitle = (group: ChangeGroup): string => {
   const { changedBy, changes } = group;
   const statusChange = changes.find(change => change.field === 'status');
+  console.log('group', statusChange);
   if (statusChange) {
     switch (statusChange.newValue) {
       case 'Save Offered':
         return `Save offer proposed by ${changedBy}`;
       case 'Save Confirmed':
         return `Save offer confirmed by ${changedBy}`;
+      case 'Save Accepted':
+        return `Save offer accepted by ${changedBy}`;
       case 'Save Declined':
         return `Save offer declined by ${changedBy}`;
     }
@@ -77,18 +80,12 @@ export const renderHistoryTitle = (group: ChangeGroup): string => {
 export const renderDescription = (
   changes: RequestChange[],
 ): React.ReactNode => {
-  const statusChange = changes.find(change => change.field === 'status');
-  const saveOfferChange = changes.find(
+  const saveOfferChangeTitle = changes.find(
     change => change.field === 'saveOffer.title',
   );
-  const isSaveOfferChange = [
-    'Save Offered',
-    'Save Confirmed',
-    'Save Declined',
-  ].includes(statusChange?.newValue as string);
 
-  if (isSaveOfferChange) {
-    return <p>Offer: {saveOfferChange?.newValue}</p>;
+  if (saveOfferChangeTitle) {
+    return <p>Offer: {saveOfferChangeTitle?.newValue}</p>;
   }
 
   const declineReasonChange = changes.find(

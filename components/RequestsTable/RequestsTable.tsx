@@ -190,7 +190,7 @@ const RequestsTable: FC<Props> = ({
         cell: Cell<Request, string>;
         row: Row<Request>;
       }) => {
-        if (isProviderUser && !isActionsTable) {
+        if (isProviderUser) {
           const provider = tenants?.find(
             tenant => tenant.id === row.original.providerTenantId,
           );
@@ -202,7 +202,7 @@ const RequestsTable: FC<Props> = ({
         return getValue();
       },
     },
-    ...(isProviderUser && !isActionsTable
+    ...(isProviderUser
       ? [
           {
             id: 'Actions',

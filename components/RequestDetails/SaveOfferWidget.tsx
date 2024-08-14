@@ -70,21 +70,20 @@ const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
     },
     'Save Accepted': {
       title: 'Save Offer Confirmed',
-      message: `A save offer has been accepted by ${request?.customerInfo?.customerEmail}. Please confirm the save.`,
+      message: `A save offer has been accepted by ${request.submittedBy}. Please confirm the save.`,
     },
     'Save Declined': {
       title: 'Save Offer Declined',
-      message: `The save offer has been declined by ${request?.customerInfo?.customerEmail}. Please proceed with the cancellation.`,
+      message: `The save offer has been declined by ${request.submittedBy}. Please proceed with the cancellation.`,
     },
     'Save Confirmed': {
-      title: 'Confirm Save Offer',
+      title: 'Great news!',
       message: `A save offer has been confirmed by provider. Thank you for being a customer.`,
     },
   };
 
   const { title, message } = textMap[request.status];
-  const shouldShowOfferDetails =
-    request.status === 'Save Offered' || request.status === 'Save Confirmed';
+  const shouldShowOfferDetails = request.status === 'Save Offered';
 
   return (
     <div className="bg-gradient-to-r from-green-500 to-yellow-600 text-white rounded-lg shadow-lg p-6">
@@ -103,7 +102,7 @@ const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
       {updateError && (
         <p className="text-red-500 text-sm mb-4">{updateError}</p>
       )}
-      {isProxyUser && (
+      {isProxyUser && request.status === 'Save Offered' && (
         <div className="flex gap-4 items-center">
           <Button
             onClick={() => mutation.mutate('Save Accepted')}

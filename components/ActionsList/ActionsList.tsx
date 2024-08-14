@@ -17,7 +17,7 @@ const ActionsList: React.FC = () => {
   const statusFilters =
     tenantType === 'provider'
       ? (['Pending', 'Save Declined', 'Save Accepted'] as RequestStatus[])
-      : (['Declined', 'Save Offered', 'Save Confirmed'] as RequestStatus[]);
+      : (['Declined', 'Save Offered'] as RequestStatus[]);
 
   const { data: requests } = useQuery({
     queryKey: ['requests', tenantType, tenantId],
