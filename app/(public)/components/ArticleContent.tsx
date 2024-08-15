@@ -5,6 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getArticle } from '@/lib/api/article';
 import { notFound } from 'next/navigation';
 import { FC } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 const ArticleContent: FC<{ slug: string }> = ({ slug }) => {
   const {
@@ -28,6 +30,12 @@ const ArticleContent: FC<{ slug: string }> = ({ slug }) => {
         className="text-xl leading-9"
         dangerouslySetInnerHTML={{ __html: article?.body?.html ?? '' }}
       />
+      <section className="text-center p-4 mt-10">
+        <h2 className="text-4xl mb-10">Contact a ProxyLink representative</h2>
+        <Link href="/schedule-demo">
+          <Button color="blue">Get in touch</Button>
+        </Link>
+      </section>
     </div>
   );
 };
