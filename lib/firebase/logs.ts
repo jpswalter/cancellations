@@ -41,31 +41,33 @@ export const detectChanges = (
 ): ChangeWithoutAuthor[] => {
   const changes: ChangeWithoutAuthor[] = [];
 
+  const compareAndAddChange = (
+    field: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ) => {
+    if (oldValue !== newValue) {
+      changes.push({ field, oldValue, newValue });
+    }
+  };
+
   for (const [key, newValue] of Object.entries(updatedRequest)) {
     if (key === 'customerInfo') {
-      // Handle customerInfo separately
-      const currentCustomerInfo = currentRequest.customerInfo || {};
-      const updatedCustomerInfo = newValue as Record<string, string>;
+      const currentInfo = currentRequest.customerInfo || {};
+      const updatedInfo = newValue as Record<string, string>;
 
-      for (const [infoKey, infoValue] of Object.entries(updatedCustomerInfo)) {
-        if (
-          infoValue !==
-          currentCustomerInfo[infoKey as keyof typeof currentCustomerInfo]
-        ) {
-          changes.push({
-            field: `customerInfo.${infoKey}`,
-            oldValue:
-              currentCustomerInfo[
-                infoKey as keyof typeof currentCustomerInfo
-              ] || null,
-            newValue: infoValue,
-          });
-        }
-      }
-    } else if (key === 'saveOffer' && currentRequest.saveOffer !== null) {
-      // Handle saveOffer separately
-      const currentSaveOffer = currentRequest.saveOffer;
-      const updatedSaveOffer = newValue as Partial<RequestSaveOffer>;
+      Object.entries(updatedInfo).forEach(([infoKey, infoValue]) => {
+        compareAndAddChange(
+          `customerInfo.${infoKey}`,
+          currentInfo[infoKey as keyof typeof currentInfo] || null,
+          infoValue,
+        );
+      });
+    } else if (key === 'saveOffer') {
+      const currentOffer = (currentRequest.saveOffer ||
+        {}) as Partial<RequestSaveOffer>;
+      const updatedOffer = newValue as Partial<RequestSaveOffer>;
+
       const saveOfferFields: (keyof RequestSaveOffer)[] = [
         'id',
         'title',
@@ -75,25 +77,21 @@ export const detectChanges = (
         'dateConfirmed',
       ];
 
-      for (const field of saveOfferFields) {
-        if (updatedSaveOffer[field] !== currentSaveOffer[field]) {
-          changes.push({
-            field: `saveOffer.${field}`,
-            oldValue: currentSaveOffer[field] || null,
-            newValue: updatedSaveOffer[field] || null,
-          });
+      saveOfferFields.forEach(field => {
+        if (field in updatedOffer) {
+          compareAndAddChange(
+            `saveOffer.${field}`,
+            currentOffer[field] ?? null,
+            updatedOffer[field] ?? null,
+          );
         }
-      }
-    } else if (newValue !== currentRequest[key as keyof Request]) {
-      changes.push({
-        field: key,
-        oldValue: currentRequest[key as keyof Request] as
-          | string
-          | number
-          | boolean
-          | null,
-        newValue: newValue as string | number | boolean | null,
       });
+    } else {
+      compareAndAddChange(
+        key,
+        (currentRequest[key as keyof Request] as string | null) ?? null,
+        (newValue as string | null) ?? null,
+      );
     }
   }
 

@@ -46,6 +46,7 @@ const SaveOfferModal: React.FC<SaveOfferModalProps> = ({
           queryKey: ['requests', userData.tenantType, userData.tenantId],
         });
       }
+      setSelectedOfferId('');
     },
     onSettled: () => {
       closeModal();

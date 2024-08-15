@@ -16,13 +16,6 @@ export type CustomerInfoField =
 
 export type CustomerInfo = { [K in CustomerInfoField]?: string };
 
-export type RequestSaveOffer = SaveOffer & {
-  dateOffered: string | null;
-  dateAccepted?: string | null;
-  dateDeclined?: string | null;
-  dateConfirmed?: string | null;
-};
-
 export interface Request {
   id: string;
   version: number;
@@ -82,6 +75,13 @@ export type SaveOffer = {
   dateUpdated: string | null;
   title: string;
   description: string;
+};
+
+export type RequestSaveOffer = SaveOffer & {
+  dateOffered: string | null;
+  dateAccepted?: string | null;
+  dateDeclined?: string | null;
+  dateConfirmed?: string | null;
 };
 
 export interface Tenant {
