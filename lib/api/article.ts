@@ -2,9 +2,10 @@
 type Article = {
   title: string;
   slug: string;
-  body: {
+  body?: {
     html: string;
   };
+  teaser?: string;
 };
 
 export async function getArticles(): Promise<Article[]> {
@@ -18,9 +19,7 @@ export async function getArticles(): Promise<Article[]> {
         articles {
           title
           slug
-          body {
-            text
-          }
+          teaser
         }
       }`,
     }),
