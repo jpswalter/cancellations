@@ -26,7 +26,7 @@ const ArticleContent: FC<{ slug: string }> = ({ slug }) => {
       <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
       <div
         className="text-xl leading-9"
-        dangerouslySetInnerHTML={{ __html: article.body.html }}
+        dangerouslySetInnerHTML={{ __html: article?.body?.html ?? '' }}
       />
     </div>
   );
