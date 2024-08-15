@@ -13,6 +13,28 @@ const nextConfig = {
       'cancellations.vercel.app',
       'cancellations-tau.vercel.app',
     ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'media.graphassets.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.graphassets.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'm.media-amazon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'hygraph.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'vercel.com',
+      },
+    ],
   },
 };
 
