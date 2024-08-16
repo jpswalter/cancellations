@@ -14,14 +14,14 @@ const Articles: FC = () => {
   });
 
   return (
-    <section className="p-20">
-      <h2 className="text-4xl font-bold">
+    <section className="px-4 py-12 md:p-20">
+      <h2 className="text-4xl font-bold mb-2">
         Resources for customer support leaders
       </h2>
       <p className="text-gray-500">
         Know what to do when a proxy contacts your support department.
       </p>
-      <div className="flex gap-4 mt-10">
+      <div className="flex flex-col md:flex-row gap-4 mt-10">
         {isLoading ? (
           <Spinner className="w-24 h-24 text-gray-500" />
         ) : (
