@@ -120,7 +120,7 @@ const RequestsTable: FC<Props> = ({
       cell: DateCell,
     },
     ...customerInfoColumns,
-    ...(isProviderUser && isActionsTable
+    ...(isProviderUser
       ? [
           {
             header: 'Save Offer',
