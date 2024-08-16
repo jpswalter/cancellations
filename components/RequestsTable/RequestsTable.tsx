@@ -1,6 +1,6 @@
 // file: components/RequestsTable/RequestsTable.tsx
 'use client';
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 import {
   Request,
   RequestStatus as RequestStatusType,
@@ -21,40 +21,41 @@ import {
   RequestTypeCell,
   DeclineReasonCell,
   TenantCell,
-} from './Cell';
+} from './cells/Cell';
+import SaveOfferCell from './cells/SaveOfferCell';
 import ReportButton from './ReportButton';
 import RequestRow from './Row';
-import useFirebase from '@/hooks/useFirebase';
 import { generateCustomerInfoColumns } from './table.utils';
-import { CustomColumnMeta } from '@/constants/app.types';
 import clsx from 'clsx';
 import RequestStatus from '../RequestStatus/RequestStatus';
-import { Button } from '@/components/ui/button';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
 import EmptyRequestsState from './EmptyTable';
 import { FaCheckCircle } from 'react-icons/fa';
 import { FaCircleXmark } from 'react-icons/fa6';
+import { getTenants } from '@/lib/api/tenant';
+import { useQuery } from '@tanstack/react-query';
+import { CustomColumnMeta } from '@/constants/app.types';
+import CTACell from './cells/CTACell';
 
 interface Props {
   requests: Request[];
-  hasFixButton?: boolean;
   EmptyComponent?: React.ComponentType;
-  isReadOnly?: boolean;
-  defaultSort?: { id: string; desc: boolean }[];
+  isActionsTable?: boolean;
+  defaultSort: { id: string; desc: boolean }[];
 }
 
 const RequestsTable: FC<Props> = ({
   requests,
-  hasFixButton,
   EmptyComponent = EmptyRequestsState,
-  isReadOnly,
-  defaultSort = [{ id: 'dateSubmitted', desc: true }],
+  isActionsTable,
+  defaultSort,
 }) => {
   const { userData } = useAuth();
-  const isProviderUser = userData?.tenantType === 'provider';
-  const { data: tenants, loading: tenantsLoading } = useFirebase({
-    collectionName: 'tenants',
+  const { data: tenants, isLoading: tenantsLoading } = useQuery({
+    queryKey: ['tenants'],
+    queryFn: getTenants,
   });
+  const isProviderUser = userData?.tenantType === 'provider';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
@@ -69,31 +70,22 @@ const RequestsTable: FC<Props> = ({
 
   const customerInfoColumns = generateCustomerInfoColumns(requests);
   const columns = [
-    {
-      header: hasFixButton && !isProviderUser ? '' : 'ID',
-      accessorKey: 'id',
-      cell: ({
-        cell,
-        row,
-      }: {
-        cell: Cell<Request, string>;
-        row: Row<Request>;
-      }) => {
-        if (hasFixButton && !isProviderUser) {
-          return (
-            <div onClick={e => e.stopPropagation()}>
-              <Button onClick={() => toggleDrawer(row.original)} color="blue">
-                Fix Data
-              </Button>
-            </div>
-          );
-        }
-        return cell.getValue();
-      },
-      size: 100,
-    },
+    ...(isActionsTable
+      ? [
+          {
+            header: '',
+            accessorKey: 'id',
+            cell: ({ row }: { row: Row<Request> }) => (
+              <CTACell row={row} toggleDrawer={toggleDrawer} />
+            ),
+          },
+        ]
+      : []),
     {
       header: 'Status',
+      meta: {
+        className: 'text-center',
+      },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
         <RequestStatus status={cell.getValue()} />
@@ -117,22 +109,31 @@ const RequestsTable: FC<Props> = ({
     {
       header: 'Request Type',
       accessorKey: 'requestType',
+      meta: {
+        className: 'text-center',
+      },
       cell: RequestTypeCell,
     },
     {
-      header: 'Date Submitted',
-      accessorKey: 'dateSubmitted',
-      cell: DateCell,
-    },
-    {
-      header: 'Date Responded',
+      header: 'Last Update',
       accessorKey: 'dateResponded',
       cell: DateCell,
     },
     ...customerInfoColumns,
+    ...(isProviderUser
+      ? [
+          {
+            header: 'Save Offer',
+            accessorKey: 'saveOffer',
+            cell: SaveOfferCell,
+          },
+        ]
+      : []),
     {
       header: 'Successfully Resolved',
-      className: 'text-center', // This centers the header text
+      meta: {
+        className: 'text-center',
+      },
       accessorKey: 'successfullyResolved',
       cell: ({
         getValue,
@@ -142,7 +143,7 @@ const RequestsTable: FC<Props> = ({
         cell: Cell<Request, boolean>;
         row: Row<Request>;
       }) => {
-        if (isProviderUser && !isReadOnly) {
+        if (isProviderUser) {
           return <ResolveCell cell={cell} />;
         }
         const value = getValue();
@@ -173,7 +174,7 @@ const RequestsTable: FC<Props> = ({
         cell: Cell<Request, string>;
         row: Row<Request>;
       }) => {
-        if (isProviderUser && !isReadOnly) {
+        if (isProviderUser) {
           const provider = tenants?.find(
             tenant => tenant.id === row.original.providerTenantId,
           );
@@ -185,7 +186,7 @@ const RequestsTable: FC<Props> = ({
         return getValue();
       },
     },
-    ...(isProviderUser && !isReadOnly
+    ...(isProviderUser
       ? [
           {
             id: 'Actions',
@@ -226,10 +227,11 @@ const RequestsTable: FC<Props> = ({
                 const isHighlightable = meta?.isHighlightable;
                 const width = header.column.getSize();
                 const headerClassName = clsx(
-                  `p-4 whitespace-nowrap text-left`,
+                  'p-4 whitespace-nowrap',
                   {
                     'bg-yellow-50': isHighlightable,
                   },
+                  meta?.className ?? 'text-left',
                 );
                 return (
                   <th

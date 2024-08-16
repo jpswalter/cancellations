@@ -1,12 +1,46 @@
 import { CustomerInfoField, Request } from '@/lib/db/schema';
 import FixCustomerInfo from './FixCustomerInfo';
+import SaveOfferWidget from './SaveOfferWidget';
+import { useMemo, useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 const RequestActions: React.FC<{
-  action: string;
   request: Request;
-  onFix: () => void;
-}> = ({ action, request, onFix }) => {
-  if (action === 'fixDeclineReason' && request?.declineReason) {
+  onFix?: () => void;
+}> = ({ request, onFix }) => {
+  const { userData } = useAuth();
+  const { tenantType } = userData || {};
+
+  const isActionNeeded: boolean = useMemo(() => {
+    if (!request) return false;
+
+    const { declineReason, status } = request;
+
+    return (
+      (tenantType === 'proxy' &&
+        (declineReason !== null ||
+          status === 'Save Offered' ||
+          status === 'Save Confirmed')) ||
+      (tenantType === 'provider' &&
+        (status === 'Save Accepted' || status === 'Save Declined'))
+    );
+  }, [request, tenantType]);
+
+  const [isWidgetVisible, setIsWidgetVisible] = useState(false);
+
+  useEffect(() => {
+    if (isActionNeeded) {
+      setIsWidgetVisible(true);
+    } else {
+      setIsWidgetVisible(false);
+    }
+  }, [isActionNeeded]);
+
+  if (!isWidgetVisible) {
+    return null;
+  }
+
+  if (request?.declineReason) {
     const declineReasonMap: Record<string, CustomerInfoField> = {
       'Wrong Customer Name': 'customerName',
       'Wrong Customer Email': 'customerEmail',
@@ -20,6 +54,10 @@ const RequestActions: React.FC<{
         onFix={onFix}
       />
     );
+  }
+
+  if (request.saveOffer) {
+    return <SaveOfferWidget request={request} onFix={onFix} />;
   }
 
   return null;

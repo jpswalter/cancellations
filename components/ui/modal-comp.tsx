@@ -11,7 +11,7 @@ interface ModalProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const Modal: React.FC<ModalProps> = ({
+export const Modal: React.FC<ModalProps> = ({
   shown,
   onClose,
   title,
@@ -44,5 +44,3 @@ const Modal: React.FC<ModalProps> = ({
     </Dialog>
   );
 };
-
-export default Modal;

@@ -1,7 +1,6 @@
 // components/Profile.tsx
 'use client';
-
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useAuth } from '@/hooks/useAuth';
 import { auth } from '@/lib/firebase/config';
@@ -26,6 +25,23 @@ const Profile: React.FC = () => {
     }
   };
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setShowDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   if (!userData) return null;
 
   const bgColorMap = {
@@ -43,7 +59,10 @@ const Profile: React.FC = () => {
         <span className="truncate">{userData.email}</span>
       </button>
       {showDropdown && (
-        <div className="absolute right-0 bottom-full w-full bg-white border border-gray-200 rounded-md shadow-lg py-2 mb-1">
+        <div
+          ref={dropdownRef}
+          className="absolute right-0 bottom-full w-full bg-white border border-gray-200 rounded-md shadow-lg py-2 mb-1"
+        >
           <div className="px-4 py-2">
             <div className="flex items-center gap-x-2 text-gray-600">
               <span className="font-bold">{userData.name}</span>

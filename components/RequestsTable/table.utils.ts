@@ -1,5 +1,5 @@
 import { getDisplayHeader } from '@/utils/template.utils';
-import { UsernameCell } from './Cell';
+import { UsernameCell } from './cells/Cell';
 import { Request } from '@/lib/db/schema';
 
 export const generateCustomerInfoColumns = (requests: Request[]) => {

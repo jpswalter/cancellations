@@ -1,8 +1,7 @@
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
-import Modal from '../ui/Modal';
+import { Modal, Button } from '@/components/ui/';
 import { Request } from '@/lib/db/schema';
-import { Button } from '@/components/ui/button';
 import UserInfoCard from './UserInfoCard';
 import {
   IoMdCheckmarkCircleOutline,

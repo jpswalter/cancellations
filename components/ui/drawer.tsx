@@ -15,6 +15,7 @@ interface DrawerProps {
   children: React.ReactNode;
   duration?: 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000;
   width?: string;
+  minWidth?: string;
 }
 
 const durationClasses = {
@@ -35,6 +36,7 @@ export const Drawer: React.FC<DrawerProps> = ({
   title,
   duration = 200,
   width = 'w-1/2',
+  minWidth = 'min-w-[600px]',
 }) => {
   const durationClass = durationClasses[duration];
 
@@ -56,7 +58,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div
-              className={`pointer-events-none fixed inset-y-0 right-0 flex ${width} w-full pl-10`}
+              className={`pointer-events-none fixed inset-y-0 right-0 flex ${width} ${minWidth} pl-10`}
             >
               <TransitionChild
                 as={Fragment}

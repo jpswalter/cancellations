@@ -47,9 +47,9 @@ const ActionsList: React.FC = () => {
         <div className="p-4 flex flex-col space-y-4 h-full flex-1">
           <RequestsTable
             requests={requests}
-            hasFixButton={true}
             EmptyComponent={CongratsEmpty}
-            defaultSort={[{ id: 'dateSubmitted', desc: false }]}
+            defaultSort={[{ id: 'dateResponded', desc: true }]}
+            isActionsTable={true}
           />
         </div>
       </div>

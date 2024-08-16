@@ -27,7 +27,7 @@ export default function ClientLayout({
       <Toaster position="top-right" reverseOrder={false} />
       <div
         className={clsx(
-          'grid h-full w-screen grid-rows-[64px_1fr]',
+          'grid h-full w-full grid-rows-[64px_1fr]',
           'grid-cols-[20rem_1fr]',
         )}
       >

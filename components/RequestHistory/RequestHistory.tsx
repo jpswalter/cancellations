@@ -16,19 +16,18 @@ const RequestHistory: React.FC<RequestHistoryProps> = ({
 }) => {
   const { items, titles } = useTimelineItems(request);
 
-  if (!request) {
-    return null;
-  }
-
   return (
     <div className="p-4 rounded-lg">
       <h2 className="text-xl font-semibold flex items-center justify-center gap-2 mb-8">
         {isLoading ? 'Request History is loading...' : 'Request History'}
-        {isLoading && (
-          <Spinner className="w-6 h-6 text-gray-500" color="gray" />
-        )}
       </h2>
-      <Timeline items={items} dotAlignment="top" titles={titles} />
+      {isLoading ? (
+        <div className="w-full flex-1">
+          <Spinner className="w-20 h-20 text-gray-500" color="gray" />
+        </div>
+      ) : (
+        <Timeline items={items} dotAlignment="top" titles={titles} />
+      )}
     </div>
   );
 };

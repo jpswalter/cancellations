@@ -1,14 +1,11 @@
-import { CustomerInfo, RequestChange } from '@/lib/db/schema';
+import { RequestChange } from '@/lib/db/schema';
 import { getDisplayHeader } from '@/utils/template.utils';
-import { Request } from '@/lib/db/schema';
 
 export type ChangeGroup = {
   changedBy: string;
   tenantType: 'proxy' | 'provider';
   changes: RequestChange[];
 };
-
-type ValueType = CustomerInfo | string | number | boolean | null;
 
 export const groupChanges = (changes: RequestChange[]): ChangeGroup[] => {
   return changes.reduce((groups: ChangeGroup[], change) => {
@@ -28,6 +25,21 @@ export const groupChanges = (changes: RequestChange[]): ChangeGroup[] => {
 
 export const renderHistoryTitle = (group: ChangeGroup): string => {
   const { changedBy, changes } = group;
+  const statusChange = changes.find(change => change.field === 'status');
+  console.log('group', statusChange);
+  if (statusChange) {
+    switch (statusChange.newValue) {
+      case 'Save Offered':
+        return `Save offer proposed by ${changedBy}`;
+      case 'Save Confirmed':
+        return `Save offer confirmed by ${changedBy}`;
+      case 'Save Accepted':
+        return `Save offer accepted by ${changedBy}`;
+      case 'Save Declined':
+        return `Save offer declined by ${changedBy}`;
+    }
+  }
+
   const isFirstChange =
     changes.length === 1 &&
     changes[0].field === 'status' &&
@@ -65,19 +77,25 @@ export const renderHistoryTitle = (group: ChangeGroup): string => {
   return `${changes.length} changes made by ${changedBy}`;
 };
 
-export const contentMapByField: Partial<
-  Record<
-    keyof Request,
-    (
-      oldValue: ValueType,
-      newValue: ValueType,
-      changes: RequestChange[],
-    ) => React.ReactNode
-  >
-> = {
-  customerInfo: () => `Customer info updated`,
-  declineReason: (oldValue, newValue, changes) => {
-    if (newValue === null && oldValue !== null) {
+export const renderDescription = (
+  changes: RequestChange[],
+): React.ReactNode => {
+  const saveOfferChangeTitle = changes.find(
+    change => change.field === 'saveOffer.title',
+  );
+
+  if (saveOfferChangeTitle) {
+    return <p>Offer: {saveOfferChangeTitle?.newValue}</p>;
+  }
+
+  const declineReasonChange = changes.find(
+    change => change.field === 'declineReason',
+  );
+  if (declineReasonChange) {
+    if (
+      declineReasonChange.newValue === null &&
+      declineReasonChange.oldValue !== null
+    ) {
       const customerInfoChanges = changes.filter(change =>
         change.field.includes('customerInfo.'),
       );
@@ -90,9 +108,28 @@ export const contentMapByField: Partial<
             return `${getDisplayHeader(customerFieldChanged)} changed from ${change.oldValue} to ${newValue}`;
           })
           .join(', ');
-        return changedFields;
+        return <p>{changedFields}</p>;
       }
     }
-    return `Reason: ${newValue}`;
-  },
+    return <p>Reason: {declineReasonChange.newValue}</p>;
+  }
+
+  return null;
 };
+
+const RequestHistoryContent: React.FC<{
+  group: ChangeGroup;
+}> = ({ group }) => {
+  const changesExceptStatus = group.changes.filter(
+    change => change.field !== 'status',
+  );
+
+  return (
+    <div>
+      <h4 className="font-bold">{renderHistoryTitle(group)}</h4>
+      {renderDescription(changesExceptStatus)}
+    </div>
+  );
+};
+
+export default RequestHistoryContent;

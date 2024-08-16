@@ -142,6 +142,17 @@ async function initializeTestData(db: FirebaseFirestore.Firestore) {
       createdAt: currentDate,
       version: CURRENT_SCHEMA_VERSION,
     },
+    {
+      id: uuidv4(),
+      email: 'admin@espn.com',
+      name: 'Admin ESPN',
+      tenantId: tenants[2].id,
+      tenantName: 'ESPN',
+      tenantType: 'provider',
+      role: 'admin',
+      createdAt: currentDate,
+      version: CURRENT_SCHEMA_VERSION,
+    },
   ];
 
   for (const user of users) {

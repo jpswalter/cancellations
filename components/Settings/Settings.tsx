@@ -5,6 +5,7 @@ import MyAccountTab from './MyAccountTab';
 import { useAuth } from '@/hooks/useAuth';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
+import SaveOffersTab from './SaveOfferTab/SaveOfferTab';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState('My Account');
@@ -13,13 +14,20 @@ const Settings: React.FC = () => {
     queryKey: ['tenants'],
     queryFn: getTenants,
   });
-  const tenantName = tenants?.find(t => t.id === userData?.tenantId)?.name;
-
-  const tabs = [{ name: 'My Account', current: activeTab === 'My Account' }];
+  const tenant = tenants?.find(t => t.id === userData?.tenantId);
+  const isProvider = userData?.tenantType === 'provider';
 
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
+
+  const tabs = [
+    { name: 'My Account', current: activeTab === 'My Account' },
+    {
+      name: 'Save Offers',
+      current: activeTab === 'Save Offers',
+    },
+  ];
 
   if (!userData) return null;
 
@@ -29,7 +37,7 @@ const Settings: React.FC = () => {
         <div className="flex h-[72px] flex-none items-center border-b bg-white px-[20px]">
           <div className="text-[24px] font-bold">Settings</div>
         </div>
-        <div className="flex-1 overflow-scroll bg-white">
+        <div className="">
           <div className="mx-auto w-full px-4">
             <div className="mb-10 mt-6 overflow-hidden border bg-white shadow sm:rounded-lg">
               <div className="p-6">
@@ -54,9 +62,15 @@ const Settings: React.FC = () => {
                   </nav>
                 </div>
                 {activeTab === 'My Account' && (
-                  <MyAccountTab userData={userData} tenantName={tenantName} />
+                  <MyAccountTab userData={userData} tenantName={tenant?.name} />
                 )}
-                {/* {activeTab === 'Team' && <MyTeamTab people={people} />} */}
+                {activeTab === 'Save Offers' && isProvider && (
+                  <SaveOffersTab
+                    isAdmin={userData?.role === 'admin'}
+                    offers={tenant?.saveOffers}
+                    tenantId={userData?.tenantId}
+                  />
+                )}
               </div>
             </div>
           </div>

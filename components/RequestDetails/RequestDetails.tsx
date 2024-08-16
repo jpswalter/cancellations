@@ -5,7 +5,6 @@ import { getRequest } from '@/lib/api/request';
 import { useAuth } from '@/hooks/useAuth';
 import RequestActions from './RequestActions';
 import RequestCard from './RequestCard';
-import { useMemo, useReducer } from 'react';
 import RequestHistory from '../RequestHistory/RequestHistory';
 
 interface RequestDetailsProps {
@@ -31,21 +30,6 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({ requestId }) => {
     enabled: !!requestId && !!tenantType && !!tenantId,
   });
 
-  const isActionNeeded = useMemo(() => {
-    return (
-      (tenantType === 'proxy' &&
-        (request?.declineReason || request?.status === 'Save Offered')) ||
-      (tenantType === 'provider' &&
-        (request?.status === 'Save Accepted' ||
-          request?.status === 'Save Declined'))
-    );
-  }, [tenantType, request]);
-
-  const [isWidgetVisible, closeWidget] = useReducer(
-    () => false,
-    isActionNeeded !== undefined,
-  );
-
   if (!request) return null;
 
   if (error) {
@@ -67,13 +51,7 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({ requestId }) => {
         </div>
         <div className="h-full flex-1 bg-gray-50">
           <div className="max-w-4xl p-4 flex flex-col space-y-4">
-            {isWidgetVisible && (
-              <RequestActions
-                action="fixDeclineReason"
-                request={request}
-                onFix={closeWidget}
-              />
-            )}
+            <RequestActions request={request} />
             <RequestCard request={request} />
             <RequestHistory request={request} isLoading={isLoading} />
           </div>

@@ -9,7 +9,7 @@ import { getDisplayHeader } from '@/utils/template.utils';
 const FixCustomerInfo: React.FC<{
   request: Request;
   field: CustomerInfoField;
-  onFix: () => void;
+  onFix?: () => void;
 }> = ({ request, field, onFix }) => {
   const currentInvalidValue = request.customerInfo[field];
   const [newValue, setNewValue] = useState(currentInvalidValue);
@@ -32,7 +32,7 @@ const FixCustomerInfo: React.FC<{
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['request', request.id] });
-      onFix();
+      onFix?.();
     },
     onError: error => {
       setUpdateError(error.message);
