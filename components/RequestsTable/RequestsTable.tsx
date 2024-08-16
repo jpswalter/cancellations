@@ -28,7 +28,6 @@ import RequestRow from './Row';
 import { generateCustomerInfoColumns } from './table.utils';
 import clsx from 'clsx';
 import RequestStatus from '../RequestStatus/RequestStatus';
-import { Button } from '@/components/ui/button';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
 import EmptyRequestsState from './EmptyTable';
 import { FaCheckCircle } from 'react-icons/fa';
@@ -36,6 +35,7 @@ import { FaCircleXmark } from 'react-icons/fa6';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
 import { CustomColumnMeta } from '@/constants/app.types';
+import CTACell from './cells/CTACell';
 
 interface Props {
   requests: Request[];
@@ -55,9 +55,6 @@ const RequestsTable: FC<Props> = ({
     queryKey: ['tenants'],
     queryFn: getTenants,
   });
-  const hasDeclinedRequests = requests.some(
-    request => request.status === 'Declined',
-  );
   const isProviderUser = userData?.tenantType === 'provider';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
@@ -73,27 +70,14 @@ const RequestsTable: FC<Props> = ({
 
   const customerInfoColumns = generateCustomerInfoColumns(requests);
   const columns = [
-    ...(isActionsTable && !isProviderUser && hasDeclinedRequests
+    ...(isActionsTable
       ? [
           {
             header: '',
             accessorKey: 'id',
-            cell: ({ row }: { row: Row<Request> }) => {
-              if (row.original.status !== 'Declined') {
-                return '';
-              }
-
-              return (
-                <div onClick={e => e.stopPropagation()}>
-                  <Button
-                    onClick={() => toggleDrawer(row.original)}
-                    color="blue"
-                  >
-                    Fix Data
-                  </Button>
-                </div>
-              );
-            },
+            cell: ({ row }: { row: Row<Request> }) => (
+              <CTACell row={row} toggleDrawer={toggleDrawer} />
+            ),
           },
         ]
       : []),

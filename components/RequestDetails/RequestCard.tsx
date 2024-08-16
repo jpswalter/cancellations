@@ -43,15 +43,11 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
             <h2 className="text-xl font-semibold">Request Information</h2>
             <RequestStatus status={status} />
           </div>
-          <InfoItem label="ID" value={id} />
-          <InfoItem label="LogId" value={logId} />
           <InfoItem label="Request Type" value={requestType} />
-          <InfoItem label="Submitted By" value={submittedBy} />
-          <InfoItem label="Date Submitted" value={formatDate(dateSubmitted)} />
-          {dateResponded && (
+          {successfullyResolved !== null && (
             <InfoItem
-              label="Date Responded"
-              value={formatDate(dateResponded)}
+              label="Successfully Resolved"
+              value={successfullyResolved.toString()}
             />
           )}
           <InfoItem
@@ -64,12 +60,16 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
             value={findTenantName(providerTenantId)}
             isLoading={tenantsLoading}
           />
-          {successfullyResolved !== null && (
+          <InfoItem label="Submitted By" value={submittedBy} />
+          <InfoItem label="Date Submitted" value={formatDate(dateSubmitted)} />
+          {dateResponded && (
             <InfoItem
-              label="Successfully Resolved"
-              value={successfullyResolved.toString()}
+              label="Date Responded"
+              value={formatDate(dateResponded)}
             />
           )}
+          <InfoItem label="ID" value={id} />
+          <InfoItem label="LogId" value={logId} />
         </div>
 
         <div className="flex flex-col gap-4">
