@@ -8,12 +8,11 @@ const nextConfig = {
       : 'http://localhost:3000',
   },
   images: {
-    domains: [
-      'proxylink.co',
-      'cancellations.vercel.app',
-      'cancellations-tau.vercel.app',
-    ],
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'proxylink.co',
+      },
       {
         protocol: 'https',
         hostname: 'media.graphassets.com',
@@ -21,10 +20,6 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: '**.graphassets.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'm.media-amazon.com',
       },
       {
         protocol: 'https',

@@ -22,9 +22,13 @@ const ArticleContent: FC<{ slug: string }> = ({ slug }) => {
   if (error) return <div>An error occurred: {error.message}</div>;
   if (!article) notFound();
 
+  const isPrivacyPolicy = slug === 'privacy-policy';
+
   return (
     <div className="py-8 md:py-20 mx-auto">
-      <p className="text-lg text-gray-500 mb-2">CX Leader Resource</p>
+      {!isPrivacyPolicy && (
+        <p className="text-lg text-gray-500 mb-2">CX Leader Resource</p>
+      )}
       <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
       <div
         className="text-xl leading-9"

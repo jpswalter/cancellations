@@ -10,6 +10,7 @@ const Articles: FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['articles'],
     queryFn: () => getArticles(),
+    select: data => data.filter(article => article.slug !== 'privacy-policy'),
   });
 
   return (
