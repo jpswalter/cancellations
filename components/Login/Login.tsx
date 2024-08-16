@@ -1,9 +1,10 @@
 'use client';
-import { FaCheckCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
 import LoginForm from '@/components/Login/LoginForm';
 import { FC } from 'react';
 import ResetForm from './ResetForm';
-
+import Link from 'next/link';
+import { Button } from '@headlessui/react';
 type Props = {
   type?: 'reset-password' | 'sign-up';
 };
@@ -23,9 +24,16 @@ const Login: FC<Props> = ({ type }) => {
           <div className="flex flex-1 items-center justify-center p-4">
             <div className="mb-6 flex max-w-[640px] flex-1 flex-col justify-center gap-6">
               <div>
-                <h1 className="text-7xl font-bold text-white mb-2">
-                  ProxyLink
-                </h1>
+                <Link href="/">
+                  <Button className=" text-white flex items-center gap-2 mb-2">
+                    <FaArrowLeft color="white" /> Back
+                  </Button>
+                </Link>
+                <Link href="/">
+                  <h1 className="text-7xl font-bold text-white mb-2">
+                    ProxyLink
+                  </h1>
+                </Link>
                 <div className="text-3xl font-medium text-white/85">
                   Streamline 3rd-Party Customer Support
                 </div>
