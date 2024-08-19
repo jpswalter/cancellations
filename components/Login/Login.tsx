@@ -6,6 +6,7 @@ import { FC } from 'react';
 import ResetForm from './ResetForm';
 import Link from 'next/link';
 import { Button } from '@headlessui/react';
+import Footer from '@/app/(public)/components/Footer';
 type Props = {
   type?: 'reset-password' | 'sign-up';
 };
@@ -89,12 +90,7 @@ const Login: FC<Props> = ({ type }) => {
             {renderLoginComponent()}
           </div>
         </div>
-        {/* Top Nav */}
-        <div className="flex items-center gap-5 p-10 font-medium text-white/70">
-          <div className="flex-1" />
-          <div>© 2024 Intermediary.cc. All Rights Reserved.</div>
-          <div className="flex-1" />
-        </div>
+        <Footer bgClassName="bg-blue-900" />
       </div>
     </div>
   );
