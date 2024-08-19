@@ -14,12 +14,25 @@ export async function POST(request: NextRequest) {
   try {
     initializeFirebaseAdmin();
     const auth = getAuth();
+    const decodedToken = await auth.verifyIdToken(idToken);
     const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
     const sessionCookie = await auth.createSessionCookie(idToken, {
       expiresIn,
     });
 
-    const response = NextResponse.json({ status: 'success' }, { status: 200 });
+    // Get user claims
+    const userClaims = decodedToken;
+
+    // Extract tenantType from claims
+    const tenantType = userClaims.tenantType;
+
+    // Create response based on tenantType
+    const responsePayload = {
+      status: 'success',
+      tenantType,
+    };
+
+    const response = NextResponse.json(responsePayload, { status: 200 });
     response.cookies.set({
       name: 'session',
       value: sessionCookie,
