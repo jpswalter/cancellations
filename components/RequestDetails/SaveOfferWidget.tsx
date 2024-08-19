@@ -70,7 +70,7 @@ const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
     },
     'Save Accepted': {
       title: 'Save Offer Confirmed',
-      message: `A save offer has been accepted by ${request.submittedBy}. Please confirm the save.`,
+      message: `A save offer has been accepted by ${request.submittedBy}. Please click “Confirm Save” after you have applied the save offer to the customer’s account.`,
     },
     'Save Declined': {
       title: 'Save Offer Declined',
