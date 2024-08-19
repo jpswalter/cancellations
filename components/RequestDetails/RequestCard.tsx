@@ -30,7 +30,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
     saveOffer,
     declineReason,
     notes,
-    logId,
   } = request;
 
   const hasAdditonalDetails = saveOffer || declineReason || notes;
@@ -69,7 +68,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
             />
           )}
           <InfoItem label="ID" value={id} />
-          <InfoItem label="LogId" value={logId} />
         </div>
 
         <div className="flex flex-col gap-4">
