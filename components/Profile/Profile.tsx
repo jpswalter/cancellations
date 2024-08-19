@@ -47,11 +47,6 @@ const Profile: React.FC<{ popupAlign?: 'top' | 'bottom' }> = ({
 
   if (!userData) return null;
 
-  const borderColorMap = {
-    proxy: 'border border-solid border-ember-700',
-    provider: 'border border-solid border-green-700',
-  };
-
   const popupClassName = clsx(
     'absolute right-0 w-full bg-white rounded-md shadow-lg py-2',
     popupAlign === 'top' ? 'bottom-full mb-1' : 'top-full mt-1',
