@@ -1,5 +1,4 @@
 import { Request } from '@/lib/db/schema';
-import { formatDate } from '@/utils/general';
 import { getDisplayHeader } from '@/utils/template.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import useFirebase from '@/hooks/useFirebase';
@@ -21,8 +20,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
     status,
     submittedBy,
     requestType,
-    dateSubmitted,
-    dateResponded,
     proxyTenantId,
     providerTenantId,
     customerInfo,

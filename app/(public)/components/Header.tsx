@@ -7,7 +7,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { getArticles } from '@/lib/api/article';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '@/components/ui/spinner';
-import router from 'next/router';
 
 const Header: FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
