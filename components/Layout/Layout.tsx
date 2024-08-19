@@ -3,7 +3,10 @@
 import React from 'react';
 import { FaChartSimple, FaFileCsv } from 'react-icons/fa6';
 import { BsListUl } from 'react-icons/bs';
-import { MdOutlineAssignmentTurnedIn } from 'react-icons/md';
+import {
+  MdOutlineAssignmentTurnedIn,
+  MdNotificationsActive,
+} from 'react-icons/md';
 import { Toaster } from 'react-hot-toast';
 import clsx from 'clsx';
 import { useAuth } from '@/hooks/useAuth';
@@ -62,6 +65,11 @@ export default function ClientLayout({
                   <SidebarButton
                     link="/actions"
                     label="Actions Needed"
+                    Icon={MdNotificationsActive}
+                  />
+                  <SidebarButton
+                    link="/resolved"
+                    label="Resolved"
                     Icon={MdOutlineAssignmentTurnedIn}
                   />
                   <SidebarButton
