@@ -60,13 +60,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
             isLoading={tenantsLoading}
           />
           <InfoItem label="Submitted By" value={submittedBy} />
-          <InfoItem label="Date Submitted" value={formatDate(dateSubmitted)} />
-          {dateResponded && (
-            <InfoItem
-              label="Date Responded"
-              value={formatDate(dateResponded)}
-            />
-          )}
           <InfoItem label="ID" value={id} />
         </div>
 
