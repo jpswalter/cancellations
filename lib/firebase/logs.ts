@@ -40,7 +40,6 @@ export const detectChanges = (
   updatedRequest: Partial<Request>,
 ): ChangeWithoutAuthor[] => {
   const changes: ChangeWithoutAuthor[] = [];
-
   const compareAndAddChange = (
     field: string,
     oldValue: string | null,
@@ -66,32 +65,33 @@ export const detectChanges = (
     } else if (key === 'saveOffer') {
       const currentOffer = (currentRequest.saveOffer ||
         {}) as Partial<RequestSaveOffer>;
-      const updatedOffer = newValue as Partial<RequestSaveOffer>;
+      const updatedOffer = newValue as unknown as Partial<RequestSaveOffer>;
 
-      const saveOfferFields: (keyof RequestSaveOffer)[] = [
-        'id',
-        'title',
-        'dateOffered',
-        'dateAccepted',
-        'dateDeclined',
-        'dateConfirmed',
-      ];
+      if (updatedOffer) {
+        const saveOfferFields: (keyof RequestSaveOffer)[] = [
+          'id',
+          'title',
+          'dateOffered',
+          'dateAccepted',
+          'dateDeclined',
+          'dateConfirmed',
+        ];
 
-      saveOfferFields.forEach(field => {
-        if (field in updatedOffer) {
-          compareAndAddChange(
-            `saveOffer.${field}`,
-            currentOffer[field] ?? null,
-            updatedOffer[field] ?? null,
-          );
-        }
-      });
+        saveOfferFields.forEach(field => {
+          if (field in updatedOffer) {
+            compareAndAddChange(
+              `saveOffer.${field}`,
+              currentOffer[field] ?? null,
+              updatedOffer[field] ?? null,
+            );
+          }
+        });
+      }
     } else {
-      compareAndAddChange(
-        key,
-        (currentRequest[key as keyof Request] as string | null) ?? null,
-        (newValue as string | null) ?? null,
-      );
+      const oldValue =
+        (currentRequest[key as keyof Request] as string | null) ?? null;
+      const newStringValue = (newValue as string | null) ?? null;
+      compareAndAddChange(key, oldValue, newStringValue);
     }
   }
 
