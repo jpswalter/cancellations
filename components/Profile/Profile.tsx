@@ -6,8 +6,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { auth } from '@/lib/firebase/config';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import clsx from 'clsx';
 
-const Profile: React.FC = () => {
+const Profile: React.FC<{ popupAlign?: 'top' | 'bottom' }> = ({
+  popupAlign = 'top',
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { userData } = useAuth();
   const router = useRouter();
@@ -44,13 +47,13 @@ const Profile: React.FC = () => {
 
   if (!userData) return null;
 
-  const bgColorMap = {
-    proxy: 'bg-orange-100',
-    provider: 'bg-green-100',
-  };
+  const popupClassName = clsx(
+    'absolute right-0 w-full bg-white rounded-md shadow-lg py-2',
+    popupAlign === 'top' ? 'bottom-full mb-1' : 'top-full mt-1',
+  );
 
   return (
-    <li className={`relative ${bgColorMap[userData.tenantType]}`}>
+    <div className="relative" onClick={e => e.stopPropagation()}>
       <button
         className="relative text-md group flex items-center gap-x-3 rounded-md p-2 font-semibold text-gray-700 hover:text-blue-700 focus:outline-none w-full"
         onClick={() => setShowDropdown(!showDropdown)}
@@ -59,10 +62,7 @@ const Profile: React.FC = () => {
         <span className="truncate">{userData.email}</span>
       </button>
       {showDropdown && (
-        <div
-          ref={dropdownRef}
-          className="absolute right-0 bottom-full w-full bg-white border border-gray-200 rounded-md shadow-lg py-2 mb-1"
-        >
+        <div ref={dropdownRef} className={popupClassName}>
           <div className="px-4 py-2">
             <div className="flex items-center gap-x-2 text-gray-600">
               <span className="font-bold">{userData.name}</span>
@@ -80,7 +80,7 @@ const Profile: React.FC = () => {
           </button>
         </div>
       )}
-    </li>
+    </div>
   );
 };
 

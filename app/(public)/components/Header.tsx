@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Drawer } from '@/components/ui/drawer';
 import { useAuth } from '@/hooks/useAuth';
+import Profile from '@/components/Profile/Profile';
 import { getArticles } from '@/lib/api/article';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '@/components/ui/spinner';
@@ -45,12 +46,14 @@ const Header: FC = () => {
               </>
             )}
             {userData && (
-              <Link href="/overview" className="underline">
-                {userData.email}
-                <Button outline={true} className="mx-2">
-                  Login
-                </Button>
-              </Link>
+              <div className="flex items-center gap-2">
+                <Profile popupAlign="bottom" />
+                <Link href="/overview">
+                  <Button outline={true} className="mx-2">
+                    Login
+                  </Button>
+                </Link>
+              </div>
             )}
           </nav>
           <button
