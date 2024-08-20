@@ -137,7 +137,7 @@ const FileUpload: FC = () => {
         </Text>
       </div>
       <div className="w-full flex flex-col gap-2">
-        <h3>2. Make sure your CSV file follows the required format. </h3>
+        <h3>2. Make sure your CSV file follows the required format</h3>
         <Text className="text-sm text-gray-600">
           For any issues or support, please contact our customer service team at{' '}
           <a href="mailto:admin@proxylink.co" className="underline">

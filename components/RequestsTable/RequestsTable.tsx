@@ -13,6 +13,7 @@ import {
   Row,
   Cell,
   getSortedRowModel,
+  getPaginationRowModel,
 } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -28,7 +29,6 @@ import RequestRow from './Row';
 import { generateCustomerInfoColumns } from './table.utils';
 import clsx from 'clsx';
 import RequestStatus from '../RequestStatus/RequestStatus';
-import RequestDrawer from '../RequestDetails/RequestDrawer';
 import EmptyRequestsState from './EmptyTable';
 import { FaCheckCircle } from 'react-icons/fa';
 import { FaCircleXmark } from 'react-icons/fa6';
@@ -36,6 +36,8 @@ import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
 import { CustomColumnMeta } from '@/constants/app.types';
 import CTACell from './cells/CTACell';
+import { TablePagination } from '@/components/ui/pagination';
+import RequestDrawer from '../RequestDetails/RequestDrawer';
 
 interface Props {
   requests: Request[];
@@ -200,14 +202,23 @@ const RequestsTable: FC<Props> = ({
       : []),
   ];
 
+  const paginationSettings = {
+    pageIndex: 0,
+    pageSize: 10,
+  };
+  const [pagination, setPagination] = useState(paginationSettings);
+
   const table = useReactTable({
     data: requests,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       sorting: defaultSort,
+      pagination,
     },
+    onPaginationChange: setPagination,
   });
 
   if (!userData) return null;
@@ -217,46 +228,56 @@ const RequestsTable: FC<Props> = ({
   }
 
   return (
-    <div className="overflow-x-auto h-full">
-      <table className="w-full border-collapse table-auto">
-        <thead className="border-b border-gray-200">
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => {
-                const meta = header.column.columnDef.meta as CustomColumnMeta;
-                const isHighlightable = meta?.isHighlightable;
-                const width = header.column.getSize();
-                const headerClassName = clsx(
-                  'p-4 whitespace-nowrap',
-                  {
-                    'bg-yellow-50': isHighlightable,
-                  },
-                  meta?.className ?? 'text-left',
-                );
-                return (
-                  <th
-                    key={header.id}
-                    className={headerClassName}
-                    style={{ minWidth: `${width}px` }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <RequestRow key={row.id} row={row} toggleDrawer={toggleDrawer} />
-          ))}
-        </tbody>
-      </table>
+    <div className="grid grid-cols-1 gap-4 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="border-b border-gray-200">
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => {
+                  const meta = header.column.columnDef.meta as CustomColumnMeta;
+                  const isHighlightable = meta?.isHighlightable;
+                  const width = header.column.getSize();
+                  const headerClassName = clsx(
+                    'p-4 whitespace-nowrap',
+                    {
+                      'bg-yellow-50': isHighlightable,
+                    },
+                    meta?.className ?? 'text-left',
+                  );
+                  return (
+                    <th
+                      key={header.id}
+                      className={headerClassName}
+                      style={{ minWidth: `${width}px` }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map(row => (
+              <RequestRow key={row.id} row={row} toggleDrawer={toggleDrawer} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="w-full mt-4">
+        <TablePagination
+          currentPage={pagination.pageIndex + 1}
+          totalPages={table.getPageCount()}
+          onPageChange={page => table.setPageIndex(page - 1)}
+        />
+      </div>
       <RequestDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}

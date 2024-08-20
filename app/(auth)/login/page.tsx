@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Login from '@/components/Login/Login';
 
 export const metadata: Metadata = {
-  title: 'Login',
+  title: 'ProxyLink | Login',
 };
 
 export default function LoginPage() {
