@@ -5,10 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Drawer } from '@/components/ui/drawer';
 import { useAuth } from '@/hooks/useAuth';
 import Profile from '@/components/Profile/Profile';
+import { getArticles } from '@/lib/api/article';
+import { useQuery } from '@tanstack/react-query';
+import Spinner from '@/components/ui/spinner';
 
 const Header: FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { userData } = useAuth();
+  const { data, isLoading } = useQuery({
+    queryKey: ['articles'],
+    queryFn: () => getArticles(),
+    select: data => data.filter(article => article.slug !== 'privacy-policy'),
+  });
+
   return (
     <header className="bg-white md:border-b-4 border-blue-700 z-10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,18 +70,23 @@ const Header: FC = () => {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
       >
-        <nav className="flex flex-col items-end w-full">
-          <Link href="#" className="py-4 text-lg">
-            What are Proxies?
-          </Link>
-          <Link href="#" className="py-4 text-lg">
-            Your Rights
-          </Link>
-          <Link href="#" className="py-4 text-lg">
-            FTC Mandates
-          </Link>
+        <nav
+          className="flex flex-col items-end w-full"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          {isLoading ? (
+            <Spinner className="w-24 h-24 text-gray-500" />
+          ) : (
+            <>
+              {data?.map(article => (
+                <Link href={`/article/${article.slug}`} key={article.slug}>
+                  <div className="py-4 text-lg">{article.title}</div>
+                </Link>
+              ))}
+            </>
+          )}
           <div className="flex items-center gap-2 mt-4">
-            <Link href="#">
+            <Link href="/schedule-demo">
               <Button color="blue">Request Demo</Button>
             </Link>
             <Link href="/login">

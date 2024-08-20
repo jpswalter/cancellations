@@ -1,5 +1,4 @@
 import { Request } from '@/lib/db/schema';
-import { formatDate } from '@/utils/general';
 import { getDisplayHeader } from '@/utils/template.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import useFirebase from '@/hooks/useFirebase';
@@ -21,8 +20,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
     status,
     submittedBy,
     requestType,
-    dateSubmitted,
-    dateResponded,
     proxyTenantId,
     providerTenantId,
     customerInfo,
@@ -30,7 +27,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
     saveOffer,
     declineReason,
     notes,
-    logId,
   } = request;
 
   const hasAdditonalDetails = saveOffer || declineReason || notes;
@@ -61,15 +57,7 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
             isLoading={tenantsLoading}
           />
           <InfoItem label="Submitted By" value={submittedBy} />
-          <InfoItem label="Date Submitted" value={formatDate(dateSubmitted)} />
-          {dateResponded && (
-            <InfoItem
-              label="Date Responded"
-              value={formatDate(dateResponded)}
-            />
-          )}
           <InfoItem label="ID" value={id} />
-          <InfoItem label="LogId" value={logId} />
         </div>
 
         <div className="flex flex-col gap-4">

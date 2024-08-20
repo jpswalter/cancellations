@@ -7,6 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { getDisplayHeader } from '@/utils/template.utils';
+import SubmitDataButton from './SubmitDataButton';
 
 const UploadTable: FC = () => {
   const { csv } = useUpload();
@@ -34,6 +35,12 @@ const UploadTable: FC = () => {
 
   return (
     <div className="overflow-x-auto">
+      <div className="w-full flex gap-4 items-center justify-center p-4 border-dashed border-2 border-gray-300 rounded-lg mb-4">
+        <h3 className="text-gray-700 text-xl">
+          You are about to upload {csv.data.length} requests.
+        </h3>
+        <SubmitDataButton />
+      </div>
       <table className="min-w-full divide-y divide-gray-200">
         <thead>
           {table.getHeaderGroups().map(headerGroup => (

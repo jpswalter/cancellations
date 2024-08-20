@@ -103,38 +103,48 @@ const FileUpload: FC = () => {
   }, [generateCSVTemplate, selectedProviderId, tenants]);
 
   return (
-    <div className="max-w-xl w-full">
-      <div className="bg-gray-50 p-6 rounded-lg shadow flex flex-col gap-4">
-        <SelectTremor
-          enableClear={false}
-          className="z-30 w-52"
-          defaultValue="1"
-          disabled={providersLoading}
-          placeholder="Select a provider"
-          onValueChange={handleSelectProvider}
-        >
-          {tenants?.map(tenant => (
-            <SelectItem value={tenant.id} key={tenant.id}>
-              {tenant.name}
-            </SelectItem>
-          ))}
-        </SelectTremor>
-        <Text>
-          Upload a CSV file with the refund data. Make sure your CSV file
-          follows the required format.
+    <div className="w-full flex flex-col gap-8 mt-4">
+      <div className="w-full flex flex-col gap-2">
+        <h3>1. Select a provider</h3>
+        <div className="flex gap-2">
+          <SelectTremor
+            enableClear={false}
+            className="z-30 w-52"
+            defaultValue="1"
+            disabled={providersLoading}
+            placeholder="Select a provider"
+            onValueChange={handleSelectProvider}
+          >
+            {tenants?.map(tenant => (
+              <SelectItem value={tenant.id} key={tenant.id}>
+                {tenant.name}
+              </SelectItem>
+            ))}
+          </SelectTremor>
+          <Button
+            onClick={handleDownloadTemplate}
+            disabled={!selectedProviderId}
+            outline={true}
+          >
+            Download template
+          </Button>
+        </div>
+        <Text className="text-sm text-gray-600 max-w-prose">
+          Each provider requires different customer information for requests,
+          like an email, address, account number, or the last four digits of a
+          credit card. Please select a provider from the list, download the
+          template and fill in the required information.
         </Text>
-        <Button
-          onClick={handleDownloadTemplate}
-          disabled={!selectedProviderId}
-          className="text-blue-500 hover:underline disabled:text-gray-400 disabled:no-underline w-fit"
-        >
-          Download template
-        </Button>
+      </div>
+      <div className="w-full flex flex-col gap-2">
+        <h3>2. Make sure your CSV file follows the required format. </h3>
         <Text className="text-sm text-gray-600">
-          Please ensure all payment information is correct before submitting.
-          For any issues or support, please contact our customer service team.
+          For any issues or support, please contact our customer service team at{' '}
+          <a href="mailto:admin@proxylink.co" className="underline">
+            admin@proxylink.co
+          </a>
+          .
         </Text>
-
         <FileUploader
           handleChange={handleUpload}
           name="file"
@@ -169,8 +179,8 @@ const FileUpload: FC = () => {
             )}
           </div>
         </FileUploader>
-        <UploadErrors message={uploadError ?? csvValidationErrorMessage} />
       </div>
+      <UploadErrors message={uploadError ?? csvValidationErrorMessage} />
     </div>
   );
 };

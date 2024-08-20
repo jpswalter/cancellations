@@ -21,7 +21,6 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      // Sign in with Firebase
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -44,11 +43,17 @@ const LoginForm: React.FC = () => {
         throw new Error('Failed to create session');
       }
 
+      // Parse response
+      const data = await response.json();
       setError('');
-      router.push('/overview');
+      if (data.tenantType === 'provider') {
+        router.push('/overview');
+      } else {
+        router.push('/actions');
+      }
     } catch (error) {
       console.error('Error signing in:', error);
-      setError('Invalid email or password or session creation failed.');
+      setError('Invalid email or password');
       setLoading(false);
     }
   };

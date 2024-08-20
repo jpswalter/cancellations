@@ -2,7 +2,6 @@
 import { FC } from 'react';
 import FileUpload from './FileUpload';
 import UploadTable from './UploadTable';
-import SubmitDataButton from './SubmitDataButton';
 
 const UploadCSV: FC = () => {
   return (
@@ -15,7 +14,6 @@ const UploadCSV: FC = () => {
         <div className="p-4 flex flex-col space-y-4">
           <FileUpload />
           <UploadTable />
-          <SubmitDataButton />
         </div>
       </div>
     </div>
