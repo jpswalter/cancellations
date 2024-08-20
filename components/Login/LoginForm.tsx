@@ -59,7 +59,7 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="rounded-lg bg-white shadow max-w-lg w-full">
+    <div className="rounded-lg bg-white shadow w-full">
       <div className="space-y-4 p-8 xl:p-16">
         <div className="flex flex-col text-left">
           <div className="mb-1 text-4xl font-bold">Sign in</div>
