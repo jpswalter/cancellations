@@ -6,9 +6,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
 import SaveOffersTab from './SaveOfferTab/SaveOfferTab';
+import ProxyFeeAdminTab from './ProxyFeeAdminTab';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState('My Account');
+  console.log('activeTab', activeTab);
   const { userData } = useAuth();
   const { data: tenants } = useQuery({
     queryKey: ['tenants'],
@@ -26,6 +28,10 @@ const Settings: React.FC = () => {
     {
       name: 'Save Offers',
       current: activeTab === 'Save Offers',
+    },
+    {
+      name: 'Proxy Fee Admin',
+      current: activeTab === 'Proxy Fee Admin',
     },
   ];
 
@@ -70,6 +76,9 @@ const Settings: React.FC = () => {
                     offers={tenant?.saveOffers}
                     tenantId={userData?.tenantId}
                   />
+                )}
+                {activeTab === 'Proxy Fee Admin' && isProvider && (
+                  <ProxyFeeAdminTab />
                 )}
               </div>
             </div>
