@@ -201,16 +201,15 @@ const RequestsTable: FC<Props> = ({
 
   return (
     <>
-      <div className="h-full">
-        <DataTable
-          data={requests}
-          columns={columns}
-          defaultSort={defaultSort}
-          EmptyComponent={EmptyComponent}
-          onRowClick={toggleDrawer}
-          RowComponent={RequestRow}
-        />
-      </div>
+      <DataTable
+        data={requests}
+        columns={columns}
+        defaultSort={defaultSort}
+        EmptyComponent={EmptyComponent}
+        onRowClick={toggleDrawer}
+        RowComponent={RequestRow}
+      />
+
       <RequestDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}

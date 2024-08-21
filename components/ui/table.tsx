@@ -64,7 +64,7 @@ const GenericTable = <T extends object>({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 overflow-hidden">
+    <div className="flex-1 grid grid-cols-1 gap-4 overflow-hidden row-span-2 row-start-1">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="border-b border-gray-200">
