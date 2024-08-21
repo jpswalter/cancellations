@@ -3,7 +3,7 @@ import React from 'react';
 import { Row, flexRender } from '@tanstack/react-table';
 import { Request } from '@/lib/db/schema';
 import { useForm, FormProvider } from 'react-hook-form';
-import { CustomColumnMeta } from '@/constants/app.types';
+import { CustomColumnMeta } from '@/components/ui/table';
 import clsx from 'clsx';
 
 interface RequestRowProps {

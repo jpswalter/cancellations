@@ -2,30 +2,22 @@
 'use client';
 import React, { FC, useState } from 'react';
 import { Request, RequestStatus as RequestStatusType } from '@/lib/db/schema';
-import {
-  useReactTable,
-  flexRender,
-  Cell,
-  getSortedRowModel,
-  getCoreRowModel,
-} from '@tanstack/react-table';
+import { Cell } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
 import {
   DateCell,
   RequestTypeCell,
   TenantCell,
 } from '../RequestsTable/cells/Cell';
-import { CustomColumnMeta } from '@/constants/app.types';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
-import clsx from 'clsx';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
 import SaveOfferCell from '../RequestsTable/cells/SaveOfferCell';
 import EmptyRequestsState from '../RequestsTable/EmptyTable';
-import RequestRow from '../RequestsTable/Row';
 import { generateCustomerInfoColumns } from '../RequestsTable/table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
-
+import DataTable, { CustomColumnDef } from '@/components/ui/table';
+import RequestRow from '../RequestsTable/Row';
 interface Props {
   requests: Request[];
   EmptyComponent?: React.ComponentType;
@@ -56,7 +48,7 @@ const RequestsTable: FC<Props> = ({
   };
 
   const customerInfoColumns = generateCustomerInfoColumns(requests);
-  const columns = [
+  const columns: CustomColumnDef<Request>[] = [
     {
       header: 'Status',
       meta: {
@@ -103,16 +95,6 @@ const RequestsTable: FC<Props> = ({
     },
   ];
 
-  const table = useReactTable({
-    data: requests,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting: defaultSort,
-    },
-  });
-
   if (!userData) return null;
 
   if (requests.length === 0) {
@@ -120,52 +102,21 @@ const RequestsTable: FC<Props> = ({
   }
 
   return (
-    <div className="overflow-x-auto h-full">
-      <table className="w-full border-collapse table-auto">
-        <thead className="border-b border-gray-200">
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => {
-                const meta = header.column.columnDef.meta as CustomColumnMeta;
-                const isHighlightable = meta?.isHighlightable;
-                const width = header.column.getSize();
-                const headerClassName = clsx(
-                  'p-4 whitespace-nowrap',
-                  {
-                    'bg-yellow-50': isHighlightable,
-                  },
-                  meta?.className ?? 'text-left',
-                );
-                return (
-                  <th
-                    key={header.id}
-                    className={headerClassName}
-                    style={{ minWidth: `${width}px` }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <RequestRow key={row.id} row={row} toggleDrawer={toggleDrawer} />
-          ))}
-        </tbody>
-      </table>
+    <>
+      <DataTable
+        data={requests}
+        columns={columns}
+        defaultSort={defaultSort}
+        EmptyComponent={EmptyComponent}
+        onRowClick={toggleDrawer}
+        RowComponent={RequestRow}
+      />
       <RequestDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         request={selectedRequest}
       />
-    </div>
+    </>
   );
 };
 

@@ -18,7 +18,8 @@ const ReportButton: React.FC<ReportButtonProps> = ({ request }) => {
   } = useFormContext();
 
   const dirtyForm = Object.keys(errors).length > 0;
-
+  const isResolved =
+    request.status === 'Canceled' || request.status === 'Save Confirmed';
   const handleClick = async () => {
     const successfullyResolved = watch('successfullyResolved');
     if (successfullyResolved === null || successfullyResolved === undefined) {
@@ -35,7 +36,7 @@ const ReportButton: React.FC<ReportButtonProps> = ({ request }) => {
           outline={true}
           className="flex items-center whitespace-nowrap"
           onClick={handleClick}
-          disabled={dirtyForm}
+          disabled={dirtyForm || isResolved}
         >
           <IoIosPaper />
           Report
