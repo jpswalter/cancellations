@@ -11,10 +11,7 @@ export function Pagination({
     <nav
       aria-label={ariaLabel}
       {...props}
-      className={clsx(
-        className,
-        'flex justify-between items-center max-w-full',
-      )}
+      className={clsx(className, 'flex justify-center items-center max-w-full')}
     />
   );
 }
@@ -29,30 +26,28 @@ export function PaginationPrevious({
   disabled?: boolean;
 }) {
   return (
-    <span className="grow basis-0">
-      <Button
-        plain
-        aria-label="Previous page"
-        onClick={onClick}
-        disabled={disabled}
+    <Button
+      plain
+      aria-label="Previous page"
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <svg
+        className="stroke-current"
+        data-slot="icon"
+        viewBox="0 0 16 16"
+        fill="none"
+        aria-hidden="true"
       >
-        <svg
-          className="stroke-current"
-          data-slot="icon"
-          viewBox="0 0 16 16"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M2.75 8H13.25M2.75 8L5.25 5.5M2.75 8L5.25 10.5"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        {children}
-      </Button>
-    </span>
+        <path
+          d="M2.75 8H13.25M2.75 8L5.25 5.5M2.75 8L5.25 10.5"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      {children}
+    </Button>
   );
 }
 
@@ -66,30 +61,23 @@ export function PaginationNext({
   disabled?: boolean;
 }) {
   return (
-    <span className="flex grow basis-0 justify-end">
-      <Button
-        plain
-        aria-label="Next page"
-        onClick={onClick}
-        disabled={disabled}
+    <Button plain aria-label="Next page" onClick={onClick} disabled={disabled}>
+      {children}
+      <svg
+        className="stroke-current"
+        data-slot="icon"
+        viewBox="0 0 16 16"
+        fill="none"
+        aria-hidden="true"
       >
-        {children}
-        <svg
-          className="stroke-current"
-          data-slot="icon"
-          viewBox="0 0 16 16"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M13.25 8L2.75 8M13.25 8L10.75 10.5M13.25 8L10.75 5.5"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </Button>
-    </span>
+        <path
+          d="M13.25 8L2.75 8M13.25 8L10.75 10.5M13.25 8L10.75 5.5"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </Button>
   );
 }
 
@@ -165,7 +153,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   };
 
   return (
-    <Pagination aria-label="Table pagination" className="my-4">
+    <Pagination aria-label="Table pagination">
       <PaginationPrevious
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}

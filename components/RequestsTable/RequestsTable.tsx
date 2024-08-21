@@ -207,6 +207,7 @@ const RequestsTable: FC<Props> = ({
     pageSize: 10,
   };
   const [pagination, setPagination] = useState(paginationSettings);
+  const shouldRenderPagination = requests.length > paginationSettings.pageSize;
 
   const table = useReactTable({
     data: requests,
@@ -272,11 +273,13 @@ const RequestsTable: FC<Props> = ({
       </div>
 
       <div className="w-full mt-4">
-        <TablePagination
-          currentPage={pagination.pageIndex + 1}
-          totalPages={table.getPageCount()}
-          onPageChange={page => table.setPageIndex(page - 1)}
-        />
+        {shouldRenderPagination && (
+          <TablePagination
+            currentPage={pagination.pageIndex + 1}
+            totalPages={table.getPageCount()}
+            onPageChange={page => table.setPageIndex(page - 1)}
+          />
+        )}
       </div>
       <RequestDrawer
         isOpen={isDrawerOpen}
