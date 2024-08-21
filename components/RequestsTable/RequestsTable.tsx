@@ -6,36 +6,24 @@ import {
   RequestStatus as RequestStatusType,
   Tenant,
 } from '@/lib/db/schema';
-import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-  Row,
-  Cell,
-  getSortedRowModel,
-} from '@tanstack/react-table';
+import { Row, Cell } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
-import {
-  DateCell,
-  ResolveCell,
-  RequestTypeCell,
-  DeclineReasonCell,
-  TenantCell,
-} from './cells/Cell';
-import SaveOfferCell from './cells/SaveOfferCell';
+import { DateCell, RequestTypeCell, TenantCell } from './cells/Cell';
+import DeclineReasonCell from '@/components/RequestsTable/cells/DeclineReasonCell';
+import ResolveCell from '@/components/RequestsTable/cells/ResolveCell';
+import SaveOfferCell from '@/components/RequestsTable/cells/SaveOfferCell';
 import ReportButton from './ReportButton';
 import RequestRow from './Row';
 import { generateCustomerInfoColumns } from './table.utils';
-import clsx from 'clsx';
 import RequestStatus from '../RequestStatus/RequestStatus';
-import RequestDrawer from '../RequestDetails/RequestDrawer';
 import EmptyRequestsState from './EmptyTable';
 import { FaCheckCircle } from 'react-icons/fa';
 import { FaCircleXmark } from 'react-icons/fa6';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
-import { CustomColumnMeta } from '@/constants/app.types';
 import CTACell from './cells/CTACell';
+import RequestDrawer from '../RequestDetails/RequestDrawer';
+import DataTable from '../ui/table';
 
 interface Props {
   requests: Request[];
@@ -138,13 +126,14 @@ const RequestsTable: FC<Props> = ({
       cell: ({
         getValue,
         cell,
+        row,
       }: {
         getValue: () => string;
         cell: Cell<Request, boolean>;
         row: Row<Request>;
       }) => {
         if (isProviderUser) {
-          return <ResolveCell cell={cell} />;
+          return <ResolveCell cell={cell} row={row} />;
         }
         const value = getValue();
         if (value === null) {
@@ -179,7 +168,11 @@ const RequestsTable: FC<Props> = ({
             tenant => tenant.id === row.original.providerTenantId,
           );
           return (
-            <DeclineReasonCell cell={cell} provider={provider as Tenant} />
+            <DeclineReasonCell
+              cell={cell}
+              provider={provider as Tenant}
+              row={row}
+            />
           );
         }
 
@@ -200,16 +193,6 @@ const RequestsTable: FC<Props> = ({
       : []),
   ];
 
-  const table = useReactTable({
-    data: requests,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting: defaultSort,
-    },
-  });
-
   if (!userData) return null;
 
   if (requests.length === 0) {
@@ -217,52 +200,22 @@ const RequestsTable: FC<Props> = ({
   }
 
   return (
-    <div className="overflow-x-auto h-full">
-      <table className="w-full border-collapse table-auto">
-        <thead className="border-b border-gray-200">
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => {
-                const meta = header.column.columnDef.meta as CustomColumnMeta;
-                const isHighlightable = meta?.isHighlightable;
-                const width = header.column.getSize();
-                const headerClassName = clsx(
-                  'p-4 whitespace-nowrap',
-                  {
-                    'bg-yellow-50': isHighlightable,
-                  },
-                  meta?.className ?? 'text-left',
-                );
-                return (
-                  <th
-                    key={header.id}
-                    className={headerClassName}
-                    style={{ minWidth: `${width}px` }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <RequestRow key={row.id} row={row} toggleDrawer={toggleDrawer} />
-          ))}
-        </tbody>
-      </table>
+    <>
+      <DataTable
+        data={requests}
+        columns={columns}
+        defaultSort={defaultSort}
+        EmptyComponent={EmptyComponent}
+        onRowClick={toggleDrawer}
+        RowComponent={RequestRow}
+      />
+
       <RequestDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         request={selectedRequest}
       />
-    </div>
+    </>
   );
 };
 

@@ -1,13 +1,15 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useUpload } from './UploadCSVProvider/upload.hooks';
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import { getDisplayHeader } from '@/utils/template.utils';
 import SubmitDataButton from './SubmitDataButton';
+import { TablePagination } from '../ui/pagination';
 
 const UploadTable: FC = () => {
   const { csv } = useUpload();
@@ -23,10 +25,23 @@ const UploadTable: FC = () => {
     );
   }, [csv]);
 
+  const paginationSettings = {
+    pageIndex: 0,
+    pageSize: 10,
+  };
+  const [pagination, setPagination] = useState(paginationSettings);
+  const shouldRenderPagination =
+    Number(csv?.data.length) > paginationSettings.pageSize;
+
   const table = useReactTable({
     data: csv?.data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      pagination,
+    },
+    onPaginationChange: setPagination,
   });
 
   if (!csv || csv.status === 'error') {
@@ -76,6 +91,13 @@ const UploadTable: FC = () => {
           ))}
         </tbody>
       </table>
+      {shouldRenderPagination && (
+        <TablePagination
+          currentPage={pagination.pageIndex + 1}
+          totalPages={table.getPageCount()}
+          onPageChange={page => table.setPageIndex(page - 1)}
+        />
+      )}
     </div>
   );
 };
