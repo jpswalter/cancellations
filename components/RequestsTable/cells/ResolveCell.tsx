@@ -40,7 +40,7 @@ const ResolveCell: React.FC<
 
   if (isProviderUser) {
     return (
-      <div onClick={e => e.stopPropagation()} className="text-center">
+      <div className="text-center">
         <RadioGroup
           className={`flex gap-4 justify-center ${errors.successfullyResolved ? 'border border-red-500 p-2 rounded' : ''}`}
           value={displayValue}

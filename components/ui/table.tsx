@@ -15,6 +15,7 @@ export type CustomColumnMeta = {
   isCustomerInfo?: boolean;
   isHighlightable?: boolean;
   className?: string;
+  isSticky?: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,18 +67,20 @@ const GenericTable = <T extends object>({
   return (
     <div className="flex-1 grid grid-cols-1 gap-4 overflow-hidden row-span-2 row-start-1">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="divide-y divide-gray-200">
           <thead className="border-b border-gray-200">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
                   const meta = header.column.columnDef.meta as CustomColumnMeta;
-                  const isHighlightable = meta?.isHighlightable;
                   const width = header.column.getSize();
                   const headerClassName = clsx(
                     'p-4 whitespace-nowrap',
                     {
-                      'bg-yellow-50': isHighlightable,
+                      'bg-yellow-50': meta?.isHighlightable,
+                      'sticky right-0 z-10 bg-white': meta?.isSticky,
+                      'before:absolute before:content-[""] before:top-0 before:left-0 before:w-4 before:h-full before:shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.1)] before:z-[-1]':
+                        meta?.isSticky,
                     },
                     meta?.className ?? 'text-left',
                   );
@@ -85,7 +88,9 @@ const GenericTable = <T extends object>({
                     <th
                       key={header.id}
                       className={headerClassName}
-                      style={{ minWidth: `${width}px` }}
+                      style={{
+                        minWidth: `${width}px`,
+                      }}
                     >
                       {header.isPlaceholder
                         ? null

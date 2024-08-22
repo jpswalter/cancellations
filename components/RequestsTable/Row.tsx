@@ -26,12 +26,14 @@ const RequestRow: React.FC<RequestRowProps> = ({ row, toggleDrawer }) => {
       >
         {row.getVisibleCells().map(cell => {
           const meta = cell.column.columnDef.meta as CustomColumnMeta;
-          const isHighlightable = meta?.isHighlightable;
           const width = cell.column.getSize();
           const cellClassName = clsx(
             `p-4 whitespace-nowrap`,
             {
-              'bg-yellow-50': isHighlightable,
+              'bg-yellow-50': meta?.isHighlightable,
+              'sticky right-0 z-10 bg-white': meta?.isSticky,
+              'before:absolute before:content-[""] before:top-0 before:left-0 before:w-4 before:h-full before:shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.1)] before:z-[-1]':
+                meta?.isSticky,
             },
             meta?.className ?? 'text-left',
           );
@@ -39,7 +41,9 @@ const RequestRow: React.FC<RequestRowProps> = ({ row, toggleDrawer }) => {
             <td
               key={cell.id}
               className={cellClassName}
-              style={{ minWidth: `${width}px` }}
+              style={{
+                minWidth: `${width}px`,
+              }}
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </td>

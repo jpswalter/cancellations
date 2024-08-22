@@ -86,31 +86,30 @@ const RequestsTable: FC<Props> = ({
           },
         ]
       : []),
-    {
-      header: 'Successfully Resolved',
-      meta: {
-        className: 'text-center',
-      },
-      accessorKey: 'successfullyResolved',
-      cell: ({
-        cell,
-        row,
-      }: {
-        getValue: () => string;
-        cell: Cell<Request, boolean>;
-        row: Row<Request>;
-      }) => {
-        return (
-          <ResolveCell cell={cell} row={row} isProviderUser={isProviderUser} />
-        );
-      },
-    },
     ...(isProviderUser
       ? [
           {
             id: 'Actions',
-            cell: ({ row }: { row: Row<Request> }) => (
-              <div onClick={e => e.stopPropagation()}>
+            header: 'Resolve',
+            meta: {
+              isSticky: true,
+            },
+            cell: ({
+              cell,
+              row,
+            }: {
+              cell: Cell<Request, boolean>;
+              row: Row<Request>;
+            }) => (
+              <div
+                onClick={e => e.stopPropagation()}
+                className="flex items-center gap-6"
+              >
+                <ResolveCell
+                  cell={cell}
+                  row={row}
+                  isProviderUser={isProviderUser}
+                />
                 <ReportButton request={row.original} />
               </div>
             ),
