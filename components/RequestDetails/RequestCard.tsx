@@ -3,6 +3,8 @@ import { getDisplayHeader } from '@/utils/template.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import useFirebase from '@/hooks/useFirebase';
 import Spinner from '../ui/spinner';
+import { TenantCell } from '../RequestsTable/cells/Cell';
+import { FC } from 'react';
 
 const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
   const { data: tenants, loading: tenantsLoading } = useFirebase({
@@ -39,25 +41,39 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
             <h2 className="text-xl font-semibold">Request Information</h2>
             <RequestStatus status={status} />
           </div>
-          <InfoItem label="Request Type" value={requestType} />
+          <InfoItem
+            label="Request Type"
+            value={<RequestType type={requestType as 'Cancellation'} />}
+          />
           {successfullyResolved !== null && (
             <InfoItem
               label="Successfully Resolved"
-              value={successfullyResolved.toString()}
+              value={successfullyResolved ? 'Yes' : 'No'}
             />
           )}
           <InfoItem
             label="Source"
-            value={findTenantName(proxyTenantId)}
-            isLoading={tenantsLoading}
-          />
-          <InfoItem
-            label="Destination"
-            value={findTenantName(providerTenantId)}
+            value={
+              <TenantCell
+                name={findTenantName(proxyTenantId)}
+                isLoading={tenantsLoading}
+              />
+            }
             isLoading={tenantsLoading}
           />
           <InfoItem label="Submitted By" value={submittedBy} />
-          <InfoItem label="ID" value={id} />
+          <InfoItem
+            label="Destination"
+            value={
+              <TenantCell
+                name={findTenantName(providerTenantId)}
+                isLoading={tenantsLoading}
+              />
+            }
+            isLoading={tenantsLoading}
+          />
+
+          <InfoItem label="Request ID" value={id} />
         </div>
 
         <div className="flex flex-col gap-4">
@@ -94,13 +110,30 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
 
 const InfoItem: React.FC<{
   label: string;
-  value: string | undefined;
+  value: string | React.ReactNode;
   isLoading?: boolean;
-}> = ({ label, value, isLoading }) => (
-  <div className="mb-2">
-    <span className="font-medium">{label}: </span>
-    <span>{isLoading ? <Spinner className="p-2" /> : value}</span>
-  </div>
-);
+}> = ({ label, value, isLoading }) => {
+  const valueElement = typeof value === 'string' ? <span>{value}</span> : value;
+  return (
+    <div className="mb-2 flex items-center gap-2">
+      <span className="font-medium">{label}: </span>
+      {isLoading ? <Spinner className="p-2" /> : valueElement}
+    </div>
+  );
+};
+
+const RequestType: FC<{ type: 'Cancellation' }> = ({ type }) => {
+  const colorMap = {
+    Cancellation: 'bg-sky-100 text-sky-800',
+  };
+
+  return (
+    <span
+      className={`px-2 py-1 rounded-full text-xs font-medium ${colorMap[type]}`}
+    >
+      {type}
+    </span>
+  );
+};
 
 export default RequestDetails;

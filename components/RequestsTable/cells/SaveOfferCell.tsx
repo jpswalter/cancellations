@@ -1,24 +1,27 @@
-import { RequestSaveOffer } from '@/lib/db/schema';
 import { Button } from '@/components/ui';
 import { FC, useState } from 'react';
-import { CellProps } from './Cell';
 import SaveOfferModal from './SaveOfferModal';
 import { useAuth } from '@/hooks/useAuth';
 import { Request } from '@/lib/db/schema';
+import { Row } from '@tanstack/react-table';
 
-const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({
-  cell,
-  row,
-}) => {
+type Props = {
+  row: Row<Request>;
+  toggleDrawer: (request: Request) => void;
+};
+const SaveOfferCell: FC<Props> = ({ row, toggleDrawer }) => {
   const [isVisibleModal, setIsModalVisible] = useState(false);
   const { userData } = useAuth();
   const isProviderUser = userData?.tenantType === 'provider';
-  const offer = cell.row.original.saveOffer;
-  const requestStatus = cell.row.original.status;
+  const offer = row.original.saveOffer;
+  const requestStatus = row.original.status;
   const openModal = () => setIsModalVisible(true);
   const closeModal = () => setIsModalVisible(false);
   const isFirstOffer =
     row?.original.saveOffer === undefined || row?.original.saveOffer === null;
+  const handleClick = () => {
+    toggleDrawer(row.original);
+  };
 
   if (isProviderUser) {
     if (isFirstOffer && requestStatus !== 'Canceled') {
@@ -30,7 +33,7 @@ const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({
           <SaveOfferModal
             isVisible={isVisibleModal}
             closeModal={closeModal}
-            request={cell.row.original}
+            request={row.original}
           />
         </div>
       );
@@ -50,6 +53,11 @@ const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({
         <div>
           <p className="text-green-500">Save accepted</p>
           <p>Proceed to apply save offer</p>
+          <div onClick={e => e.stopPropagation()} className="mt-2">
+            <Button color="yellow" onClick={handleClick}>
+              Confirm
+            </Button>
+          </div>
         </div>
       );
     }

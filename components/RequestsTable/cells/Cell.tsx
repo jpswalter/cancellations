@@ -1,6 +1,6 @@
 // file: components/RequestsTable/Cell.tsx
 import { formatDate } from '@/utils/general';
-import { User, Network } from 'lucide-react';
+import { User } from 'lucide-react';
 import { Cell, Row } from '@tanstack/react-table';
 import { Request } from '@/lib/db/schema';
 import { FC } from 'react';
@@ -36,27 +36,12 @@ const TenantCell: FC<{ name?: string; isLoading: boolean }> = ({
 
   return (
     <div className="flex items-center gap-2">
-      <div className="relative flex items-center justify-center w-8 h-8 bg-blue-400 rounded-full">
-        <Network size={16} className="text-white" />
+      <div className="text-lg bg-blue-100 text-blue-600 p-2 rounded-full w-6 h-6 flex items-center justify-center">
+        {name?.toUpperCase().slice(0, 1)}
       </div>
       <span>{name}</span>
     </div>
   );
 };
 
-const RequestTypeCell: FC<CellProps<Request, 'Cancellation'>> = ({ cell }) => {
-  const status = cell.getValue();
-  const colorMap = {
-    Cancellation: 'bg-sky-100 text-sky-800',
-  };
-
-  return (
-    <span
-      className={`px-2 py-1 rounded-full text-xs font-medium ${colorMap[status]}`}
-    >
-      {status}
-    </span>
-  );
-};
-
-export { DateCell, UsernameCell, TenantCell, RequestTypeCell };
+export { DateCell, UsernameCell, TenantCell };

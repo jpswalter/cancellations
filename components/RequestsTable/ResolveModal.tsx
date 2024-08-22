@@ -10,6 +10,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateRequest } from '@/lib/api/request';
 import { useAuth } from '@/hooks/useAuth';
+import DeclineReason from './DeclineReason';
 
 interface Props {
   shown: boolean;
@@ -110,19 +111,21 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal }) => {
         <div>
           <p className="font-bold">{resolveStatus?.message}</p>
           <p className="mt-1">{resolveStatus?.description}</p>
-          {successfullyResolved === false && declineReason && (
-            <p className="mt-2 font-semibold">
-              Decline Reason:{' '}
-              <span className="font-normal">{declineReason}</span>
-            </p>
+          {successfullyResolved === false && (
+            <>
+              <p className="font-bold my-1">Please provide a reason</p>
+              <DeclineReason request={request} />
+            </>
           )}
         </div>
       </div>
+
       {errors.successfullyResolved && (
         <p className="text-red-500 text-sm mt-2">
           {errors.successfullyResolved?.message as string}
         </p>
       )}
+
       <div
         className="mt-4 bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4"
         role="alert"
