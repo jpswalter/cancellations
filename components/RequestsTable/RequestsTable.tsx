@@ -91,9 +91,6 @@ const RequestsTable: FC<Props> = ({
           {
             id: 'Actions',
             header: 'Resolve',
-            meta: {
-              isSticky: true,
-            },
             cell: ({
               cell,
               row,
