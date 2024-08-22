@@ -36,6 +36,7 @@ const SaveOfferModal: React.FC<SaveOfferModalProps> = ({
       const updatedRequest = {
         ...request,
         status: 'Save Offered' as RequestStatus,
+        dateResponded: request.dateResponded ?? new Date().toISOString(),
         saveOffer: { ...offer, dateOffered: new Date().toISOString() },
       };
       return updateRequest(updatedRequest);

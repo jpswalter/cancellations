@@ -18,6 +18,30 @@ const Stats: FC<Props> = ({ requests }) => {
     request => request.status === 'Declined',
   ).length;
 
+  const averageTimeToRespondDays = useMemo(() => {
+    if (!requests) return 0;
+
+    const totalResponseTimeDays = requests.reduce((acc, request) => {
+      if (request.dateResponded) {
+        const responseTimeMs =
+          new Date(request.dateResponded).getTime() -
+          new Date(request.dateSubmitted).getTime();
+        return acc + responseTimeMs / (1000 * 60 * 60 * 24); // Convert to days
+      }
+      return acc;
+    }, 0);
+
+    const respondedRequestsCount = requests.filter(
+      request => request.dateResponded,
+    ).length;
+
+    const average =
+      respondedRequestsCount > 0
+        ? totalResponseTimeDays / respondedRequestsCount
+        : 0;
+    return Math.round(average * 10) / 10; // Round to 0.1
+  }, [requests]);
+
   const stats = useMemo(
     () => [
       { name: 'Requests', stat: requests?.length },
@@ -67,13 +91,14 @@ const Stats: FC<Props> = ({ requests }) => {
           />
         ),
       },
-      { name: 'Avg Service Level', stat: '2d' },
+      { name: 'Avg Service Level', stat: `${averageTimeToRespondDays} days` },
     ],
     [
       requests,
       uniqueSourcesCount,
       resolvedRequestsCount,
       declinedRequestsCount,
+      averageTimeToRespondDays,
     ],
   );
 
