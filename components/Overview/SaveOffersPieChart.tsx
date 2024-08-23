@@ -27,8 +27,14 @@ const SaveOffersPieChart: FC<{ requests?: Request[] }> = ({ requests }) => {
     value: saveStatusCounts[status],
   }));
 
-  // Define the value formatter
-  const valueFormatter = (value: number) => `${value}`;
+  const colorMap: { [key: string]: string } = {
+    'Save Offered': 'blue',
+    'Save Declined': 'rose',
+    'Save Accepted': 'lime',
+    'Save Confirmed': 'amber',
+  };
+
+  const colors = chartData.map(data => colorMap[data.name]);
 
   return (
     <>
@@ -39,14 +45,14 @@ const SaveOffersPieChart: FC<{ requests?: Request[] }> = ({ requests }) => {
               data={chartData}
               category="value"
               index="name"
-              valueFormatter={valueFormatter}
-              colors={['blue', 'cyan', 'indigo', 'violet', 'lime']}
+              colors={colors}
               className="w-40"
+              variant="pie"
             />
             <Legend
               categories={Object.keys(saveStatusCounts)}
-              colors={['blue', 'cyan', 'indigo', 'violet', 'lime']}
               className="max-w-xs"
+              colors={colors}
             />
           </div>
         </div>
