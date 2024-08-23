@@ -11,7 +11,8 @@ const Stats: FC<Props> = ({ requests }) => {
   }, [requests]);
 
   const resolvedRequestsCount = requests?.filter(
-    request => request.status === 'Canceled',
+    request =>
+      request.status === 'Canceled' || request.status === 'Save Confirmed',
   ).length;
 
   const declinedRequestsCount = requests?.filter(
