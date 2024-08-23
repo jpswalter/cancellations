@@ -34,12 +34,17 @@ const ProxyFeeAdminTab: FC = () => {
       <Text className="font-bold">Proxy Fees</Text>
       <div className="flex items-center gap-x-2 w-fit">
         <Text className="whitespace-nowrap">Fee per transaction</Text>
-        <input
-          className="w-24 h-18 text-sm border rounded-lg border-gray-400"
-          type="number"
-          step={0.01}
-          defaultValue={0.75}
-        />
+        <div className="relative w-24">
+          <span className="absolute left-3 -bottom-[5px] transform -translate-y-1/2 text-gray-500">
+            $
+          </span>
+          <input
+            className="w-full h-10 text-sm border rounded-lg border-gray-400 pl-6 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            type="number"
+            step={0.01}
+            defaultValue={0.75}
+          />
+        </div>
       </div>
       <div className="flex items-center gap-x-2 w-fit mt-2">
         {isSwitchOn ? (

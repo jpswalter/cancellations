@@ -10,7 +10,7 @@ import ProxyFeeAdminTab from './ProxyFeeAdminTab';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState('My Account');
-  console.log('activeTab', activeTab);
+
   const { userData } = useAuth();
   const { data: tenants } = useQuery({
     queryKey: ['tenants'],
