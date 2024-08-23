@@ -25,7 +25,7 @@ const ActionsList: React.FC = () => {
     enabled: !!tenantType && !!tenantId,
     select: data => filterRequests(data, statusFilters),
   });
-
+  console.log('req', requests);
   if (!requests) return null;
 
   return (

@@ -7,6 +7,7 @@ import {
   getPaginationRowModel,
   ColumnDef,
   Row,
+  VisibilityState,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { TablePagination } from './pagination';
@@ -34,6 +35,7 @@ interface GenericTableProps<T> {
     row: Row<T>;
     toggleDrawer: (data: T) => void;
   }>;
+  columnVisibility?: VisibilityState;
 }
 
 const GenericTable = <T extends object>({
@@ -44,6 +46,7 @@ const GenericTable = <T extends object>({
   onRowClick,
   pageSize = 10,
   RowComponent,
+  columnVisibility,
 }: GenericTableProps<T>) => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize });
 
@@ -56,6 +59,7 @@ const GenericTable = <T extends object>({
     state: {
       sorting: defaultSort,
       pagination,
+      columnVisibility,
     },
     onPaginationChange: setPagination,
   });
@@ -65,7 +69,7 @@ const GenericTable = <T extends object>({
   }
 
   return (
-    <div className="flex-1 grid grid-cols-1 gap-4 overflow-hidden row-span-2 row-start-1">
+    <div className="grid gap-4 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="divide-y divide-gray-200">
           <thead className="border-b border-gray-200">

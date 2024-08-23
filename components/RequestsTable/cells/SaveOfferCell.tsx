@@ -1,6 +1,4 @@
-import { Button } from '@/components/ui';
-import { FC, useState } from 'react';
-import SaveOfferModal from './SaveOfferModal';
+import { FC } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Request } from '@/lib/db/schema';
 import { Row } from '@tanstack/react-table';
@@ -9,36 +7,22 @@ type Props = {
   row: Row<Request>;
   toggleDrawer: (request: Request) => void;
 };
-const SaveOfferCell: FC<Props> = ({ row, toggleDrawer }) => {
-  const [isVisibleModal, setIsModalVisible] = useState(false);
+const SaveOfferCell: FC<Props> = ({ row }) => {
   const { userData } = useAuth();
   const isProviderUser = userData?.tenantType === 'provider';
-  const offer = row.original.saveOffer;
   const requestStatus = row.original.status;
-  const openModal = () => setIsModalVisible(true);
-  const closeModal = () => setIsModalVisible(false);
-  const isFirstOffer =
-    row?.original.saveOffer === undefined || row?.original.saveOffer === null;
-  const handleClick = () => {
-    toggleDrawer(row.original);
-  };
+  const hasSaveOfferInStatus = [
+    'Save Offered',
+    'Save Accepted',
+    'Save Confirmed',
+    'Save Declined',
+  ].includes(requestStatus);
+
+  if (!hasSaveOfferInStatus) {
+    return null;
+  }
 
   if (isProviderUser) {
-    if (isFirstOffer && requestStatus !== 'Canceled') {
-      return (
-        <div onClick={e => e.stopPropagation()}>
-          <Button color="blue" onClick={openModal}>
-            Make Offer
-          </Button>
-          <SaveOfferModal
-            isVisible={isVisibleModal}
-            closeModal={closeModal}
-            request={row.original}
-          />
-        </div>
-      );
-    }
-
     if (requestStatus === 'Save Declined') {
       return (
         <div>
@@ -53,11 +37,6 @@ const SaveOfferCell: FC<Props> = ({ row, toggleDrawer }) => {
         <div>
           <p className="text-green-500">Save accepted</p>
           <p>Proceed to apply save offer</p>
-          <div onClick={e => e.stopPropagation()} className="mt-2">
-            <Button color="yellow" onClick={handleClick}>
-              Confirm
-            </Button>
-          </div>
         </div>
       );
     }
@@ -82,8 +61,6 @@ const SaveOfferCell: FC<Props> = ({ row, toggleDrawer }) => {
       return '';
     }
   }
-
-  return offer?.title;
 };
 
 export default SaveOfferCell;

@@ -7,9 +7,10 @@ import { useQuery } from '@tanstack/react-query';
 
 type Props = {
   request: Request;
+  onChange: (value: string) => void;
 };
 
-const DeclineReason: React.FC<Props> = ({ request }) => {
+const DeclineReason: React.FC<Props> = ({ request, onChange }) => {
   const {
     control,
     formState: { errors },
@@ -42,6 +43,7 @@ const DeclineReason: React.FC<Props> = ({ request }) => {
   const handleChange = (value: string) => {
     clearErrors('declineReason');
     setValue('declineReason', value);
+    onChange(value);
   };
 
   return (

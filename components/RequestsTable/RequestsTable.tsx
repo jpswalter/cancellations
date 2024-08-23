@@ -6,11 +6,9 @@ import {
   RequestSaveOffer,
   RequestStatus as RequestStatusType,
 } from '@/lib/db/schema';
-import { Row, Cell } from '@tanstack/react-table';
+import { Row, Cell, VisibilityState } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
-import ResolveCell from '@/components/RequestsTable/cells/ResolveCell';
 import SaveOfferCell from '@/components/RequestsTable/cells/SaveOfferCell';
-import ReportButton from './ReportButton';
 import RequestRow from './Row';
 import { generateCustomerInfoColumns } from './table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
@@ -18,6 +16,7 @@ import EmptyRequestsState from './EmptyTable';
 import CTACell from './cells/CTACell';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
 import DataTable from '../ui/table';
+import ActionsCell from './cells/ActionsCell';
 
 interface Props {
   requests: Request[];
@@ -75,7 +74,7 @@ const RequestsTable: FC<Props> = ({
     ...(isProviderUser
       ? [
           {
-            header: 'Save Offer',
+            header: 'Save Offer Status',
             accessorKey: 'saveOffer',
             cell: ({
               row,
@@ -90,30 +89,21 @@ const RequestsTable: FC<Props> = ({
       ? [
           {
             id: 'Actions',
-            header: 'Resolve',
-            cell: ({
-              cell,
-              row,
-            }: {
-              cell: Cell<Request, boolean>;
-              row: Row<Request>;
-            }) => (
-              <div
-                onClick={e => e.stopPropagation()}
-                className="flex items-center gap-6"
-              >
-                <ResolveCell
-                  cell={cell}
-                  row={row}
-                  isProviderUser={isProviderUser}
-                />
-                <ReportButton request={row.original} />
-              </div>
-            ),
+            header: 'Actions',
+            cell: ({ row }: { row: Row<Request> }) => <ActionsCell row={row} />,
           },
         ]
       : []),
+    {
+      id: 'dateResponded',
+      accessorKey: 'dateResponded',
+      header: 'Date Responded',
+    },
   ];
+
+  const columnVisibility: VisibilityState = {
+    dateResponded: false,
+  };
 
   if (!userData) return null;
 
@@ -130,6 +120,7 @@ const RequestsTable: FC<Props> = ({
         EmptyComponent={EmptyComponent}
         onRowClick={toggleDrawer}
         RowComponent={RequestRow}
+        columnVisibility={columnVisibility}
       />
 
       <RequestDrawer
