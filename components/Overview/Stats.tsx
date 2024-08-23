@@ -6,10 +6,6 @@ type Props = {
   requests?: Request[];
 };
 const Stats: FC<Props> = ({ requests }) => {
-  const uniqueSourcesCount = useMemo(() => {
-    return new Set(requests?.map(request => request.proxyTenantId)).size;
-  }, [requests]);
-
   const resolvedRequestsCount = requests?.filter(
     request => request.status === 'Canceled',
   ).length;
@@ -42,12 +38,20 @@ const Stats: FC<Props> = ({ requests }) => {
     return Math.round(average * 10) / 10; // Round to 0.1
   }, [requests]);
 
+  const saveOffersCount = requests?.filter(
+    request =>
+      request.status === 'Save Offered' ||
+      request.status === 'Save Accepted' ||
+      request.status === 'Save Declined' ||
+      request.status === 'Save Confirmed',
+  ).length;
+
   const stats = useMemo(
     () => [
       { name: 'Requests', stat: requests?.length },
       {
-        name: 'Unique Sources',
-        stat: uniqueSourcesCount,
+        name: 'Save Offers',
+        stat: saveOffersCount,
       },
       {
         name: 'Resolved',
@@ -95,7 +99,7 @@ const Stats: FC<Props> = ({ requests }) => {
     ],
     [
       requests,
-      uniqueSourcesCount,
+      saveOffersCount,
       resolvedRequestsCount,
       declinedRequestsCount,
       averageTimeToRespondDays,

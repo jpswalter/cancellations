@@ -12,14 +12,14 @@ const SourcesCard: React.FC<{
   isLoading: boolean;
 }> = ({ data, isLoading }) => (
   <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow p-5">
-    <h2 className="text-lg font-medium">Sources</h2>
+    <h2 className="text-lg font-medium pl-2">Sources</h2>
 
     {isLoading ? (
       <div className="flex items-center justify-center h-full w-full">
         <Spinner className="border-amber-300 w-36 h-36" />
       </div>
     ) : (
-      <div className="flex justify-center gap-5 h-full">
+      <div className="flex gap-5 pt-8">
         <div className="basis-1/2 h-full flex flex-col justify-center">
           <DonutChart
             data={data}

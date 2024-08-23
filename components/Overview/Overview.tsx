@@ -13,19 +13,14 @@ import {
   Tooltip,
 } from 'chart.js';
 import React, { useMemo } from 'react';
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import {
   DateRangePicker,
   SelectItem,
   Select as SelectTremor,
 } from '@tremor/react';
 import { Metadata } from 'next';
-import {
-  aggregateRequestsByDate,
-  aggregateRequestsByHour,
-  callsBarChartOptions,
-  freqBarChartOptions,
-} from './utils';
+import { aggregateRequestsByDate, callsBarChartOptions } from './utils';
 import { useAuth } from '@/hooks/useAuth';
 import { getRequests } from '@/lib/api/request';
 import { useQuery } from '@tanstack/react-query';
@@ -35,6 +30,7 @@ import { getTenants } from '@/lib/api/tenant';
 import { Request, Tenant } from '@/lib/db/schema';
 import SourcesCard from './SourcesCard';
 import ChartCard from './ChatCard';
+import SaveOffersPieChart from './SaveOffersPieChart';
 
 export const metadata: Metadata = {
   title: 'Overview',
@@ -123,21 +119,18 @@ const Overview: React.FC = () => {
         </header>
         <main className="flex-1 overflow-auto p-5 space-y-5">
           <Stats requests={requests} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <ChartCard title="Save Offers">
+              <SaveOffersPieChart requests={requests} />
+            </ChartCard>
+            <SourcesCard data={sourcesData} isLoading={isRequestsLoading} />
+          </div>
           <ChartCard title="Request Volume by Day" fullWidth>
             <Bar
               options={callsBarChartOptions}
               data={aggregateRequestsByDate(requests)}
             />
           </ChartCard>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <ChartCard title="Avg Request Volume by Time of the Day">
-              <Line
-                options={freqBarChartOptions}
-                data={aggregateRequestsByHour(requests)}
-              />
-            </ChartCard>
-            <SourcesCard data={sourcesData} isLoading={isRequestsLoading} />
-          </div>
         </main>
       </div>
     </div>
