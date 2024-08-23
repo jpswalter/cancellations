@@ -13,12 +13,14 @@ interface RequestDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   request: Request | null;
+  drawerPosition: 'left' | 'right';
 }
 
 const RequestDrawer: React.FC<RequestDrawerProps> = ({
   isOpen,
   onClose,
   request,
+  drawerPosition,
 }) => {
   const { userData } = useAuth();
   const { tenantType, tenantId } = userData || {};
@@ -45,6 +47,7 @@ const RequestDrawer: React.FC<RequestDrawerProps> = ({
       onClose={onClose}
       title="Request Details"
       width="w-2/3"
+      position={drawerPosition}
     >
       <div className="flex flex-col h-full">
         <div className="flex-1 overflow-y-auto">

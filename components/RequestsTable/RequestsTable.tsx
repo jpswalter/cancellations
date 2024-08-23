@@ -36,8 +36,15 @@ const RequestsTable: FC<Props> = ({
   const isProviderUser = userData?.tenantType === 'provider';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
-
-  const toggleDrawer = (request: Request) => {
+  const [drawerPosition, setDrawerPosition] = useState<'left' | 'right'>(
+    'right',
+  );
+  const toggleDrawer = (request: Request, position?: 'left' | 'right') => {
+    if (position) {
+      setDrawerPosition(position);
+    } else {
+      setDrawerPosition('right');
+    }
     setIsDrawerOpen(prev => !prev);
     if (request) {
       setSelectedRequest(request);
@@ -90,7 +97,9 @@ const RequestsTable: FC<Props> = ({
           {
             id: 'Actions',
             header: 'Actions',
-            cell: ({ row }: { row: Row<Request> }) => <ActionsCell row={row} />,
+            cell: ({ row }: { row: Row<Request> }) => (
+              <ActionsCell row={row} toggleDrawer={toggleDrawer} />
+            ),
           },
         ]
       : []),
@@ -127,6 +136,7 @@ const RequestsTable: FC<Props> = ({
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         request={selectedRequest}
+        drawerPosition={drawerPosition}
       />
     </>
   );

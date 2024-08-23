@@ -16,6 +16,7 @@ interface DrawerProps {
   duration?: 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000;
   width?: string;
   minWidth?: string;
+  position?: 'left' | 'right';
 }
 
 const durationClasses = {
@@ -37,8 +38,29 @@ export const Drawer: React.FC<DrawerProps> = ({
   duration = 200,
   width = 'w-1/2',
   minWidth = 'min-w-[600px]',
+  position = 'right',
 }) => {
   const durationClass = durationClasses[duration];
+
+  const positionClasses = {
+    left: 'left-0',
+    right: 'right-0 pl-10',
+  };
+
+  const translateClasses = {
+    left: {
+      enter: 'translate-x-0',
+      enterFrom: '-translate-x-full',
+      enterTo: 'translate-x-0',
+      leave: '-translate-x-full',
+    },
+    right: {
+      enter: 'translate-x-0',
+      enterFrom: 'translate-x-full',
+      enterTo: 'translate-x-0',
+      leave: 'translate-x-full',
+    },
+  };
 
   return (
     <Transition show={isOpen} as={Fragment}>
@@ -58,16 +80,16 @@ export const Drawer: React.FC<DrawerProps> = ({
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div
-              className={`pointer-events-none fixed inset-y-0 right-0 flex ${width} ${minWidth} pl-10`}
+              className={`pointer-events-none fixed inset-y-0 ${positionClasses[position]} flex ${width} ${minWidth}`}
             >
               <TransitionChild
                 as={Fragment}
                 enter={`transform transition ease-in-out ${durationClass}`}
-                enterFrom="translate-x-full"
-                enterTo="translate-x-0"
+                enterFrom={translateClasses[position].enterFrom}
+                enterTo={translateClasses[position].enterTo}
                 leave={`transform transition ease-in-out ${durationClass}`}
-                leaveFrom="translate-x-0"
-                leaveTo="translate-x-full"
+                leaveFrom={translateClasses[position].enter}
+                leaveTo={translateClasses[position].leave}
               >
                 <DialogPanel className="pointer-events-auto max-w-1/2 w-full">
                   <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
