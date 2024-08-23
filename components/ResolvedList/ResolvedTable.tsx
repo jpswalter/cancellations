@@ -101,6 +101,7 @@ const RequestsTable: FC<Props> = ({
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         request={selectedRequest}
+        drawerPosition="right"
       />
     </>
   );
