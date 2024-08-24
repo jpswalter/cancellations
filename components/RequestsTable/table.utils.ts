@@ -22,7 +22,6 @@ export const generateCustomerInfoColumns = (requests: Request[]) => {
         : ({ getValue }: { getValue: () => string }) => getValue() || '-',
       meta: {
         isCustomerInfo: true,
-        isHighlightable: true,
       },
     }));
 };

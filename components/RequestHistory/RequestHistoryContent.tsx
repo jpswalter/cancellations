@@ -26,7 +26,7 @@ export const groupChanges = (changes: RequestChange[]): ChangeGroup[] => {
 export const renderHistoryTitle = (group: ChangeGroup): string => {
   const { changedBy, changes } = group;
   const statusChange = changes.find(change => change.field === 'status');
-  console.log('group', statusChange);
+
   if (statusChange) {
     switch (statusChange.newValue) {
       case 'Save Offered':

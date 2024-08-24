@@ -77,7 +77,9 @@ const FixCustomerInfo: React.FC<{
       <div className="py-4 bg-white text-gray-800 rounded p-4 mb-4 flex items-start gap-4">
         <div>
           <p className="font-medium">Current value</p>
-          <p className="text-red-500 mt-4">{currentInvalidValue}</p>
+          <p className="text-red-500 mt-4">
+            {currentInvalidValue === '' ? 'empty' : currentInvalidValue}
+          </p>
         </div>
         <div>
           <label>

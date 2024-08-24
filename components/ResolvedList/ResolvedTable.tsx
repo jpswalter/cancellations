@@ -4,15 +4,10 @@ import React, { FC, useState } from 'react';
 import { Request, RequestStatus as RequestStatusType } from '@/lib/db/schema';
 import { Cell } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
-import {
-  DateCell,
-  RequestTypeCell,
-  TenantCell,
-} from '../RequestsTable/cells/Cell';
+import { DateCell, TenantCell } from '../RequestsTable/cells/Cell';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
-import SaveOfferCell from '../RequestsTable/cells/SaveOfferCell';
 import EmptyRequestsState from '../RequestsTable/EmptyTable';
 import { generateCustomerInfoColumns } from '../RequestsTable/table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
@@ -60,6 +55,7 @@ const RequestsTable: FC<Props> = ({
       ),
       size: 130,
     },
+    ...customerInfoColumns,
     {
       header: isProviderUser ? 'Source' : 'Destination',
       accessorKey: isProviderUser ? 'proxyTenantId' : 'providerTenantId',
@@ -71,14 +67,6 @@ const RequestsTable: FC<Props> = ({
       },
     },
     {
-      header: 'Request Type',
-      accessorKey: 'requestType',
-      meta: {
-        className: 'text-center',
-      },
-      cell: RequestTypeCell,
-    },
-    {
       header: 'Submitted by',
       accessorKey: 'submittedBy',
     },
@@ -87,11 +75,9 @@ const RequestsTable: FC<Props> = ({
       accessorKey: 'dateResponded',
       cell: DateCell,
     },
-    ...customerInfoColumns,
     {
       header: 'Save Offer',
-      accessorKey: 'saveOffer',
-      cell: SaveOfferCell,
+      accessorKey: 'saveOffer.title',
     },
   ];
 
@@ -115,6 +101,7 @@ const RequestsTable: FC<Props> = ({
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         request={selectedRequest}
+        drawerPosition="right"
       />
     </>
   );

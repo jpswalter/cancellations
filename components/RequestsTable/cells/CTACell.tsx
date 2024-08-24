@@ -8,23 +8,11 @@ const CTACell: React.FC<{
   toggleDrawer: (request: Request) => void;
 }> = ({ row, toggleDrawer }) => {
   const { userData } = useAuth();
-  const isProviderUser = userData?.tenantType === 'provider';
   const isProxyUser = userData?.tenantType === 'proxy';
   const requestStatus = row.original.status;
-
   const handleClick = () => {
     toggleDrawer(row.original);
   };
-
-  if (isProviderUser && requestStatus === 'Save Accepted') {
-    return (
-      <div onClick={e => e.stopPropagation()}>
-        <Button color="blue" onClick={handleClick}>
-          Confirm
-        </Button>
-      </div>
-    );
-  }
 
   if (isProxyUser) {
     if (requestStatus === 'Declined') {

@@ -1,41 +1,28 @@
-import { RequestSaveOffer } from '@/lib/db/schema';
-import { Button } from '@/components/ui';
-import { FC, useState } from 'react';
-import { CellProps } from './Cell';
-import SaveOfferModal from './SaveOfferModal';
+import { FC } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Request } from '@/lib/db/schema';
+import { Row } from '@tanstack/react-table';
 
-const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({
-  cell,
-  row,
-}) => {
-  const [isVisibleModal, setIsModalVisible] = useState(false);
+type Props = {
+  row: Row<Request>;
+  toggleDrawer: (request: Request) => void;
+};
+const SaveOfferCell: FC<Props> = ({ row }) => {
   const { userData } = useAuth();
   const isProviderUser = userData?.tenantType === 'provider';
-  const offer = cell.row.original.saveOffer;
-  const requestStatus = cell.row.original.status;
-  const openModal = () => setIsModalVisible(true);
-  const closeModal = () => setIsModalVisible(false);
-  const isFirstOffer =
-    row?.original.saveOffer === undefined || row?.original.saveOffer === null;
+  const requestStatus = row.original.status;
+  const hasSaveOfferInStatus = [
+    'Save Offered',
+    'Save Accepted',
+    'Save Confirmed',
+    'Save Declined',
+  ].includes(requestStatus);
+
+  if (!hasSaveOfferInStatus) {
+    return null;
+  }
 
   if (isProviderUser) {
-    if (isFirstOffer && requestStatus !== 'Canceled') {
-      return (
-        <div onClick={e => e.stopPropagation()}>
-          <Button color="blue" onClick={openModal}>
-            Make Offer
-          </Button>
-          <SaveOfferModal
-            isVisible={isVisibleModal}
-            closeModal={closeModal}
-            request={cell.row.original}
-          />
-        </div>
-      );
-    }
-
     if (requestStatus === 'Save Declined') {
       return (
         <div>
@@ -74,8 +61,6 @@ const SaveOfferCell: FC<CellProps<Request, RequestSaveOffer>> = ({
       return '';
     }
   }
-
-  return offer?.title;
 };
 
 export default SaveOfferCell;
