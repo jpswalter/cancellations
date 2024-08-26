@@ -1,5 +1,4 @@
 import { getDisplayHeader } from '@/utils/template.utils';
-import { UsernameCell } from './cells/Cell';
 import { Request } from '@/lib/db/schema';
 
 export const generateCustomerInfoColumns = (requests: Request[]) => {
@@ -17,9 +16,7 @@ export const generateCustomerInfoColumns = (requests: Request[]) => {
     .map(field => ({
       header: getDisplayHeader(field),
       accessorKey: `customerInfo.${field}`,
-      cell: field.toLowerCase().includes('name')
-        ? UsernameCell
-        : ({ getValue }: { getValue: () => string }) => getValue() || '-',
+      cell: ({ getValue }: { getValue: () => string }) => getValue() || '-',
       meta: {
         isCustomerInfo: true,
       },

@@ -1,6 +1,5 @@
 // file: components/RequestsTable/Cell.tsx
 import { formatDate } from '@/utils/general';
-import { User } from 'lucide-react';
 import { Cell, Row } from '@tanstack/react-table';
 import { Request } from '@/lib/db/schema';
 import { FC } from 'react';
@@ -14,18 +13,6 @@ export type CellProps<R, T> = {
 const DateCell: FC<CellProps<Request, string>> = ({ cell }) => {
   const date = cell.getValue();
   return formatDate(date);
-};
-
-const UsernameCell: FC<CellProps<Request, string>> = ({ cell }) => {
-  const username = cell.getValue();
-  return (
-    <div className="flex items-center gap-2">
-      <div className="relative flex items-center justify-center w-8 h-8 bg-pink-400 rounded-full">
-        <User size={16} className="text-white" />
-      </div>
-      <span>{username}</span>
-    </div>
-  );
 };
 
 const TenantCell: FC<{ name?: string; isLoading: boolean }> = ({
@@ -44,4 +31,4 @@ const TenantCell: FC<{ name?: string; isLoading: boolean }> = ({
   );
 };
 
-export { DateCell, UsernameCell, TenantCell };
+export { DateCell, TenantCell };
