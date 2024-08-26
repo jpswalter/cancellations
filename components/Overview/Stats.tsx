@@ -55,7 +55,7 @@ const Stats: FC<Props> = ({ requests }) => {
         stat: saveOffersCount,
       },
       {
-        name: 'Resolved',
+        name: 'Canceled',
         stat: resolvedRequestsCount,
         donut: (
           <DonutChart
