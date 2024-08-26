@@ -48,9 +48,9 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
         icon: (
           <IoMdCheckmarkCircleOutline className="text-green-500 text-4xl" />
         ),
-        message: "You're about to mark this request as Successfully Resolved",
+        message: "You're about to mark this request as Canceled",
         description:
-          "This indicates that the customer's issue has been addressed satisfactorily.",
+          'Click "Confirm" if the subscription has been successfully canceled.',
         color: 'bg-green-100 border-green-500 text-green-700',
       };
     }
