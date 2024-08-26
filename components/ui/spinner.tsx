@@ -14,4 +14,12 @@ const Spinner: FC<Props> = ({ className = '' }: Props) => (
   </div>
 );
 
+export const Loader = () => {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <Spinner className="w-24 h-24 text-blue-500" />
+    </div>
+  );
+};
+
 export default Spinner;

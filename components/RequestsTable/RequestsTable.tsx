@@ -17,7 +17,7 @@ import CTACell from './cells/CTACell';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
 import DataTable from '../ui/table';
 import ActionsCell from './cells/ActionsCell';
-import Spinner from '../ui/spinner';
+import { Loader } from '../ui/spinner';
 
 interface Props {
   requests: Request[];
@@ -26,14 +26,6 @@ interface Props {
   defaultSort: { id: string; desc: boolean }[];
   isLoading?: boolean;
 }
-
-const Loader = () => {
-  return (
-    <div className="w-full h-full flex items-center justify-center">
-      <Spinner color="blue" className="w-24 h-24" />
-    </div>
-  );
-};
 
 const RequestsTable: FC<Props> = ({
   requests,

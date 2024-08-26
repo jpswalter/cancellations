@@ -4,6 +4,7 @@ import {
   DateRangePickerValue,
   Select,
   SelectItem,
+  TextInput,
 } from '@tremor/react';
 import { useQuery } from '@tanstack/react-query';
 import { getTenants } from '@/lib/api/tenant';
@@ -17,8 +18,11 @@ interface FiltersProps {
   setSelectedSource: (sourceId: string | undefined) => void;
   selectedRequestType: RequestStatusType | undefined;
   setSelectedRequestType: (status: RequestStatusType | undefined) => void;
+  searchId: string;
+  setSearchId: (id: string) => void;
   showSourceFilter?: boolean;
   showRequestTypeFilter?: boolean;
+  showSearchIdFilter?: boolean;
 }
 
 const Filters: React.FC<FiltersProps> = ({
@@ -28,8 +32,11 @@ const Filters: React.FC<FiltersProps> = ({
   setSelectedSource,
   selectedRequestType,
   setSelectedRequestType,
+  searchId,
+  setSearchId,
   showSourceFilter = true,
   showRequestTypeFilter = true,
+  showSearchIdFilter = false,
 }) => {
   const { data: tenants } = useQuery({
     queryKey: ['tenants'],
@@ -50,13 +57,20 @@ const Filters: React.FC<FiltersProps> = ({
 
   return (
     <div className="flex space-x-4">
+      <DateRangePicker
+        className="w-30"
+        value={dateRange}
+        onValueChange={setDateRange}
+        enableClear={true}
+        placeholder="Select date range"
+      />
       {showRequestTypeFilter && (
         <Select
           className="w-52"
           value={selectedRequestType}
-          placeholder="All Statuses"
+          placeholder="All Request Types"
           onValueChange={value =>
-            setSelectedRequestType(value as RequestStatusType | undefined)
+            setSelectedRequestType(value as RequestStatusType)
           }
           enableClear={true}
         >
@@ -67,13 +81,6 @@ const Filters: React.FC<FiltersProps> = ({
           ))}
         </Select>
       )}
-      <DateRangePicker
-        className="w-30"
-        value={dateRange}
-        onValueChange={setDateRange}
-        enableClear={true}
-        placeholder="Select date range"
-      />
       {showSourceFilter && (
         <Select
           className="w-52"
@@ -88,6 +95,15 @@ const Filters: React.FC<FiltersProps> = ({
             </SelectItem>
           ))}
         </Select>
+      )}
+
+      {showSearchIdFilter && (
+        <TextInput
+          className="w-52"
+          placeholder="Search by ID"
+          value={searchId}
+          onChange={e => setSearchId(e.target.value)}
+        />
       )}
     </div>
   );

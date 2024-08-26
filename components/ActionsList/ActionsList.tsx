@@ -30,7 +30,11 @@ const ActionsList: React.FC = () => {
         <div className="flex h-[72px] flex-none items-center justify-between gap-2 border-b bg-white px-[20px]">
           <h1 className="truncate">Actions needed</h1>
           <div className="flex items-center gap-2">
-            <Filters {...filters} showRequestTypeFilter={false} />
+            <Filters
+              {...filters}
+              showRequestTypeFilter={false}
+              showSearchIdFilter={true}
+            />
           </div>
         </div>
         <RequestsTable

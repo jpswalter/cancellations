@@ -28,6 +28,7 @@ export const useRequests = ({
   const [statusFilters, setStatusFilters] = useState<RequestStatus[]>(
     initialStatusFilters || [],
   );
+  const [searchId, setSearchId] = useState<string>('');
 
   const {
     data: requests,
@@ -62,9 +63,22 @@ export const useRequests = ({
           ? statusFilters.includes(request.status)
           : true;
 
-      return dateInRange && sourceMatch && requestTypeMatch && statusMatch;
+      const idMatch = searchId
+        ? request.id.toLowerCase().includes(searchId.toLowerCase())
+        : true;
+
+      return (
+        dateInRange && sourceMatch && requestTypeMatch && statusMatch && idMatch
+      );
     });
-  }, [requests, dateRange, selectedSource, selectedRequestType, statusFilters]);
+  }, [
+    requests,
+    dateRange,
+    selectedSource,
+    selectedRequestType,
+    statusFilters,
+    searchId,
+  ]);
 
   return {
     requests: filteredRequests,
@@ -79,6 +93,8 @@ export const useRequests = ({
       setSelectedRequestType,
       statusFilters,
       setStatusFilters,
+      searchId,
+      setSearchId,
     },
   };
 };
