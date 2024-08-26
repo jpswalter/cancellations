@@ -81,6 +81,17 @@ const RequestsTable: FC<Props> = ({
     ...(isProviderUser
       ? [
           {
+            id: 'Actions',
+            header: 'Actions',
+            cell: ({ row }: { row: Row<Request> }) => (
+              <ActionsCell row={row} toggleDrawer={toggleDrawer} />
+            ),
+          },
+        ]
+      : []),
+    ...(isProviderUser
+      ? [
+          {
             header: 'Save Offer Status',
             accessorKey: 'saveOffer',
             cell: ({
@@ -89,17 +100,6 @@ const RequestsTable: FC<Props> = ({
               row: Row<Request>;
               cell: Cell<Request, RequestSaveOffer>;
             }) => <SaveOfferCell row={row} toggleDrawer={toggleDrawer} />,
-          },
-        ]
-      : []),
-    ...(isProviderUser
-      ? [
-          {
-            id: 'Actions',
-            header: 'Actions',
-            cell: ({ row }: { row: Row<Request> }) => (
-              <ActionsCell row={row} toggleDrawer={toggleDrawer} />
-            ),
           },
         ]
       : []),
