@@ -17,22 +17,32 @@ import CTACell from './cells/CTACell';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
 import DataTable from '../ui/table';
 import ActionsCell from './cells/ActionsCell';
+import Spinner from '../ui/spinner';
 
 interface Props {
   requests: Request[];
   EmptyComponent?: React.ComponentType;
   isActionsTable?: boolean;
   defaultSort: { id: string; desc: boolean }[];
+  isLoading?: boolean;
 }
+
+const Loader = () => {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <Spinner color="blue" className="w-24 h-24" />
+    </div>
+  );
+};
 
 const RequestsTable: FC<Props> = ({
   requests,
   EmptyComponent = EmptyRequestsState,
   isActionsTable,
   defaultSort,
+  isLoading,
 }) => {
   const { userData } = useAuth();
-
   const isProviderUser = userData?.tenantType === 'provider';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
@@ -122,15 +132,19 @@ const RequestsTable: FC<Props> = ({
 
   return (
     <>
-      <DataTable
-        data={requests}
-        columns={columns}
-        defaultSort={defaultSort}
-        EmptyComponent={EmptyComponent}
-        onRowClick={toggleDrawer}
-        RowComponent={RequestRow}
-        columnVisibility={columnVisibility}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <DataTable
+          data={requests}
+          columns={columns}
+          defaultSort={defaultSort}
+          EmptyComponent={EmptyComponent}
+          onRowClick={toggleDrawer}
+          RowComponent={RequestRow}
+          columnVisibility={columnVisibility}
+        />
+      )}
 
       <RequestDrawer
         isOpen={isDrawerOpen}
