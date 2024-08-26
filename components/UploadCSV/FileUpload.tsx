@@ -149,7 +149,7 @@ const FileUpload: FC = () => {
           handleChange={handleUpload}
           name="file"
           types={['CSV']}
-          disabled={isLoading}
+          disabled={isLoading || !selectedProviderId}
         >
           <div className="flex flex-col gap-4 items-center p-16 border-dashed border-2 border-gray-300 rounded-lg">
             <Text>Drag and drop your file here or click to upload.</Text>
