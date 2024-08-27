@@ -56,7 +56,7 @@ const Filters: React.FC<FiltersProps> = ({
   ];
 
   return (
-    <div className="flex space-x-4">
+    <div className="z-50 flex space-x-4">
       <DateRangePicker
         className="w-30"
         value={dateRange}

@@ -14,15 +14,9 @@ import {
 } from 'chart.js';
 import React, { useMemo } from 'react';
 import { Bar } from 'react-chartjs-2';
-import {
-  DateRangePicker,
-  SelectItem,
-  Select as SelectTremor,
-} from '@tremor/react';
 import { Metadata } from 'next';
 import { aggregateRequestsByDate, callsBarChartOptions } from './utils';
 import { useAuth } from '@/hooks/useAuth';
-import { getRequests } from '@/lib/api/request';
 import { useQuery } from '@tanstack/react-query';
 import Stats from './Stats';
 import Image from 'next/image';
@@ -31,6 +25,8 @@ import { Request, Tenant } from '@/lib/db/schema';
 import SourcesCard from './SourcesCard';
 import ChartCard from './ChatCard';
 import SaveOffersPieChart from './SaveOffersPieChart';
+import Filters from '../Filters/Filters';
+import { useRequests } from '@/hooks/useRequests';
 
 export const metadata: Metadata = {
   title: 'Overview',
@@ -53,10 +49,13 @@ const Overview: React.FC = () => {
   const { userData } = useAuth();
   const { tenantType, tenantId } = userData || {};
 
-  const { data: requests, isLoading: isRequestsLoading } = useQuery({
-    queryKey: ['requests', tenantType, tenantId],
-    queryFn: () => getRequests(tenantType, tenantId),
-    enabled: !!tenantType && !!tenantId,
+  const {
+    requests,
+    isLoading: areRequestsLoading,
+    filters,
+  } = useRequests({
+    tenantType,
+    tenantId,
   });
 
   const { data: tenants } = useQuery({
@@ -106,24 +105,21 @@ const Overview: React.FC = () => {
         className="pointer-events-none"
       />
       <div className="flex flex-col w-full h-full z-10">
-        <header className="flex h-[72px] items-center gap-2 border-b bg-white/80 px-5 backdrop-blur-sm">
+        <header className="z-40 flex h-[72px] items-center justify-between gap-2 border-b bg-white/80 px-5 backdrop-blur-sm">
           <h1 className="text-2xl font-bold">Overview</h1>
-          <div className="flex-1" />
-          <DateRangePicker className="w-30" />
-          <SelectTremor enableClear={false} className="w-52" defaultValue="1">
-            <SelectItem value="1">All Sources</SelectItem>
-          </SelectTremor>
-          <SelectTremor enableClear={false} className="w-52" defaultValue="1">
-            <SelectItem value="1">All Request Types</SelectItem>
-          </SelectTremor>
+          <Filters
+            {...filters}
+            showRequestTypeFilter={false}
+            showSearchIdFilter={false}
+          />
         </header>
-        <main className="flex-1 overflow-auto p-5 space-y-5">
+        <main className="flex-1 overflow-auto p-5 space-y-5 z-30">
           <Stats requests={requests} />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <ChartCard title="Save Offers">
               <SaveOffersPieChart requests={requests} />
             </ChartCard>
-            <SourcesCard data={sourcesData} isLoading={isRequestsLoading} />
+            <SourcesCard data={sourcesData} isLoading={areRequestsLoading} />
           </div>
           <ChartCard title="Request Volume by Day" fullWidth>
             <Bar
