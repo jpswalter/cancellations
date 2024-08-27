@@ -107,11 +107,7 @@ const Overview: React.FC = () => {
       <div className="flex flex-col w-full h-full z-10">
         <header className="z-40 flex h-[72px] items-center justify-between gap-2 border-b bg-white/80 px-5 backdrop-blur-sm">
           <h1 className="text-2xl font-bold">Overview</h1>
-          <Filters
-            {...filters}
-            showRequestTypeFilter={false}
-            showSearchIdFilter={false}
-          />
+          <Filters {...filters} showRequestTypeFilter={true} />
         </header>
         <main className="flex-1 overflow-auto p-5 space-y-5 z-30">
           <Stats requests={requests} />

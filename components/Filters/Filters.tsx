@@ -55,8 +55,10 @@ const Filters: React.FC<FiltersProps> = ({
     'Save Confirmed',
   ];
 
+  console.log('Filters', showSearchIdFilter);
+
   return (
-    <div className="z-50 flex space-x-4">
+    <div className="z-50 flex space-x-4 flex-1">
       <DateRangePicker
         className="w-30"
         value={dateRange}
@@ -99,7 +101,7 @@ const Filters: React.FC<FiltersProps> = ({
 
       {showSearchIdFilter && (
         <TextInput
-          className="w-52"
+          className="w-52 flex-1"
           placeholder="Search by ID"
           value={searchId}
           onChange={e => setSearchId(e.target.value)}

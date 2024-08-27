@@ -22,7 +22,7 @@ const RequestsList: React.FC = () => {
         <div className="flex h-[72px] flex-none items-center justify-between gap-2 border-b bg-white px-[20px]">
           <h1 className="truncate">All Requests</h1>
           <div className="flex items-center gap-2">
-            <Filters {...filters} showRequestTypeFilter={true} />
+            <Filters {...filters} />
           </div>
         </div>
         <div className="p-4 flex flex-col space-y-4 h-full flex-1">

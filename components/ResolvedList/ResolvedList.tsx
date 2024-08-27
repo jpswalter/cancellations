@@ -24,8 +24,7 @@ const ActionsList: React.FC = () => {
   return (
     <div className="flex w-full">
       <div className="flex h-full flex-1 flex-col overflow-hidden">
-        <div className="flex h-[72px] flex-none items-center justify-between gap-2 border-b bg-white px-[20px]">
-          <h1 className="truncate">Resolved requests</h1>
+        <div className="flex h-[72px] flex-none items-center justify-stretch gap-2 border-b bg-white px-[20px]">
           <Filters
             {...filters}
             showRequestTypeFilter={true}
