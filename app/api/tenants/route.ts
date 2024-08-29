@@ -21,7 +21,10 @@ export async function GET(): Promise<NextResponse> {
 
     return new NextResponse(JSON.stringify(tenants), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, max-age=0',
+      },
     });
   } catch (error) {
     return new NextResponse(
