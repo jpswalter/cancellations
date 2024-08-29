@@ -13,15 +13,18 @@ import { generateCustomerInfoColumns } from '../RequestsTable/table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import DataTable, { CustomColumnDef } from '@/components/ui/table';
 import RequestRow from '../RequestsTable/Row';
+import { Loader } from 'lucide-react';
 interface Props {
   requests: Request[];
   EmptyComponent?: React.ComponentType;
+  isLoading: boolean;
   defaultSort: { id: string; desc: boolean }[];
 }
 
 const RequestsTable: FC<Props> = ({
   requests,
   EmptyComponent = EmptyRequestsState,
+  isLoading,
   defaultSort,
 }) => {
   const { userData } = useAuth();
@@ -89,14 +92,18 @@ const RequestsTable: FC<Props> = ({
 
   return (
     <>
-      <DataTable
-        data={requests}
-        columns={columns}
-        defaultSort={defaultSort}
-        EmptyComponent={EmptyComponent}
-        onRowClick={toggleDrawer}
-        RowComponent={RequestRow}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <DataTable
+          data={requests}
+          columns={columns}
+          defaultSort={defaultSort}
+          EmptyComponent={EmptyComponent}
+          onRowClick={toggleDrawer}
+          RowComponent={RequestRow}
+        />
+      )}
       <RequestDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
