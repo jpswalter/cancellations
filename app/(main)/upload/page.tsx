@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import UploadCSV from '@/components/UploadCSV/UploadCSV';
 
 export const metadata: Metadata = {
-  title: 'Upload CSV',
+  title: 'ProxyLink | Upload CSV',
 };
 
 export default function UploadPage() {

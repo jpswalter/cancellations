@@ -13,7 +13,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
-  title: 'ProxyLink: Overview',
+  title: 'ProxyLink | Overview',
 };
 
 const OverviewPage: React.FC = async () => {

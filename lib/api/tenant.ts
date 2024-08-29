@@ -8,7 +8,7 @@ import { Tenant, SaveOffer } from '@/lib/db/schema';
  */
 export const getTenants = async (): Promise<Tenant[]> => {
   try {
-    const response = await fetch(`/api/tenants`);
+    const response = await fetch(`/api/tenants`, { next: { revalidate: 0 } });
     if (!response.ok) {
       throw new Error('Failed to fetch tenants');
     }
@@ -106,3 +106,19 @@ export const deleteSaveOffer = async (
     throw new Error('Error deleting save offer: ' + (error as Error).message);
   }
 };
+
+/**
+ * Sends a GET request to fetch a tenant by ID.
+ * @param {string} tenantId - The ID of the tenant.
+ * @returns {Promise<Tenant>} A promise that resolves to the tenant.
+ * @throws {Error} If the request fails.
+ */
+export async function getTenant(tenantId: string): Promise<Tenant> {
+  const response = await fetch(`/api/tenants/${tenantId}`, {
+    cache: 'no-store',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch tenant');
+  }
+  return response.json();
+}
