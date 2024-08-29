@@ -8,18 +8,22 @@ interface UseRequestsProps {
   tenantType: TenantType | undefined;
   tenantId: string | undefined;
   initialStatusFilters?: RequestStatus[];
+  showStatusFilter?: boolean;
+  showSearchId?: boolean;
 }
 
 export const useRequests = ({
   tenantType,
   tenantId,
   initialStatusFilters,
+  showStatusFilter = true,
+  showSearchId = false,
 }: UseRequestsProps) => {
   const [dateRange, setDateRange] = useState<DateRangePickerValue>({
     from: undefined,
     to: undefined,
   });
-  const [selectedSource, setSelectedSource] = useState<string | undefined>(
+  const [selectedTenant, setSelectedTenant] = useState<string | undefined>(
     undefined,
   );
   const [selectedRequestType, setSelectedRequestType] = useState<
@@ -50,8 +54,10 @@ export const useRequests = ({
             new Date(request.dateSubmitted) <= dateRange.to
           : true;
 
-      const sourceMatch = selectedSource
-        ? request.proxyTenantId === selectedSource
+      const tenantMatch = selectedTenant
+        ? tenantType === 'proxy'
+          ? request.providerTenantId === selectedTenant
+          : request.proxyTenantId === selectedTenant
         : true;
 
       const requestTypeMatch = selectedRequestType
@@ -68,16 +74,17 @@ export const useRequests = ({
         : true;
 
       return (
-        dateInRange && sourceMatch && requestTypeMatch && statusMatch && idMatch
+        dateInRange && tenantMatch && requestTypeMatch && statusMatch && idMatch
       );
     });
   }, [
     requests,
     dateRange,
-    selectedSource,
+    selectedTenant,
     selectedRequestType,
     statusFilters,
     searchId,
+    tenantType,
   ]);
 
   return {
@@ -87,14 +94,17 @@ export const useRequests = ({
     filters: {
       dateRange,
       setDateRange,
-      selectedSource,
-      setSelectedSource,
+      selectedTenant,
+      setSelectedTenant,
       selectedRequestType,
       setSelectedRequestType,
       statusFilters,
       setStatusFilters,
       searchId,
       setSearchId,
+      tenantType,
+      showStatusFilter,
+      showSearchId,
     },
   };
 };
