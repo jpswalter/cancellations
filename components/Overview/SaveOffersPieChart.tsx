@@ -47,7 +47,6 @@ const SaveOffersPieChart: FC<{ requests?: Request[] }> = ({ requests }) => {
               index="name"
               colors={colors}
               className="w-40"
-              variant="pie"
             />
             <Legend
               categories={Object.keys(saveStatusCounts)}
