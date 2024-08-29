@@ -11,7 +11,7 @@ import { getRequest } from '@/lib/api/request';
 import RequestDetails from '@/components/RequestDetails/RequestDetails';
 
 export const metadata: Metadata = {
-  title: 'Request Details',
+  title: 'ProxyLink | Request Details',
 };
 
 export default async function RequestPage({

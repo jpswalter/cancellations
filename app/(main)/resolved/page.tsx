@@ -12,7 +12,7 @@ import { getRequests } from '@/lib/api/request';
 import ResolvedList from '@/components/ResolvedList/ResolvedList';
 
 export const metadata: Metadata = {
-  title: 'Resolved',
+  title: 'ProxyLink | Resolved',
 };
 
 export default async function ActionsPage() {
