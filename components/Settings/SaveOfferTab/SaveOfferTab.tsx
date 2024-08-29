@@ -24,7 +24,6 @@ const SaveOffersTab: React.FC<SaveOffersTabProps> = ({
   isAdmin,
   offers = [],
   tenantId,
-  refetch,
 }) => {
   const [selectedOffer, setSelectedOffer] = useState<SaveOffer | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
@@ -37,7 +36,7 @@ const SaveOffersTab: React.FC<SaveOffersTabProps> = ({
     mutationFn: (newOffer: Partial<SaveOffer>) =>
       createSaveOffer(tenantId, newOffer),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenants'] });
+      queryClient.invalidateQueries({ queryKey: ['tenant', tenantId] });
       toast.success('Offer created successfully', { duration: 2000 });
       closeEditingModal();
     },
@@ -50,7 +49,7 @@ const SaveOffersTab: React.FC<SaveOffersTabProps> = ({
     mutationFn: (updatedOffer: SaveOffer) =>
       updateSaveOffer(tenantId, updatedOffer),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenants'] });
+      queryClient.invalidateQueries({ queryKey: ['tenant', tenantId] });
       toast.success('Offer updated successfully', { duration: 2000 });
       closeEditingModal();
     },
@@ -62,7 +61,7 @@ const SaveOffersTab: React.FC<SaveOffersTabProps> = ({
   const deleteMutation = useMutation({
     mutationFn: (offerId: string) => deleteSaveOffer(tenantId, offerId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tenants'] });
+      queryClient.invalidateQueries({ queryKey: ['tenant', tenantId] });
       toast.success('Offer deleted successfully', { duration: 2000 });
       closeEditingModal();
     },
@@ -107,7 +106,6 @@ const SaveOffersTab: React.FC<SaveOffersTabProps> = ({
     } else {
       createMutation.mutate(offer);
     }
-    await refetch(); // Manually refetch after mutation
   };
 
   return (
