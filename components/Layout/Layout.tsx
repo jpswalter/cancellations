@@ -21,6 +21,7 @@ export default function ClientLayout({
 }) {
   const { loading, userData } = useAuth();
   const isProvider = userData?.tenantType === 'provider';
+  const isProxy = userData?.tenantType === 'proxy';
 
   if (loading || !userData) {
     return null;
@@ -67,11 +68,13 @@ export default function ClientLayout({
                     label="Actions Needed"
                     Icon={MdNotificationsActive}
                   />
-                  <SidebarButton
-                    link="/resolved"
-                    label="Resolved"
-                    Icon={MdOutlineAssignmentTurnedIn}
-                  />
+                  {isProxy && (
+                    <SidebarButton
+                      link="/resolved"
+                      label="Resolved"
+                      Icon={MdOutlineAssignmentTurnedIn}
+                    />
+                  )}
                   <SidebarButton
                     link="/requests"
                     label="All Requests"
