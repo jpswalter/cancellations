@@ -21,8 +21,8 @@ interface FiltersProps {
   searchId: string;
   setSearchId: (id: string) => void;
   showSourceFilter?: boolean;
-  showRequestTypeFilter?: boolean;
-  showSearchIdFilter?: boolean;
+  showStatusFilter?: boolean;
+  showSearchId?: boolean;
 }
 
 const Filters: React.FC<FiltersProps> = ({
@@ -35,8 +35,8 @@ const Filters: React.FC<FiltersProps> = ({
   searchId,
   setSearchId,
   showSourceFilter = true,
-  showRequestTypeFilter = true,
-  showSearchIdFilter = false,
+  showStatusFilter = true,
+  showSearchId = false,
 }) => {
   const { data: tenants } = useQuery({
     queryKey: ['tenants'],
@@ -55,8 +55,6 @@ const Filters: React.FC<FiltersProps> = ({
     'Save Confirmed',
   ];
 
-  console.log('Filters', showSearchIdFilter);
-
   return (
     <div className="z-50 flex space-x-4 flex-1">
       <DateRangePicker
@@ -66,11 +64,11 @@ const Filters: React.FC<FiltersProps> = ({
         enableClear={true}
         placeholder="Select date range"
       />
-      {showRequestTypeFilter && (
+      {showStatusFilter && (
         <Select
           className="w-52"
           value={selectedRequestType}
-          placeholder="All Request Types"
+          placeholder="Status"
           onValueChange={value =>
             setSelectedRequestType(value as RequestStatusType)
           }
@@ -87,7 +85,7 @@ const Filters: React.FC<FiltersProps> = ({
         <Select
           className="w-52"
           value={selectedSource}
-          placeholder="All Sources"
+          placeholder="Source"
           onValueChange={value => setSelectedSource(value || undefined)}
           enableClear={true}
         >
@@ -99,7 +97,7 @@ const Filters: React.FC<FiltersProps> = ({
         </Select>
       )}
 
-      {showSearchIdFilter && (
+      {showSearchId && (
         <TextInput
           className="w-52 flex-1"
           placeholder="Search by ID"
