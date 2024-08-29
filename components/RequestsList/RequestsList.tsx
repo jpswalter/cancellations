@@ -20,10 +20,7 @@ const RequestsList: React.FC = () => {
     <div className="flex w-full">
       <div className="flex h-full flex-1 flex-col overflow-hidden">
         <div className="flex h-[72px] flex-none items-center justify-between gap-2 border-b bg-white px-[20px]">
-          <h1 className="truncate">All Requests</h1>
-          <div className="flex items-center gap-2">
-            <Filters {...filters} />
-          </div>
+          <Filters {...filters} showSearchId={true} />
         </div>
         <div className="p-4 flex flex-col space-y-4 h-full flex-1">
           <RequestsTable
