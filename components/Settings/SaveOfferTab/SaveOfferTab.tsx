@@ -17,12 +17,14 @@ type SaveOffersTabProps = {
   isAdmin: boolean;
   offers?: SaveOffer[];
   tenantId: string;
+  refetch: () => void;
 };
 
 const SaveOffersTab: React.FC<SaveOffersTabProps> = ({
   isAdmin,
   offers = [],
   tenantId,
+  refetch,
 }) => {
   const [selectedOffer, setSelectedOffer] = useState<SaveOffer | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
@@ -99,12 +101,13 @@ const SaveOffersTab: React.FC<SaveOffersTabProps> = ({
     deleteMutation.mutate(id);
   };
 
-  const onSave = (offer: Partial<SaveOffer>) => {
+  const onSave = async (offer: Partial<SaveOffer>) => {
     if (offer.id) {
       updateMutation.mutate(offer as SaveOffer);
     } else {
       createMutation.mutate(offer);
     }
+    await refetch(); // Manually refetch after mutation
   };
 
   return (
