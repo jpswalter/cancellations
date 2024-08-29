@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Settings from '@/components/Settings/Settings';
-import { getTenants } from '@/lib/api/tenant';
+import { getTenant } from '@/lib/api/tenant';
 import {
   dehydrate,
   HydrationBoundary,
@@ -34,13 +34,14 @@ export default async function SettingsPage() {
     const queryClient = new QueryClient();
 
     await queryClient.prefetchQuery({
-      queryKey: ['tenants'],
-      queryFn: getTenants,
+      queryKey: ['tenant', tenantId],
+      queryFn: () => getTenant(tenantId),
+      staleTime: 0,
     });
 
     return (
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Settings />
+        <Settings tenantId={tenantId} />
       </HydrationBoundary>
     );
   } catch (error) {

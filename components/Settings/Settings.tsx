@@ -3,21 +3,21 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import MyAccountTab from './MyAccountTab';
 import { useAuth } from '@/hooks/useAuth';
-import { getTenants } from '@/lib/api/tenant';
+import { getTenant } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
 import SaveOffersTab from './SaveOfferTab/SaveOfferTab';
 import ProxyFeeAdminTab from './ProxyFeeAdminTab';
 
-const Settings: React.FC = () => {
+const Settings: React.FC<{ tenantId: string }> = ({ tenantId }) => {
   const [activeTab, setActiveTab] = useState('My Account');
 
   const { userData } = useAuth();
   const isAdmin = userData?.role === 'admin';
-  const { data: tenants, refetch } = useQuery({
-    queryKey: ['tenants'],
-    queryFn: getTenants,
+  const { data: tenant, refetch } = useQuery({
+    queryKey: ['tenant', tenantId],
+    queryFn: () => getTenant(tenantId),
+    staleTime: 0,
   });
-  const tenant = tenants?.find(t => t.id === userData?.tenantId);
   const isProvider = userData?.tenantType === 'provider';
 
   const handleTabClick = (tabName: string) => {
