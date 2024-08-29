@@ -8,7 +8,7 @@ import { Tenant, SaveOffer } from '@/lib/db/schema';
  */
 export const getTenants = async (): Promise<Tenant[]> => {
   try {
-    const response = await fetch(`/api/tenants`);
+    const response = await fetch(`/api/tenants`, { next: { revalidate: 0 } });
     if (!response.ok) {
       throw new Error('Failed to fetch tenants');
     }
