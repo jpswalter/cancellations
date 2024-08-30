@@ -32,6 +32,7 @@ export const useRequests = ({
   const [statusFilters, setStatusFilters] = useState<RequestStatus[]>(
     initialStatusFilters || [],
   );
+  console.log('statusFilters', statusFilters);
   const [searchId, setSearchId] = useState<string>('');
 
   const {
