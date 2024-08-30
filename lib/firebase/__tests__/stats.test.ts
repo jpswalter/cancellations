@@ -257,4 +257,82 @@ describe('calculateStats', () => {
       expect(result.requests.saveOfferCounts.declined).toBe(expectedDeclined);
     });
   });
+
+  it('calculates stats correctly for a specific date range', async () => {
+    const providerTenantId = 'ba9270be-6274-41c0-be0a-73e4fe639d39';
+    const fromDate = '2024-08-20T00:00:00.000Z';
+    const toDate = '2024-08-25T23:59:59.999Z';
+
+    const filteredRequests = requestsForESPNMock.filter(
+      r =>
+        r.providerTenantId === providerTenantId &&
+        r.dateSubmitted >= fromDate &&
+        r.dateSubmitted <= toDate,
+    ) as Request[];
+
+    const mockData: MockData = {
+      requests: filteredRequests,
+      requestsLog: logsMock.filter(log =>
+        filteredRequests.some(request => request.id === log.requestId),
+      ),
+      tenants: tenantsMock,
+    };
+
+    const mockFirestore = createMockFirestore(mockData);
+
+    const result = await calculateStats({
+      db: mockFirestore,
+      tenantType: 'provider',
+      tenantId: providerTenantId,
+      fromDate,
+      toDate,
+    });
+
+    expect(result.requests.totalCount).toBeGreaterThan(0);
+    expect(result.requests.totalCount).toBe(filteredRequests.length);
+    expect(Object.keys(result.requests.dailyVolume)).toEqual(
+      expect.arrayContaining([
+        '2024-08-20',
+        '2024-08-21',
+        '2024-08-22',
+        '2024-08-23',
+        '2024-08-24',
+        '2024-08-25',
+      ]),
+    );
+    // Add more specific expectations based on the mock data
+  });
+
+  it('calculates stats correctly for a specific sourceId', async () => {
+    const providerTenantId = 'ba9270be-6274-41c0-be0a-73e4fe639d39';
+    const sourceId = '57cc45c3-2d7b-485f-a28a-57833342f8ef'; // BillShark's ID
+
+    const filteredRequests = requestsForESPNMock.filter(
+      r =>
+        r.providerTenantId === providerTenantId && r.proxyTenantId === sourceId,
+    ) as Request[];
+
+    const mockData: MockData = {
+      requests: filteredRequests,
+      requestsLog: logsMock.filter(log =>
+        filteredRequests.some(request => request.id === log.requestId),
+      ),
+      tenants: tenantsMock,
+    };
+
+    const mockFirestore = createMockFirestore(mockData);
+
+    const result = await calculateStats({
+      db: mockFirestore,
+      tenantType: 'provider',
+      tenantId: providerTenantId,
+      sourceId,
+    });
+
+    expect(result.requests.totalCount).toBeGreaterThan(0);
+    expect(result.requests.totalCount).toBe(filteredRequests.length);
+    expect(Object.keys(result.requests.sourceDistribution)).toEqual([sourceId]);
+    expect(result.tenants).toHaveLength(1);
+    expect(result.tenants[0].id).toBe(sourceId);
+  });
 });
