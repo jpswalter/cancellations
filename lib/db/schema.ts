@@ -28,7 +28,7 @@ export interface Request {
   providerTenantId: string;
   customerInfo: CustomerInfo;
   successfullyResolved: boolean | null;
-  saveOffer: RequestSaveOffer | null;
+  saveOffer?: RequestSaveOffer | null;
   declineReason: string | null;
   notes: string | null;
   logId: string;

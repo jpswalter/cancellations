@@ -7,13 +7,12 @@ type Props = {
   saveOfferCounts?: StatsResponse['requests']['saveOfferCounts'];
 };
 
-const SaveOffersPieChart: FC<Props> = ({ saveOfferCounts }) => {
-  console.log(saveOfferCounts);
+const SaveOffersDonutChart: FC<Props> = ({ saveOfferCounts }) => {
   if (!saveOfferCounts) {
     return null;
   }
 
-  const totalOffers = 0;
+  const totalOffers = saveOfferCounts.offered;
   const acceptedOffers = saveOfferCounts.accepted;
   const declinedOffers = saveOfferCounts.declined;
 
@@ -87,4 +86,4 @@ const SaveOffersPieChart: FC<Props> = ({ saveOfferCounts }) => {
   );
 };
 
-export default SaveOffersPieChart;
+export default SaveOffersDonutChart;

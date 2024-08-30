@@ -79,11 +79,11 @@ const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
     <div className="relative flex w-full h-full">
       <Image
         src="/images/purple-gradient.svg"
-        layout="fill"
-        objectFit="cover"
+        fill={true}
         quality={100}
         alt="Purple gradient background"
         className="pointer-events-none"
+        style={{ objectFit: 'cover' }}
       />
       <div className="flex flex-col w-full h-full z-10">
         <header className="z-40 flex h-[72px] items-center justify-between gap-2 border-b bg-white/80 px-5 backdrop-blur-sm">
