@@ -6,6 +6,7 @@ import {
   TenantType,
 } from '@/lib/db/schema';
 import { Firestore } from 'firebase-admin/firestore';
+import { addDays, format, subDays, startOfMonth, isBefore } from 'date-fns';
 
 const ALL_STATUSES: RequestStatus[] = [
   'Pending',
@@ -59,12 +60,40 @@ export async function calculateStats(
 
   const logMap = new Map(logs.map(log => [log.requestId, log]));
 
+  const today = new Date();
+  const isEarlyInMonth = today.getDate() <= 5;
+
+  let startDate: Date;
+  if (isEarlyInMonth) {
+    startDate = subDays(startOfMonth(today), 5);
+  } else {
+    startDate = startOfMonth(today);
+  }
+
+  let currentDate = startDate;
+
+  while (
+    isBefore(currentDate, today) ||
+    format(currentDate, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd')
+  ) {
+    const dateKey = format(currentDate, 'yyyy-MM-dd');
+    dailyVolume[dateKey] = 0;
+    currentDate = addDays(currentDate, 1);
+  }
+
   for (const request of requests) {
+    const submitDate = new Date(request.dateSubmitted);
+    if (isBefore(submitDate, startDate)) continue;
+
+    const dateKey = format(submitDate, 'yyyy-MM-dd');
+    if (dateKey in dailyVolume) {
+      dailyVolume[dateKey]++;
+    }
+
     // Status counts
     statusCounts[request.status]++;
 
     // Daily volume
-    const submitDate = new Date(request.dateSubmitted);
     if (submitDate >= thirtyDaysAgo) {
       const dateKey = submitDate.toISOString().split('T')[0];
       dailyVolume[dateKey] = (dailyVolume[dateKey] || 0) + 1;

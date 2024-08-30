@@ -58,6 +58,9 @@ const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
     const labels = Object.keys(stats.requests.dailyVolume);
     const data = Object.values(stats.requests.dailyVolume);
 
+    const maxValue = Math.max(...data);
+    const minValue = Math.min(...data);
+
     return {
       labels,
       datasets: [
@@ -67,6 +70,8 @@ const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
           backgroundColor: '#548ea6',
         },
       ],
+      maxValue,
+      minValue,
     };
   }, [stats?.requests.dailyVolume]);
 
@@ -105,8 +110,20 @@ const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
             fullWidth
             isLoading={isLoading}
           >
-            {dailyVolumeData && (
-              <Bar options={callsBarChartOptions} data={dailyVolumeData} />
+            {dailyVolumeData ? (
+              dailyVolumeData.maxValue === 0 ? (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-gray-500">
+                    No requests in the current period.
+                  </p>
+                </div>
+              ) : (
+                <Bar options={callsBarChartOptions} data={dailyVolumeData} />
+              )
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500">No data available</p>
+              </div>
             )}
           </ChartCard>
         </main>
