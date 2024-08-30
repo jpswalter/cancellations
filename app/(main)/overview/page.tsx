@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import Overview from '@/components/Overview/Overview';
 import { ErrorBoundary } from 'react-error-boundary';
-import { getRequests } from '@/lib/api/request';
+import { fetchStats } from '@/lib/api/stats';
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
 import {
   dehydrate,
@@ -36,14 +36,14 @@ const OverviewPage: React.FC = async () => {
     const queryClient = new QueryClient();
 
     await queryClient.prefetchQuery({
-      queryKey: ['requests', tenantType, tenantId],
-      queryFn: () => getRequests(tenantType, tenantId),
+      queryKey: ['stats', tenantType, tenantId],
+      queryFn: () => fetchStats(tenantType, tenantId),
     });
 
     return (
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ErrorBoundary fallback={<div>Something went wrong</div>}>
-          <Overview />
+          <Overview tenantType={tenantType} tenantId={tenantId} />
         </ErrorBoundary>
       </HydrationBoundary>
     );

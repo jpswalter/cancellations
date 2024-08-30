@@ -1,5 +1,5 @@
 // file: app/api/request/route.ts
-import { Request, RequestStatus, RequestWithLog } from '@/lib/db/schema';
+import { Request, RequestWithLog } from '@/lib/db/schema';
 
 export const getRequest = async <T extends boolean = true>({
   id,
@@ -109,11 +109,4 @@ export async function updateRequest(request: Request): Promise<void> {
   if (!response.ok) {
     throw new Error('Failed to update request');
   }
-}
-
-export function filterRequests(
-  requests: Request[],
-  statuses: RequestStatus[],
-): Request[] {
-  return requests.filter(request => statuses.includes(request.status));
 }

@@ -1,63 +1,54 @@
 import { DonutChart, Legend } from '@tremor/react';
 import { FC } from 'react';
-import { Request } from '@/lib/db/schema';
+import { StatsResponse } from '@/lib/api/stats';
 
-const SaveOffersPieChart: FC<{ requests?: Request[] }> = ({ requests }) => {
-  // Define the type for the accumulator
-  type SaveStatusCounts = {
-    [key: string]: number;
-  };
+type Props = {
+  saveOfferCounts?: StatsResponse['requests']['saveOfferCounts'];
+};
 
-  if (!requests) return null;
+const SaveOffersPieChart: FC<Props> = ({ saveOfferCounts }) => {
+  if (!saveOfferCounts) {
+    return null;
+  }
 
-  // Process requests to count only "Save" statuses
-  const saveStatusCounts: SaveStatusCounts = requests.reduce(
-    (acc: SaveStatusCounts, request) => {
-      if (request.status.startsWith('Save')) {
-        acc[request.status] = (acc[request.status] || 0) + 1;
-      }
-      return acc;
-    },
-    {} as SaveStatusCounts,
-  );
-
-  // Convert saveStatusCounts to data format for DonutChart
-  const chartData = Object.keys(saveStatusCounts).map(status => ({
-    name: status,
-    value: saveStatusCounts[status],
+  // Convert saveOfferCounts to data format for DonutChart
+  const chartData = Object.entries(saveOfferCounts).map(([status, count]) => ({
+    name: status.charAt(0).toUpperCase() + status.slice(1), // Capitalize the status
+    value: count,
   }));
 
   const colorMap: { [key: string]: string } = {
-    'Save Offered': 'blue',
-    'Save Declined': 'rose',
-    'Save Accepted': 'lime',
-    'Save Confirmed': 'amber',
+    Offered: 'blue',
+    Declined: 'rose',
+    Accepted: 'lime',
   };
 
   const colors = chartData.map(data => colorMap[data.name]);
 
+  // Check if there's any data to display
+  if (chartData.length === 0) {
+    return <div>No save offer data available</div>;
+  }
+
   return (
-    <>
-      <div className="mx-auto space-y-12 flex flex-col items-center justify-center">
-        <div className="space-y-3">
-          <div className="flex items-center justify-center space-x-6">
-            <DonutChart
-              data={chartData}
-              category="value"
-              index="name"
-              colors={colors}
-              className="w-40"
-              variant="pie"
-            />
-            <Legend
-              categories={Object.keys(saveStatusCounts)}
-              className="max-w-xs"
-              colors={colors}
-            />
-          </div>
+    <div className="mx-auto space-y-12 flex flex-col items-center justify-center">
+      <div className="space-y-3">
+        <div className="flex items-center justify-center space-x-6">
+          <DonutChart
+            data={chartData}
+            category="value"
+            index="name"
+            colors={colors}
+            className="w-40"
+          />
+          <Legend
+            categories={chartData.map(item => item.name)}
+            className="max-w-xs"
+            colors={colors}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
