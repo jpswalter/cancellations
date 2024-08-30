@@ -8,11 +8,12 @@ type Props = {
 };
 
 const SaveOffersPieChart: FC<Props> = ({ saveOfferCounts }) => {
+  console.log(saveOfferCounts);
   if (!saveOfferCounts) {
     return null;
   }
 
-  const totalOffers = saveOfferCounts.offered;
+  const totalOffers = 0;
   const acceptedOffers = saveOfferCounts.accepted;
   const declinedOffers = saveOfferCounts.declined;
 
@@ -28,9 +29,22 @@ const SaveOffersPieChart: FC<Props> = ({ saveOfferCounts }) => {
 
   const colors = ['lime', 'rose'];
 
-  // Check if there's any data to display
-  if (totalOffers === 0) {
-    return <div>No save offers made</div>;
+  // Special case: when both accepted and declined are 0
+  if (acceptedOffers === 0 && declinedOffers === 0) {
+    return (
+      <div className="flex flex-col h-full px-2 gap-2 justify-center items-center -mt-8">
+        <p className="text-2xl text-gray-500">
+          Total: <span>{totalOffers}</span>
+        </p>
+        {totalOffers === 0 ? (
+          <p className="font-bold px-1">No offers have been made yet</p>
+        ) : (
+          <p className="font-bold px-1">
+            No offers have been accepted or declined yet
+          </p>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -42,6 +56,7 @@ const SaveOffersPieChart: FC<Props> = ({ saveOfferCounts }) => {
           index="name"
           colors={colors}
           className="w-40"
+          label={String(totalOffers)}
         />
       </div>
       <div className="basis-1/2 h-full flex justify-center">
