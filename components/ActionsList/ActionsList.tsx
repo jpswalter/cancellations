@@ -1,17 +1,18 @@
 // file: components/RequestsList/RequestsList.tsx
 'use client';
 import RequestsTable from '@/components/RequestsTable/RequestsTable';
-import { useAuth } from '@/hooks/useAuth';
-import { RequestStatus } from '@/lib/db/schema';
+import { RequestStatus, TenantType } from '@/lib/db/schema';
 import CongratsEmpty from '@/components/RequestsTable/CongratsEmpty';
 import { useRequests } from '@/hooks/useRequests';
 import Filters from '../Filters/Filters';
 import { useMemo } from 'react';
 
-const ActionsList: React.FC = () => {
-  const { userData } = useAuth();
-  const { tenantType, tenantId } = userData || {};
+interface Props {
+  tenantType: TenantType | undefined;
+  tenantId: string | undefined;
+}
 
+const ActionsList: React.FC<Props> = ({ tenantType, tenantId }) => {
   const initialStatusFilters = useMemo(() => {
     return tenantType === 'provider'
       ? (['Pending', 'Save Declined', 'Save Accepted'] as RequestStatus[])
@@ -24,7 +25,7 @@ const ActionsList: React.FC = () => {
     initialStatusFilters,
   });
 
-  if (!requests) return null;
+  if (!requests || !tenantType || !tenantId) return null;
 
   return (
     <div className="flex w-full h-full">

@@ -41,7 +41,7 @@ export default async function ActionsPage() {
 
     return (
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ActionsList />
+        <ActionsList tenantType={tenantType} tenantId={tenantId} />
       </HydrationBoundary>
     );
   } catch (error) {

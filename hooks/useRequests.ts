@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { RequestStatus, TenantType } from '@/lib/db/schema';
 import { getRequests } from '@/lib/api/request';
@@ -29,10 +29,14 @@ export const useRequests = ({
   const [selectedRequestType, setSelectedRequestType] = useState<
     RequestStatus | undefined
   >(undefined);
-  const [statusFilters, setStatusFilters] = useState<RequestStatus[]>(
-    initialStatusFilters || [],
-  );
-  console.log('statusFilters', statusFilters);
+  const [statusFilters, setStatusFilters] = useState<RequestStatus[]>([]);
+
+  useEffect(() => {
+    if (tenantType && initialStatusFilters) {
+      setStatusFilters(initialStatusFilters);
+    }
+  }, [tenantType, initialStatusFilters]);
+
   const [searchId, setSearchId] = useState<string>('');
 
   const {
