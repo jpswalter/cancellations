@@ -23,7 +23,6 @@ export function initializeFirebaseAdmin() {
       }),
     });
   } else {
-    console.log('Firebase Admin already initialized');
     return getApps()[0];
   }
 }

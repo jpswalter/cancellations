@@ -37,7 +37,7 @@ const OverviewPage: React.FC = async () => {
 
     await queryClient.prefetchQuery({
       queryKey: ['stats', tenantType, tenantId],
-      queryFn: () => fetchStats(tenantType, tenantId),
+      queryFn: () => fetchStats({ tenantType, tenantId }),
     });
 
     return (

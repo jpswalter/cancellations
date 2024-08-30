@@ -55,18 +55,18 @@ describe('calculateStats', () => {
     const mockData: MockData = {
       requests: requestsForDemoCorpMock.filter(
         r => r.providerTenantId === providerTenantId,
-      ),
+      ) as Request[],
       requestsLog: logsMock,
       tenants: tenantsMock,
     };
 
     const mockFirestore = createMockFirestore(mockData);
 
-    const result = await calculateStats(
-      mockFirestore,
-      'provider',
-      providerTenantId,
-    );
+    const result = await calculateStats({
+      db: mockFirestore,
+      tenantType: 'provider',
+      tenantId: providerTenantId,
+    });
     expect(result.requests.totalCount).toBe(5);
     expect(result.requests.statusCounts).toEqual({
       Pending: 2,
@@ -87,7 +87,7 @@ describe('calculateStats', () => {
       accepted: 0,
       declined: 0,
     });
-    expect(result.tenants).toHaveLength(5);
+    expect(result.tenants).toHaveLength(1);
   });
 
   it('calculates stats correctly for a proxy tenant', async () => {
@@ -95,16 +95,20 @@ describe('calculateStats', () => {
     const mockData: MockData = {
       requests: requestsForDemoCorpMock.filter(
         r => r.proxyTenantId === proxyTenantId,
-      ),
+      ) as Request[],
       requestsLog: logsMock,
       tenants: tenantsMock,
     };
     const mockFirestore = createMockFirestore(mockData);
 
-    const result = await calculateStats(mockFirestore, 'proxy', proxyTenantId);
+    const result = await calculateStats({
+      db: mockFirestore,
+      tenantType: 'proxy',
+      tenantId: proxyTenantId,
+    });
 
     expect(result.requests.totalCount).toBe(mockData.requests.length);
-    expect(result.tenants).toHaveLength(5);
+    expect(result.tenants).toHaveLength(1);
   });
 
   it('handles early month scenario correctly', async () => {
@@ -113,17 +117,17 @@ describe('calculateStats', () => {
     const mockData: MockData = {
       requests: requestsForDemoCorpMock.filter(
         r => r.providerTenantId === providerTenantId,
-      ),
+      ) as Request[],
       requestsLog: logsMock,
       tenants: tenantsMock,
     };
     const mockFirestore = createMockFirestore(mockData);
 
-    const result = await calculateStats(
-      mockFirestore,
-      'provider',
-      providerTenantId,
-    );
+    const result = await calculateStats({
+      db: mockFirestore,
+      tenantType: 'provider',
+      tenantId: providerTenantId,
+    });
 
     const dailyVolumeKeys = Object.keys(result.requests.dailyVolume);
     expect(dailyVolumeKeys).toContain('2024-08-29');
@@ -140,11 +144,11 @@ describe('calculateStats', () => {
     };
     const mockFirestore = createMockFirestore(mockData);
 
-    const result = await calculateStats(
-      mockFirestore,
-      'provider',
-      'nonexistent',
-    );
+    const result = await calculateStats({
+      db: mockFirestore,
+      tenantType: 'provider',
+      tenantId: 'nonexistent',
+    });
 
     expect(result.requests.totalCount).toBe(0);
     expect(result.requests.averageResponseTime).toBe(0);
@@ -172,17 +176,17 @@ describe('calculateStats', () => {
         filteredRequests.some(request => request.id === log.requestId),
       );
       const mockData: MockData = {
-        requests: filteredRequests,
+        requests: filteredRequests as Request[],
         requestsLog: filteredLogs,
         tenants: tenantsMock,
       };
       const mockFirestore = createMockFirestore(mockData);
 
-      const result = await calculateStats(
-        mockFirestore,
-        'provider',
-        providerTenantId,
-      );
+      const result = await calculateStats({
+        db: mockFirestore,
+        tenantType: 'provider',
+        tenantId: providerTenantId,
+      });
 
       const saveOfferLogs = filteredLogs.filter(log =>
         log.changes.some(
@@ -223,11 +227,11 @@ describe('calculateStats', () => {
       };
       const mockFirestore = createMockFirestore(mockData);
 
-      const result = await calculateStats(
-        mockFirestore,
-        'provider',
-        providerTenantId,
-      );
+      const result = await calculateStats({
+        db: mockFirestore,
+        tenantType: 'provider',
+        tenantId: providerTenantId,
+      });
 
       const saveOfferLogs = filteredLogs.filter(log =>
         log.changes.some(

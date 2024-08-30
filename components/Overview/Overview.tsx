@@ -12,7 +12,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Metadata } from 'next';
 import { useQuery } from '@tanstack/react-query';
@@ -24,6 +24,12 @@ import SaveOffersDonutChart from './SaveOffersDonutChart';
 import { fetchStats } from '@/lib/api/stats';
 import { TenantType } from '@/lib/db/schema';
 import { callsBarChartOptions } from './utils';
+import {
+  DateRangePicker,
+  DateRangePickerValue,
+  Select,
+  SelectItem,
+} from '@tremor/react';
 
 export const metadata: Metadata = {
   title: 'Overview',
@@ -46,9 +52,18 @@ const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
   tenantType,
   tenantId,
 }) => {
+  const [dateRange, setDateRange] = useState<DateRangePickerValue>({
+    from: undefined,
+    to: undefined,
+  });
+  const [selectedSource, setSelectedSource] = useState<string | undefined>(
+    undefined,
+  );
+
   const { data: stats, isLoading } = useQuery({
-    queryKey: ['stats', tenantType, tenantId],
-    queryFn: () => fetchStats(tenantType, tenantId),
+    queryKey: ['stats', tenantType, tenantId, dateRange, selectedSource],
+    queryFn: () =>
+      fetchStats({ tenantType, tenantId, dateRange, selectedSource }),
     enabled: !!tenantType && !!tenantId,
   });
 
@@ -87,8 +102,29 @@ const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
       />
       <div className="flex flex-col w-full h-full z-10">
         <header className="z-40 flex h-[72px] items-center justify-between gap-2 border-b bg-white/80 px-5 backdrop-blur-sm">
-          <h1 className="text-2xl font-bold flex-1">Overview</h1>
-          {/* <Filters {...filters} showStatusFilter={false} /> */}
+          <h1 className="text-2xl font-bold">Overview</h1>
+          <div className="flex-1 flex gap-4 items-center justify-end">
+            <DateRangePicker
+              className="w-30"
+              value={dateRange}
+              onValueChange={setDateRange}
+              enableClear={true}
+              placeholder="Select date range"
+            />
+            <Select
+              value={selectedSource}
+              placeholder="Source"
+              onValueChange={value => setSelectedSource(value || undefined)}
+              enableClear={true}
+              className="w-52"
+            >
+              {stats?.tenants.map(tenant => (
+                <SelectItem key={tenant.id} value={tenant.id}>
+                  {tenant.name}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
         </header>
         <main className="flex-1 overflow-auto p-5 space-y-5 z-30">
           <Stats stats={stats?.requests} isLoading={isLoading} />

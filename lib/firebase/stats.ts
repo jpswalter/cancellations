@@ -2,11 +2,16 @@ import {
   Request,
   RequestLog,
   RequestStatus,
-  Tenant,
   TenantType,
+  Tenant,
 } from '@/lib/db/schema';
-import { Firestore } from 'firebase-admin/firestore';
+import {
+  Firestore,
+  Query,
+  CollectionReference,
+} from 'firebase-admin/firestore';
 import { addDays, format, subDays, startOfMonth, isBefore } from 'date-fns';
+import { StatsResponse } from '../api/stats';
 
 const ALL_STATUSES: RequestStatus[] = [
   'Pending',
@@ -18,29 +23,52 @@ const ALL_STATUSES: RequestStatus[] = [
   'Save Confirmed',
 ];
 
-export async function calculateStats(
-  db: Firestore,
-  tenantType: TenantType,
-  tenantId: string,
-) {
-  const requestsRef = db.collection('requests');
-  const logsRef = db.collection('requestsLog');
-  const tenantsRef = db.collection('tenants');
+export async function calculateStats({
+  db,
+  tenantType,
+  tenantId,
+  fromDate,
+  toDate,
+  sourceId,
+}: {
+  db: Firestore;
+  tenantType: TenantType;
+  tenantId: string;
+  fromDate?: string;
+  toDate?: string;
+  sourceId?: string;
+}): Promise<StatsResponse> {
+  let query: Query<Request> | CollectionReference<Request> = db.collection(
+    'requests',
+  ) as CollectionReference<Request>;
 
-  const query =
-    tenantType === 'proxy'
-      ? requestsRef.where('proxyTenantId', '==', tenantId)
-      : requestsRef.where('providerTenantId', '==', tenantId);
+  if (tenantType === 'proxy') {
+    query = query.where('proxyTenantId', '==', tenantId);
+  } else {
+    query = query.where('providerTenantId', '==', tenantId);
+  }
+
+  if (fromDate) {
+    query = query.where('dateSubmitted', '>=', fromDate);
+  }
+  if (toDate) {
+    query = query.where('dateSubmitted', '<=', toDate);
+  }
+  if (sourceId && tenantType === 'provider') {
+    query = query.where('proxyTenantId', '==', sourceId);
+  }
 
   const [requestsSnapshot, logsSnapshot, tenantsSnapshot] = await Promise.all([
     query.get(),
-    logsRef.get(),
-    tenantsRef.get(),
+    db.collection('requestsLog').get(),
+    db.collection('tenants').get(),
   ]);
 
   const requests = requestsSnapshot.docs.map(doc => doc.data() as Request);
   const logs = logsSnapshot.docs.map(doc => doc.data() as RequestLog);
   const tenants = tenantsSnapshot.docs.map(doc => doc.data() as Tenant);
+
+  const logMap = new Map(logs.map(log => [log.requestId, log]));
 
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -57,8 +85,6 @@ export async function calculateStats(
   const dailyVolume: Record<string, number> = {};
   const sourceDistribution: Record<string, number> = {};
   const saveOfferCounts = { offered: 0, accepted: 0, declined: 0 };
-
-  const logMap = new Map(logs.map(log => [log.requestId, log]));
 
   const today = new Date();
   const isEarlyInMonth = today.getDate() <= 5;
@@ -130,6 +156,13 @@ export async function calculateStats(
       ? totalResponseTimeDays / respondedRequestsCount
       : 0;
 
+  const uniqueTenantIds = new Set(
+    requests.map(request => request.proxyTenantId),
+  );
+  const relevantTenants = tenants.filter(tenant =>
+    uniqueTenantIds.has(tenant.id),
+  );
+
   return {
     requests: {
       totalCount: requests.length,
@@ -139,6 +172,6 @@ export async function calculateStats(
       sourceDistribution,
       saveOfferCounts,
     },
-    tenants: tenants.map(tenant => ({ id: tenant.id, name: tenant.name })),
+    tenants: relevantTenants.map(({ id, name }) => ({ id, name })),
   };
 }
