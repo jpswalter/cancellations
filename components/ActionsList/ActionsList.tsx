@@ -11,7 +11,6 @@ import { useMemo } from 'react';
 const ActionsList: React.FC = () => {
   const { userData } = useAuth();
   const { tenantType, tenantId } = userData || {};
-  console.log('tenantType', tenantType);
 
   const initialStatusFilters = useMemo(() => {
     return tenantType === 'provider'

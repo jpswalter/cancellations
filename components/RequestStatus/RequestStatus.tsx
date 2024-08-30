@@ -12,11 +12,11 @@ const RequestStatus = ({ status }: { status: RequestStatusType }) => {
   };
 
   return (
-    <span
+    <div
       className={`text-center px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${colorMap[status] ?? ''}`}
     >
       {status}
-    </span>
+    </div>
   );
 };
 
