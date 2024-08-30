@@ -18,9 +18,9 @@ import { Metadata } from 'next';
 import { useQuery } from '@tanstack/react-query';
 import Stats from './Stats';
 import Image from 'next/image';
-import SourcesCard from './SourcesCard';
+import SourcesDonutChart from './SourcesDonutChart';
 import ChartCard from './ChatCard';
-import SaveOffersPieChart from './SaveOffersPieChart';
+import SaveOffersDonutChart from './SaveOffersDonutChart';
 import { fetchStats } from '@/lib/api/stats';
 import { TenantType } from '@/lib/db/schema';
 import { callsBarChartOptions } from './utils';
@@ -89,15 +89,16 @@ const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
           <Stats stats={stats?.requests} isLoading={isLoading} />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <ChartCard title="Save Offers" isLoading={isLoading}>
-              <SaveOffersPieChart
+              <SaveOffersDonutChart
                 saveOfferCounts={stats?.requests?.saveOfferCounts}
               />
             </ChartCard>
-            <SourcesCard
-              data={stats?.requests?.sourceDistribution}
-              tenants={stats?.tenants}
-              isLoading={isLoading}
-            />
+            <ChartCard title="Sources" isLoading={isLoading}>
+              <SourcesDonutChart
+                data={stats?.requests?.sourceDistribution}
+                tenants={stats?.tenants}
+              />
+            </ChartCard>
           </div>
           <ChartCard
             title="Request Volume by Day"
