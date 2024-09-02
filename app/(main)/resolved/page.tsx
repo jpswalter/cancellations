@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: 'ProxyLink | Resolved',
 };
 
-export default async function ActionsPage() {
+export default async function ResolvedPage() {
   await initializeFirebaseAdmin();
 
   const sessionCookie = cookies().get('session')?.value;

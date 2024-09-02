@@ -8,6 +8,7 @@ import {
   ColumnDef,
   Row,
   VisibilityState,
+  PaginationState,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { TablePagination } from './pagination';
@@ -48,7 +49,10 @@ const GenericTable = <T extends object>({
   RowComponent,
   columnVisibility,
 }: GenericTableProps<T>) => {
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize });
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize,
+  });
 
   const table = useReactTable({
     data,

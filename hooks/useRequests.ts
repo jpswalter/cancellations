@@ -29,13 +29,15 @@ export const useRequests = ({
   const [selectedRequestType, setSelectedRequestType] = useState<
     RequestStatus | undefined
   >(undefined);
-  const [statusFilters, setStatusFilters] = useState<RequestStatus[]>([]);
+  const [statusFilters, setStatusFilters] = useState<
+    RequestStatus[] | undefined
+  >(initialStatusFilters);
 
   useEffect(() => {
-    if (tenantType && initialStatusFilters) {
+    if (initialStatusFilters && !statusFilters?.length) {
       setStatusFilters(initialStatusFilters);
     }
-  }, [tenantType, initialStatusFilters]);
+  }, [initialStatusFilters, statusFilters?.length]);
 
   const [searchId, setSearchId] = useState<string>('');
 
@@ -65,13 +67,13 @@ export const useRequests = ({
           : request.proxyTenantId === selectedTenant
         : true;
 
-      const requestTypeMatch = selectedRequestType
+      const requestStatusMatch = selectedRequestType
         ? request.status === selectedRequestType
         : true;
 
       const statusMatch =
-        statusFilters.length > 0
-          ? statusFilters.includes(request.status)
+        Number(statusFilters?.length) > 0
+          ? statusFilters?.includes(request.status)
           : true;
 
       const idMatch = searchId
@@ -79,7 +81,11 @@ export const useRequests = ({
         : true;
 
       return (
-        dateInRange && tenantMatch && requestTypeMatch && statusMatch && idMatch
+        dateInRange &&
+        tenantMatch &&
+        requestStatusMatch &&
+        statusMatch &&
+        idMatch
       );
     });
   }, [

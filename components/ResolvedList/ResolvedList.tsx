@@ -2,16 +2,19 @@
 'use client';
 import { useAuth } from '@/hooks/useAuth';
 import { RequestStatus } from '@/lib/db/schema';
-import CongratsEmpty from '@/components/RequestsTable/CongratsEmpty';
 import ResolvedTable from './ResolvedTable';
 import Filters from '../Filters/Filters';
 import { useRequests } from '@/hooks/useRequests';
+import { useMemo } from 'react';
 
-const ActionsList: React.FC = () => {
+const ResolvedList: React.FC = () => {
   const { userData } = useAuth();
   const { tenantType, tenantId } = userData || {};
 
-  const statusFilters = ['Save Confirmed', 'Canceled'] as RequestStatus[];
+  const statusFilters = useMemo(
+    () => ['Save Confirmed', 'Canceled'] as RequestStatus[],
+    [],
+  );
 
   const { requests, isLoading, filters } = useRequests({
     tenantType,
@@ -30,7 +33,6 @@ const ActionsList: React.FC = () => {
         <div className="p-4 flex flex-col space-y-4 h-full flex-1">
           <ResolvedTable
             requests={requests}
-            EmptyComponent={CongratsEmpty}
             defaultSort={[{ id: 'dateResponded', desc: true }]}
             isLoading={isLoading}
           />
@@ -40,4 +42,4 @@ const ActionsList: React.FC = () => {
   );
 };
 
-export default ActionsList;
+export default ResolvedList;
