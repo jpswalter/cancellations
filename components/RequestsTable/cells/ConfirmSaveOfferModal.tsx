@@ -81,7 +81,7 @@ const ConfirmSaveOfferModal: React.FC<ConfirmSaveOfferModalProps> = ({
     <Modal
       shown={isVisible}
       onClose={onClose}
-      title="Confirm Save Offer"
+      title=""
       size="sm"
       footer={
         <div className="flex justify-end space-x-2">
@@ -89,7 +89,7 @@ const ConfirmSaveOfferModal: React.FC<ConfirmSaveOfferModalProps> = ({
             Cancel
           </Button>
           <Button
-            color="green"
+            color="blue"
             onClick={handleConfirm}
             disabled={mutation.isPending}
           >
@@ -100,10 +100,11 @@ const ConfirmSaveOfferModal: React.FC<ConfirmSaveOfferModalProps> = ({
     >
       <div className="flex flex-col items-center text-center">
         <IoMdCheckmarkCircleOutline className="text-green-500 text-6xl" />
-        <p className="font-semibold my-2">Confirm Save Offer</p>
-        <div className="p-4 flex items-start text-gray-600" role="alert">
-          <p className="font-bold">
-            Are you sure you want to confirm this save offer?
+        <p className="font-bold my-2">Confirm Save Offer Applied</p>
+        <div className="p-2 flex items-start text-gray-600" role="alert">
+          <p>
+            Press confirm after you have applied the discount to the customer’s
+            account.
           </p>
         </div>
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
