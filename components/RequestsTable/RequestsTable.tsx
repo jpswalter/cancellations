@@ -85,9 +85,7 @@ const RequestsTable: FC<Props> = ({
           {
             id: 'Actions',
             header: 'Actions',
-            cell: ({ row }: { row: Row<Request> }) => (
-              <ActionsCell row={row} toggleDrawer={toggleDrawer} />
-            ),
+            cell: ({ row }: { row: Row<Request> }) => <ActionsCell row={row} />,
           },
         ]
       : []),
@@ -101,7 +99,7 @@ const RequestsTable: FC<Props> = ({
             }: {
               row: Row<Request>;
               cell: Cell<Request, RequestSaveOffer>;
-            }) => <SaveOfferCell row={row} toggleDrawer={toggleDrawer} />,
+            }) => <SaveOfferCell row={row} />,
           },
         ]
       : []),

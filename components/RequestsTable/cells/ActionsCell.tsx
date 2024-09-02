@@ -4,15 +4,17 @@ import { Request } from '@/lib/db/schema';
 import SaveOfferModal from './SaveOfferModal';
 import ResolveModal from '../ResolveModal';
 import { Row } from '@tanstack/react-table';
+import ConfirmSaveOfferModal from './ConfirmSaveOfferModal';
 
 interface ActionsCellProps {
   row: Row<Request>;
-  toggleDrawer: (request: Request, position?: 'left' | 'right') => void;
 }
 
-const ActionsCell: React.FC<ActionsCellProps> = ({ row, toggleDrawer }) => {
+const ActionsCell: React.FC<ActionsCellProps> = ({ row }) => {
   const [saveOfferModal, setSaveOfferModal] = useState(false);
   const [resolveModal, setResolveModal] = useState(false);
+  const [confirmSaveOfferModal, setConfirmSaveOfferModal] = useState(false);
+
   const [action, setAction] = useState<'cancel' | 'decline' | null>(null);
 
   const openSaveOfferModal = () => setSaveOfferModal(true);
@@ -25,6 +27,9 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row, toggleDrawer }) => {
     setResolveModal(false);
     setAction(null);
   };
+
+  const openConfirmSaveOfferModal = () => setConfirmSaveOfferModal(true);
+  const closeConfirmSaveOfferModal = () => setConfirmSaveOfferModal(false);
 
   const status = row.original.status;
 
@@ -75,7 +80,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row, toggleDrawer }) => {
 
   const handleSaveOfferClick = () => {
     if (status === 'Save Accepted') {
-      toggleDrawer(row.original, 'left');
+      openConfirmSaveOfferModal();
     } else {
       openSaveOfferModal();
     }
@@ -99,6 +104,11 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row, toggleDrawer }) => {
         request={row.original}
         closeModal={closeResolveModal}
         action={action}
+      />
+      <ConfirmSaveOfferModal
+        isVisible={confirmSaveOfferModal}
+        request={row.original}
+        onClose={closeConfirmSaveOfferModal}
       />
     </div>
   );

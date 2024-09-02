@@ -5,7 +5,6 @@ import { Row } from '@tanstack/react-table';
 
 type Props = {
   row: Row<Request>;
-  toggleDrawer: (request: Request) => void;
 };
 const SaveOfferCell: FC<Props> = ({ row }) => {
   const { userData } = useAuth();
