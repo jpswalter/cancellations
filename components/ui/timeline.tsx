@@ -44,7 +44,10 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
       {status && (
         <div
           className={clsx(
-            side === 'left' ? 'text-left pl-3' : 'text-right pr-3',
+            side === 'left'
+              ? 'text-left pl-3 justify-start'
+              : 'text-right pr-3 justify-end',
+            'flex',
           )}
         >
           {status}
