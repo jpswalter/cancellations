@@ -15,15 +15,15 @@ const Stats: FC<Props> = ({ requests }) => {
     request => request.status === 'Declined',
   ).length;
 
-  const averageTimeToRespondDays = useMemo(() => {
+  const averageTimeToRespondHours = useMemo(() => {
     if (!requests) return 0;
 
-    const totalResponseTimeDays = requests.reduce((acc, request) => {
+    const totalResponseTimeHours = requests.reduce((acc, request) => {
       if (request.dateResponded) {
         const responseTimeMs =
           new Date(request.dateResponded).getTime() -
           new Date(request.dateSubmitted).getTime();
-        return acc + responseTimeMs / (1000 * 60 * 60 * 24); // Convert to days
+        return acc + responseTimeMs / (1000 * 60 * 60); // Convert to hours
       }
       return acc;
     }, 0);
@@ -34,7 +34,7 @@ const Stats: FC<Props> = ({ requests }) => {
 
     const average =
       respondedRequestsCount > 0
-        ? totalResponseTimeDays / respondedRequestsCount
+        ? totalResponseTimeHours / respondedRequestsCount
         : 0;
     return Math.round(average * 10) / 10; // Round to 0.1
   }, [requests]);
@@ -96,14 +96,14 @@ const Stats: FC<Props> = ({ requests }) => {
           />
         ),
       },
-      { name: 'Avg Service Level', stat: `${averageTimeToRespondDays} days` },
+      { name: 'Avg Service Level', stat: `${averageTimeToRespondHours} hours` },
     ],
     [
       requests,
       saveOffersCount,
       resolvedRequestsCount,
       declinedRequestsCount,
-      averageTimeToRespondDays,
+      averageTimeToRespondHours,
     ],
   );
 
