@@ -5,6 +5,10 @@ import SaveOfferModal from './SaveOfferModal';
 import ResolveModal from '../ResolveModal';
 import { Row } from '@tanstack/react-table';
 import ConfirmSaveOfferModal from './ConfirmSaveOfferModal';
+import { useAuth } from '@/hooks/useAuth';
+import { getTenants } from '@/lib/api/tenant';
+import { useQuery } from '@tanstack/react-query';
+import { InfoTooltip } from '@/components/ui/tooltip';
 
 interface ActionsCellProps {
   row: Row<Request>;
@@ -14,6 +18,16 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row }) => {
   const [saveOfferModal, setSaveOfferModal] = useState(false);
   const [resolveModal, setResolveModal] = useState(false);
   const [confirmSaveOfferModal, setConfirmSaveOfferModal] = useState(false);
+  const { userData } = useAuth();
+  const tenantId = userData?.tenantId;
+
+  const { data: tenant } = useQuery({
+    queryKey: ['tenants'],
+    queryFn: getTenants,
+    select: tenants => tenants.find(tenant => tenant.id === tenantId),
+  });
+
+  const tenantHasSaveOffers = Number(tenant?.saveOffers?.length) > 0;
 
   const [action, setAction] = useState<'cancel' | 'decline' | null>(null);
 
@@ -32,7 +46,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row }) => {
   const closeConfirmSaveOfferModal = () => setConfirmSaveOfferModal(false);
 
   const status = row.original.status;
-  const hasSaveOffer = row.original.saveOffer !== null;
+  const requestAlreadyHadSaveOffer = row.original.saveOffer !== null;
 
   const renderSaveOfferConfirmButton = () => {
     if (status === 'Save Accepted')
@@ -54,13 +68,24 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row }) => {
       status === 'Canceled' ||
       status === 'Save Offered' ||
       status === 'Save Confirmed' ||
-      hasSaveOffer
-    )
+      requestAlreadyHadSaveOffer
+    ) {
       return null;
+    }
     return (
-      <Button onClick={openSaveOfferModal} color="blue" className="w-24">
-        Save Offer
-      </Button>
+      <div className="flex items-center space-x-2">
+        {!tenantHasSaveOffers && (
+          <InfoTooltip text="Your organization has not created any save offers yet." />
+        )}
+        <Button
+          onClick={openSaveOfferModal}
+          color="blue"
+          className="w-24"
+          disabled={!tenantHasSaveOffers}
+        >
+          Save Offer
+        </Button>
+      </div>
     );
   };
 
