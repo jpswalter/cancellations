@@ -8,6 +8,7 @@ import { updateRequest } from '@/lib/api/request';
 import { getTenants } from '@/lib/api/tenant';
 import Spinner from '@/components/ui/spinner';
 import { useAuth } from '@/hooks/useAuth';
+import { useTableRowAnimation } from '@/components/ui/table/animation-context';
 
 interface SaveOfferModalProps {
   isVisible: boolean;
@@ -31,6 +32,8 @@ const SaveOfferModal: React.FC<SaveOfferModalProps> = ({
 
   const queryClient = useQueryClient();
   const { userData } = useAuth();
+  const { closeRow } = useTableRowAnimation();
+
   const mutation = useMutation({
     mutationFn: (offer: SaveOffer) => {
       const updatedRequest = {
@@ -42,12 +45,15 @@ const SaveOfferModal: React.FC<SaveOfferModalProps> = ({
       return updateRequest(updatedRequest);
     },
     onSuccess: () => {
-      if (userData?.tenantType && userData?.tenantId) {
-        queryClient.invalidateQueries({
-          queryKey: ['requests', userData.tenantType, userData.tenantId],
-        });
-      }
       setSelectedOfferId('');
+      closeRow(request.id);
+      setTimeout(() => {
+        if (userData?.tenantType && userData?.tenantId) {
+          queryClient.invalidateQueries({
+            queryKey: ['requests', userData.tenantType, userData.tenantId],
+          });
+        }
+      }, 300);
     },
     onSettled: () => {
       closeModal();

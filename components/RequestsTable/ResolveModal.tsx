@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateRequest } from '@/lib/api/request';
 import { useAuth } from '@/hooks/useAuth';
 import DeclineReason from './DeclineReason';
+import { useTableRowAnimation } from '../ui/table/animation-context';
 
 interface Props {
   shown: boolean;
@@ -22,18 +23,21 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
   const [declineReason, setDeclineReason] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const { userData } = useAuth();
-
+  const { closeRow } = useTableRowAnimation();
   const isConfirmDisabled = action === 'decline' && !declineReason;
 
   const mutation = useMutation({
     mutationFn: updateRequest,
     onSuccess: () => {
-      if (userData?.tenantType && userData?.tenantId) {
-        queryClient.invalidateQueries({
-          queryKey: ['requests', userData.tenantType, userData.tenantId],
-        });
-      }
+      closeRow(request.id);
       closeModal();
+      setTimeout(() => {
+        if (userData?.tenantType && userData?.tenantId) {
+          queryClient.invalidateQueries({
+            queryKey: ['requests', userData.tenantType, userData.tenantId],
+          });
+        }
+      }, 300);
     },
     onError: error => {
       console.error('Error updating request:', error);

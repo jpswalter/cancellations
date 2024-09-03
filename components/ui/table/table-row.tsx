@@ -1,18 +1,23 @@
-// file: components/RequestsTable/RequestRow.tsx
 import React from 'react';
 import { Row, flexRender } from '@tanstack/react-table';
-import { Request } from '@/lib/db/schema';
 import { useForm, FormProvider } from 'react-hook-form';
-import { CustomColumnMeta } from '@/components/ui/table';
+import { CustomColumnMeta } from '@/components/ui/table/table';
 import clsx from 'clsx';
+import { useTableRowAnimation } from './animation-context';
+import { Request } from '@/lib/db/schema';
 
-interface RequestRowProps {
-  row: Row<Request>;
-  toggleDrawer: (request: Request) => void;
+interface RequestRowProps<T> {
+  row: Row<T>;
+  toggleDrawer: (data: T) => void;
 }
 
-const RequestRow: React.FC<RequestRowProps> = ({ row, toggleDrawer }) => {
+const RequestRow = <T extends Request>({
+  row,
+  toggleDrawer,
+}: RequestRowProps<T>) => {
   const methods = useForm();
+  const { closingRowId } = useTableRowAnimation();
+  const isClosing = closingRowId === row.original.id;
 
   const handleRowClick = () => {
     toggleDrawer(row.original);
@@ -21,7 +26,11 @@ const RequestRow: React.FC<RequestRowProps> = ({ row, toggleDrawer }) => {
   return (
     <FormProvider {...methods}>
       <tr
-        className="border-b border-gray-200 cursor-pointer"
+        className={`border-b border-gray-200 cursor-pointer overflow-hidden transition-all duration-300 ease-out ${
+          isClosing
+            ? 'transform scale-y-0 h-0 bg-blue-200'
+            : 'transform scale-y-100'
+        }`}
         onClick={handleRowClick}
       >
         {row.getVisibleCells().map(cell => {

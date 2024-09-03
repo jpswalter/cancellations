@@ -9,13 +9,12 @@ import {
 import { Row, Cell, VisibilityState } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
 import SaveOfferCell from '@/components/RequestsTable/cells/SaveOfferCell';
-import RequestRow from './Row';
 import { generateCustomerInfoColumns } from './table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import EmptyRequestsState from './EmptyTable';
 import CTACell from './cells/CTACell';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
-import DataTable from '../ui/table';
+import DataTable from '../ui/table/table';
 import ActionsCell from './cells/ActionsCell';
 import { Loader } from '../ui/spinner';
 
@@ -71,11 +70,11 @@ const RequestsTable: FC<Props> = ({
     {
       header: 'Status',
       meta: {
-        className: 'text-center',
+        className: '',
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
-        <RequestStatus status={cell.getValue()} />
+        <RequestStatus status={cell.getValue()} className="w-full" />
       ),
       size: 130,
     },
@@ -131,7 +130,6 @@ const RequestsTable: FC<Props> = ({
           defaultSort={defaultSort}
           EmptyComponent={EmptyComponent}
           onRowClick={toggleDrawer}
-          RowComponent={RequestRow}
           columnVisibility={columnVisibility}
         />
       )}

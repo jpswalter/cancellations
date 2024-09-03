@@ -93,7 +93,6 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row }) => {
         {renderCancelButton()}
         {renderDeclineButton()}
       </div>
-
       <SaveOfferModal
         isVisible={saveOfferModal}
         closeModal={closeSaveOfferModal}

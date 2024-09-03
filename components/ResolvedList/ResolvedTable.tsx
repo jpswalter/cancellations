@@ -11,8 +11,7 @@ import RequestDrawer from '../RequestDetails/RequestDrawer';
 import EmptyRequestsState from '../RequestsTable/EmptyTable';
 import { generateCustomerInfoColumns } from '../RequestsTable/table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
-import DataTable, { CustomColumnDef } from '@/components/ui/table';
-import RequestRow from '../RequestsTable/Row';
+import DataTable, { CustomColumnDef } from '@/components/ui/table/table';
 import { Loader } from 'lucide-react';
 interface Props {
   requests: Request[];
@@ -101,7 +100,6 @@ const RequestsTable: FC<Props> = ({
           defaultSort={defaultSort}
           EmptyComponent={EmptyComponent}
           onRowClick={toggleDrawer}
-          RowComponent={RequestRow}
         />
       )}
       <RequestDrawer
