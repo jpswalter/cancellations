@@ -28,7 +28,7 @@ const RequestRow = <T extends Request>({
       <tr
         className={`border-b border-gray-200 cursor-pointer overflow-hidden transition-all duration-300 ease-out ${
           isClosing
-            ? 'transform scale-y-0 h-0 bg-red-100'
+            ? 'transform scale-y-0 h-0 bg-blue-200'
             : 'transform scale-y-100'
         }`}
         onClick={handleRowClick}

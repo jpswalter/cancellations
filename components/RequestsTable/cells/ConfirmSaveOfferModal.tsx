@@ -6,10 +6,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateRequest } from '@/lib/api/request';
 import { parseErrorMessage } from '@/utils/general';
 import Spinner from '@/components/ui/spinner';
+import { useTableRowAnimation } from '@/components/ui/table/animation-context';
 
 interface ConfirmSaveOfferModalProps {
   isVisible: boolean;
-  request: Request | null;
+  request: Request;
   onClose: () => void;
 }
 
@@ -20,31 +21,31 @@ const ConfirmSaveOfferModal: React.FC<ConfirmSaveOfferModalProps> = ({
 }) => {
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  const { closeRow } = useTableRowAnimation();
 
   const mutation = useMutation({
     mutationFn: (updatedRequest: Request) => updateRequest(updatedRequest),
     onMutate: async updatedRequest => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['requests'] });
-
+      closeRow(request.id);
       // Snapshot the previous value
       const previousRequests = queryClient.getQueryData<Request[]>([
         'requests',
       ]);
-
-      // Optimistically update to the new value
-      queryClient.setQueryData<Request[]>(['requests'], old => {
-        return old
-          ? old.map(req =>
-              req.id === updatedRequest.id ? updatedRequest : req,
-            )
-          : [];
-      });
-
-      // Return a context object with the snapshotted value
+      setTimeout(() => {
+        // Optimistically update to the new value
+        queryClient.setQueryData<Request[]>(['requests'], old => {
+          return old
+            ? old.map(req =>
+                req.id === updatedRequest.id ? updatedRequest : req,
+              )
+            : [];
+        });
+      }, 300);
       return { previousRequests };
     },
-    onError: (err, newRequest, context) => {
+    onError: (err, _, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       queryClient.setQueryData(['requests'], context?.previousRequests);
       setError(parseErrorMessage(err));

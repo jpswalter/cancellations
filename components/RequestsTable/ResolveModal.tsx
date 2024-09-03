@@ -29,8 +29,8 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
   const mutation = useMutation({
     mutationFn: updateRequest,
     onSuccess: () => {
-      closeModal();
       closeRow(request.id);
+      closeModal();
       setTimeout(() => {
         if (userData?.tenantType && userData?.tenantId) {
           queryClient.invalidateQueries({
