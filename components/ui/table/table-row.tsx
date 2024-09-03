@@ -1,30 +1,47 @@
 import React from 'react';
 import { Row, flexRender } from '@tanstack/react-table';
 import { useForm, FormProvider } from 'react-hook-form';
-import { CustomColumnMeta } from '@/components/ui/table';
+import { CustomColumnMeta } from '@/components/ui/table/table';
 import clsx from 'clsx';
+import { useTableRowAnimation } from './animation-context';
+import { Request } from '@/lib/db/schema';
+import { Transition } from '@headlessui/react';
 
 interface RequestRowProps<T> {
   row: Row<T>;
   toggleDrawer: (data: T) => void;
 }
 
-const RequestRow = <T extends object>({
+const RequestRow = <T extends Request>({
   row,
   toggleDrawer,
 }: RequestRowProps<T>) => {
   const methods = useForm();
-
+  const { closingRowId, closeRow } = useTableRowAnimation();
+  const isClosing = closingRowId === row.original.id;
+  console.log(
+    isClosing ? `closing ${row.original.customerInfo.customerEmail}` : '',
+  );
   const handleRowClick = () => {
     toggleDrawer(row.original);
   };
 
   return (
     <FormProvider {...methods}>
-      <tr
+      <Transition
+        as="tr"
+        show={!isClosing}
+        enter="transition-all duration-300 ease-out"
+        enterFrom="opacity-100 h-auto"
+        enterTo="opacity-100 h-auto"
+        leave="transition-all duration-300 ease-out"
+        leaveFrom="opacity-100 h-auto"
+        leaveTo="opacity-0 h-0 overflow-hidden"
         className="border-b border-gray-200 cursor-pointer"
         onClick={handleRowClick}
+        onTransitionEnd={() => isClosing && closeRow(null)}
       >
+        в
         {row.getVisibleCells().map(cell => {
           const meta = cell.column.columnDef.meta as CustomColumnMeta;
           const width = cell.column.getSize();
@@ -50,7 +67,7 @@ const RequestRow = <T extends object>({
             </td>
           );
         })}
-      </tr>
+      </Transition>
     </FormProvider>
   );
 };

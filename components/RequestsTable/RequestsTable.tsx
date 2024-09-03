@@ -14,7 +14,7 @@ import RequestStatus from '../RequestStatus/RequestStatus';
 import EmptyRequestsState from './EmptyTable';
 import CTACell from './cells/CTACell';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
-import DataTable from '../ui/table';
+import DataTable from '../ui/table/table';
 import ActionsCell from './cells/ActionsCell';
 import { Loader } from '../ui/spinner';
 

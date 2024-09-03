@@ -11,7 +11,7 @@ import RequestDrawer from '../RequestDetails/RequestDrawer';
 import EmptyRequestsState from '../RequestsTable/EmptyTable';
 import { generateCustomerInfoColumns } from '../RequestsTable/table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
-import DataTable, { CustomColumnDef } from '@/components/ui/table';
+import DataTable, { CustomColumnDef } from '@/components/ui/table/table';
 import { Loader } from 'lucide-react';
 interface Props {
   requests: Request[];
