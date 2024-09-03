@@ -70,11 +70,11 @@ const RequestsTable: FC<Props> = ({
     {
       header: 'Status',
       meta: {
-        className: 'text-center',
+        className: '',
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
-        <RequestStatus status={cell.getValue()} />
+        <RequestStatus status={cell.getValue()} className="w-full" />
       ),
       size: 130,
     },

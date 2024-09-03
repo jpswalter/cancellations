@@ -5,7 +5,6 @@ import { CustomColumnMeta } from '@/components/ui/table/table';
 import clsx from 'clsx';
 import { useTableRowAnimation } from './animation-context';
 import { Request } from '@/lib/db/schema';
-import { Transition } from '@headlessui/react';
 
 interface RequestRowProps<T> {
   row: Row<T>;
@@ -17,31 +16,23 @@ const RequestRow = <T extends Request>({
   toggleDrawer,
 }: RequestRowProps<T>) => {
   const methods = useForm();
-  const { closingRowId, closeRow } = useTableRowAnimation();
+  const { closingRowId } = useTableRowAnimation();
   const isClosing = closingRowId === row.original.id;
-  console.log(
-    isClosing ? `closing ${row.original.customerInfo.customerEmail}` : '',
-  );
+
   const handleRowClick = () => {
     toggleDrawer(row.original);
   };
 
   return (
     <FormProvider {...methods}>
-      <Transition
-        as="tr"
-        show={!isClosing}
-        enter="transition-all duration-300 ease-out"
-        enterFrom="opacity-100 h-auto"
-        enterTo="opacity-100 h-auto"
-        leave="transition-all duration-300 ease-out"
-        leaveFrom="opacity-100 h-auto"
-        leaveTo="opacity-0 h-0 overflow-hidden"
-        className="border-b border-gray-200 cursor-pointer"
+      <tr
+        className={`border-b border-gray-200 cursor-pointer overflow-hidden transition-all duration-300 ease-out ${
+          isClosing
+            ? 'transform scale-y-0 h-0 bg-red-100'
+            : 'transform scale-y-100'
+        }`}
         onClick={handleRowClick}
-        onTransitionEnd={() => isClosing && closeRow(null)}
       >
-        в
         {row.getVisibleCells().map(cell => {
           const meta = cell.column.columnDef.meta as CustomColumnMeta;
           const width = cell.column.getSize();
@@ -67,7 +58,7 @@ const RequestRow = <T extends Request>({
             </td>
           );
         })}
-      </Transition>
+      </tr>
     </FormProvider>
   );
 };

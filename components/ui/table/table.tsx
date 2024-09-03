@@ -63,6 +63,7 @@ const GenericTable = <T extends Request>({
       columnVisibility,
     },
     onPaginationChange: setPagination,
+    getRowId: row => row.id,
   });
 
   if (data.length === 0 && EmptyComponent) {
