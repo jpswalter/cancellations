@@ -32,18 +32,34 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row }) => {
   const closeConfirmSaveOfferModal = () => setConfirmSaveOfferModal(false);
 
   const status = row.original.status;
+  const hasSaveOffer = row.original.saveOffer !== null;
+
+  const renderSaveOfferConfirmButton = () => {
+    if (status === 'Save Accepted')
+      return (
+        <Button
+          onClick={openConfirmSaveOfferModal}
+          color="blue"
+          className="w-24"
+        >
+          Confirm
+        </Button>
+      );
+    return null;
+  };
 
   const renderSaveOfferButton = () => {
     if (
       status === 'Save Declined' ||
       status === 'Canceled' ||
       status === 'Save Offered' ||
-      status === 'Save Confirmed'
+      status === 'Save Confirmed' ||
+      hasSaveOffer
     )
       return null;
     return (
-      <Button onClick={handleSaveOfferClick} color="blue" className="w-24">
-        {status === 'Save Accepted' ? 'Confirm' : 'Save Offer'}
+      <Button onClick={openSaveOfferModal} color="blue" className="w-24">
+        Save Offer
       </Button>
     );
   };
@@ -78,17 +94,10 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ row }) => {
     );
   };
 
-  const handleSaveOfferClick = () => {
-    if (status === 'Save Accepted') {
-      openConfirmSaveOfferModal();
-    } else {
-      openSaveOfferModal();
-    }
-  };
-
   return (
     <div onClick={e => e.stopPropagation()}>
       <div className="flex space-x-2 justify-end">
+        {renderSaveOfferConfirmButton()}
         {renderSaveOfferButton()}
         {renderCancelButton()}
         {renderDeclineButton()}
