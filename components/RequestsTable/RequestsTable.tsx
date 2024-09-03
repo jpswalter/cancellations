@@ -9,7 +9,6 @@ import {
 import { Row, Cell, VisibilityState } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
 import SaveOfferCell from '@/components/RequestsTable/cells/SaveOfferCell';
-import RequestRow from './Row';
 import { generateCustomerInfoColumns } from './table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import EmptyRequestsState from './EmptyTable';
@@ -131,7 +130,6 @@ const RequestsTable: FC<Props> = ({
           defaultSort={defaultSort}
           EmptyComponent={EmptyComponent}
           onRowClick={toggleDrawer}
-          RowComponent={RequestRow}
           columnVisibility={columnVisibility}
         />
       )}

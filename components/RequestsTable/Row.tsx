@@ -1,17 +1,18 @@
-// file: components/RequestsTable/RequestRow.tsx
 import React from 'react';
 import { Row, flexRender } from '@tanstack/react-table';
-import { Request } from '@/lib/db/schema';
 import { useForm, FormProvider } from 'react-hook-form';
 import { CustomColumnMeta } from '@/components/ui/table';
 import clsx from 'clsx';
 
-interface RequestRowProps {
-  row: Row<Request>;
-  toggleDrawer: (request: Request) => void;
+interface RequestRowProps<T> {
+  row: Row<T>;
+  toggleDrawer: (data: T) => void;
 }
 
-const RequestRow: React.FC<RequestRowProps> = ({ row, toggleDrawer }) => {
+const RequestRow = <T extends object>({
+  row,
+  toggleDrawer,
+}: RequestRowProps<T>) => {
   const methods = useForm();
 
   const handleRowClick = () => {

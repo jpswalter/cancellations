@@ -6,12 +6,13 @@ import {
   getSortedRowModel,
   getPaginationRowModel,
   ColumnDef,
-  Row,
   VisibilityState,
   PaginationState,
+  Row,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { TablePagination } from './pagination';
+import RequestRow from '../RequestsTable/Row'; // Import the default RowComponent
 
 export type CustomColumnMeta = {
   isCustomerInfo?: boolean;
@@ -32,10 +33,6 @@ interface GenericTableProps<T> {
   EmptyComponent?: React.ComponentType;
   onRowClick?: (row: T) => void;
   pageSize?: number;
-  RowComponent?: React.ComponentType<{
-    row: Row<T>;
-    toggleDrawer: (data: T) => void;
-  }>;
   columnVisibility?: VisibilityState;
 }
 
@@ -46,7 +43,6 @@ const GenericTable = <T extends object>({
   EmptyComponent,
   onRowClick,
   pageSize = 10,
-  RowComponent,
   columnVisibility,
 }: GenericTableProps<T>) => {
   const [pagination, setPagination] = useState<PaginationState>({
@@ -113,35 +109,13 @@ const GenericTable = <T extends object>({
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map(row =>
-              RowComponent ? (
-                <RowComponent
-                  key={row.id}
-                  row={row}
-                  toggleDrawer={() => onRowClick && onRowClick(row.original)}
-                />
-              ) : (
-                <tr
-                  key={row.id}
-                  className={clsx('hover:bg-gray-50', {
-                    'cursor-pointer': !!onRowClick,
-                  })}
-                  onClick={() => onRowClick && onRowClick(row.original)}
-                >
-                  {row.getVisibleCells().map(cell => (
-                    <td
-                      key={cell.id}
-                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ),
-            )}
+            {table.getRowModel().rows.map((row: Row<T>) => (
+              <RequestRow
+                key={row.id}
+                row={row}
+                toggleDrawer={() => onRowClick && onRowClick(row.original)}
+              />
+            ))}
           </tbody>
         </table>
       </div>
