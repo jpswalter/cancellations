@@ -86,7 +86,7 @@ const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
   const shouldShowOfferDetails = request.status === 'Save Offered';
 
   return (
-    <div className="bg-gradient-to-r from-green-500 to-yellow-600 text-white rounded-lg shadow-lg p-6">
+    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg shadow-lg p-6">
       <h2 className="text-2xl font-bold mb-4">{title}</h2>
       <p className="text-lg mb-4">{message}</p>
       {shouldShowOfferDetails && (
