@@ -74,19 +74,20 @@ const RequestsTable: FC<Props> = ({
             cell: ({ row }: { row: Row<Request> }) => (
               <CTACell row={row} toggleDrawer={toggleDrawer} />
             ),
+            enableSorting: false,
           },
         ]
       : []),
     {
       header: 'Status',
       meta: {
-        className: '',
+        className: 'text-center',
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
         <RequestStatus status={cell.getValue()} className="w-full" />
       ),
-      size: 130,
+      size: 150,
     },
     ...customerInfoColumns,
     ...(isProviderUser
@@ -102,6 +103,7 @@ const RequestsTable: FC<Props> = ({
                 }
               />
             ),
+            enableSorting: false,
           },
         ]
       : []),
@@ -116,6 +118,7 @@ const RequestsTable: FC<Props> = ({
               row: Row<Request>;
               cell: Cell<Request, RequestSaveOffer>;
             }) => <SaveOfferCell row={row} />,
+            enableSorting: false,
           },
         ]
       : []),

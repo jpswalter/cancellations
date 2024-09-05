@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   useReactTable,
-  flexRender,
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
@@ -9,11 +8,11 @@ import {
   VisibilityState,
   PaginationState,
 } from '@tanstack/react-table';
-import clsx from 'clsx';
 import { TablePagination } from '../pagination';
 import RequestRow from './table-row';
 import { Request } from '@/lib/db/schema';
 import { TableRowAnimationProvider } from './animation-context';
+import SortableHeader from './table-header';
 
 export type CustomColumnMeta = {
   isCustomerInfo?: boolean;
@@ -50,6 +49,7 @@ const GenericTable = <T extends Request>({
     pageIndex: 0,
     pageSize,
   });
+  const [sorting, setSorting] = useState(defaultSort);
 
   const table = useReactTable({
     data,
@@ -58,11 +58,12 @@ const GenericTable = <T extends Request>({
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      sorting: defaultSort,
+      sorting,
       pagination,
       columnVisibility,
     },
     onPaginationChange: setPagination,
+    onSortingChange: setSorting,
     getRowId: row => row.id,
   });
 
@@ -78,37 +79,9 @@ const GenericTable = <T extends Request>({
             <thead className="border-b border-gray-200">
               {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
-                  {headerGroup.headers.map(header => {
-                    const meta = header.column.columnDef
-                      .meta as CustomColumnMeta;
-                    const width = header.column.getSize();
-                    const headerClassName = clsx(
-                      'p-4 whitespace-nowrap',
-                      {
-                        'bg-yellow-50': meta?.isHighlightable,
-                        'sticky right-0 z-10 bg-white': meta?.isSticky,
-                        'before:absolute before:content-[""] before:top-0 before:left-0 before:w-4 before:h-full before:shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.1)] before:z-[-1]':
-                          meta?.isSticky,
-                      },
-                      meta?.className ?? 'text-left',
-                    );
-                    return (
-                      <th
-                        key={header.id}
-                        className={headerClassName}
-                        style={{
-                          minWidth: `${width}px`,
-                        }}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </th>
-                    );
-                  })}
+                  {headerGroup.headers.map(header => (
+                    <SortableHeader key={header.id} header={header} />
+                  ))}
                 </tr>
               ))}
             </thead>
