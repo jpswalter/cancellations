@@ -1,4 +1,4 @@
-import { CustomerInfoField, Request } from '@/lib/db/schema';
+import { Request } from '@/lib/db/schema';
 import FixCustomerInfo from './FixCustomerInfo';
 import SaveOfferWidget from './SaveOfferWidget';
 import { useMemo, useEffect, useState } from 'react';
@@ -18,7 +18,7 @@ const RequestActions: React.FC<{
 
     return (
       (tenantType === 'proxy' &&
-        (declineReason !== null ||
+        ((declineReason && declineReason.length > 0) ||
           status === 'Save Offered' ||
           status === 'Save Confirmed')) ||
       (tenantType === 'provider' &&
@@ -40,17 +40,11 @@ const RequestActions: React.FC<{
     return null;
   }
 
-  if (request?.declineReason) {
-    const declineReasonMap: Record<string, CustomerInfoField> = {
-      'Wrong Customer Name': 'customerName',
-      'Wrong Customer Email': 'customerEmail',
-      'Wrong Account Number': 'accountNumber',
-      'Wrong Last 4 CC Digits': 'lastFourCCDigits',
-    };
+  if (request?.declineReason && request.declineReason.length > 0) {
     return (
       <FixCustomerInfo
         request={request}
-        field={declineReasonMap[request?.declineReason]}
+        declineReasons={request.declineReason}
         onFix={onFix}
       />
     );

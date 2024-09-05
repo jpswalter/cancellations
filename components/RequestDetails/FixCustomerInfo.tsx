@@ -1,28 +1,27 @@
 import { updateRequest } from '@/lib/api/request';
-import { CustomerInfoField, RequestStatus, Request } from '@/lib/db/schema';
+import { RequestStatus, Request, DeclineReason } from '@/lib/db/schema';
 import { Button } from '@/components/ui/button';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Spinner from '../ui/spinner';
 import { getDisplayHeader } from '@/utils/template.utils';
 
 const FixCustomerInfo: React.FC<{
   request: Request;
-  field: CustomerInfoField;
+  declineReasons: DeclineReason[];
   onFix?: () => void;
-}> = ({ request, field, onFix }) => {
-  const currentInvalidValue = request.customerInfo[field];
-  const [newValue, setNewValue] = useState(currentInvalidValue);
+}> = ({ request, declineReasons, onFix }) => {
+  const [newValues, setNewValues] = useState<Record<string, string>>({});
   const [updateError, setUpdateError] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (newValue: string | undefined) => {
+    mutationFn: (updatedCustomerInfo: Record<string, string>) => {
       const updatedRequest = {
         ...request,
         customerInfo: {
           ...request.customerInfo,
-          [field]: newValue,
+          ...updatedCustomerInfo,
         },
         status: 'Pending' as RequestStatus,
         declineReason: null,
@@ -39,13 +38,13 @@ const FixCustomerInfo: React.FC<{
     },
   });
 
-  const newValueInputRef = useRef<HTMLInputElement>(null);
+  const handleInputChange = (field: string, value: string) => {
+    setNewValues(prev => ({ ...prev, [field]: value }));
+  };
 
-  useEffect(() => {
-    if (newValueInputRef.current) {
-      newValueInputRef.current.focus();
-    }
-  }, [newValueInputRef]);
+  const handleSubmit = () => {
+    mutation.mutate(newValues);
+  };
 
   return (
     <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg shadow-lg p-6">
@@ -71,39 +70,46 @@ const FixCustomerInfo: React.FC<{
       <p className="text-lg mb-4">
         The customer information provided for this request is incorrect.
         <br />
-        Please verify and update the following field:
+        Please verify and update the following fields:
       </p>
-      <p className="font-semibold text-lg mb-2">{getDisplayHeader(field)}</p>
-      <div className="py-4 bg-white text-gray-800 rounded p-4 mb-4 flex items-start gap-4">
-        <div>
-          <p className="font-medium">Current value</p>
-          <p className="text-red-500 mt-4">
-            {currentInvalidValue === '' ? 'empty' : currentInvalidValue}
+      {declineReasons.map(reason => (
+        <div key={reason.field} className="mb-4">
+          <p className="font-semibold text-lg mb-2">
+            {getDisplayHeader(reason.field)}
           </p>
+          <div className="py-4 bg-white text-gray-800 rounded p-4 flex items-start gap-4">
+            <div>
+              <p className="font-medium">Current value</p>
+              <p className="text-red-500 mt-4">
+                {reason.value === '' ? 'empty' : reason.value}
+              </p>
+            </div>
+            <div>
+              <label>
+                New value
+                <input
+                  type="text"
+                  className="w-full px-2 border border-gray-300 rounded mt-2"
+                  value={newValues[reason.field] || ''}
+                  onChange={e =>
+                    handleInputChange(reason.field, e.target.value)
+                  }
+                />
+              </label>
+            </div>
+          </div>
         </div>
-        <div>
-          <label>
-            New value
-            <input
-              type="text"
-              className="w-full px-2 border border-gray-300 rounded mt-2"
-              value={newValue}
-              onChange={e => setNewValue(e.target.value)}
-              ref={newValueInputRef}
-            />
-          </label>
-        </div>
-        <Button
-          onClick={() => mutation.mutate(newValue)}
-          disabled={newValue === currentInvalidValue}
-          className="self-end h-10"
-        >
-          {mutation.isPending ? <Spinner color="white" /> : 'Submit Info'}
-        </Button>
-        {updateError && (
-          <p className="text-red-500 text-sm mt-1">{updateError}</p>
-        )}
-      </div>
+      ))}
+      <Button
+        onClick={handleSubmit}
+        disabled={Object.keys(newValues).length === 0}
+        className="mt-4"
+      >
+        {mutation.isPending ? <Spinner color="white" /> : 'Submit Info'}
+      </Button>
+      {updateError && (
+        <p className="text-red-500 text-sm mt-1">{updateError}</p>
+      )}
     </div>
   );
 };

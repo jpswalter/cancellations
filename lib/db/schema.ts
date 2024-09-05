@@ -16,6 +16,11 @@ export type CustomerInfoField =
 
 export type CustomerInfo = { [K in CustomerInfoField]?: string };
 
+export type DeclineReason = {
+  field: string;
+  value: string;
+};
+
 export interface Request {
   id: string;
   version: number;
@@ -29,7 +34,7 @@ export interface Request {
   customerInfo: CustomerInfo;
   successfullyResolved: boolean | null;
   saveOffer: RequestSaveOffer | null;
-  declineReason: string | null;
+  declineReason: DeclineReason[] | null;
   notes: string | null;
   logId: string;
 }
