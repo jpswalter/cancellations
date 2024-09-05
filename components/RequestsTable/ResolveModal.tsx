@@ -20,9 +20,8 @@ interface Props {
 }
 
 const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
-  const [declineReasons, setDeclineReasons] = useState<DeclineReason[] | null>(
-    null,
-  );
+  const [declineReasons, setDeclineReasons] = useState<DeclineReason[]>([]);
+
   const queryClient = useQueryClient();
   const { userData } = useAuth();
   const { closeRow } = useTableRowAnimation();
@@ -86,10 +85,6 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
     mutation.mutate(updatedRequest);
   };
 
-  const handleDeclineReason = (value: DeclineReason[]) => {
-    setDeclineReasons(value);
-  };
-
   return (
     <Modal
       shown={shown}
@@ -126,7 +121,8 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
               <p className="font-bold my-1">Please provide a reason</p>
               <DeclineReasonComponent
                 request={request}
-                onChange={handleDeclineReason}
+                setDeclineReasons={setDeclineReasons}
+                selectedDeclineReasons={declineReasons}
               />
             </>
           )}

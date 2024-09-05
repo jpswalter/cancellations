@@ -1,27 +1,19 @@
-import { useFormContext, Controller } from 'react-hook-form';
 import { Request, DeclineReason } from '@/lib/db/schema';
 import { getDisplayHeader } from '@/utils/template.utils';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
-import { Listbox, ListboxOptions, ListboxOption } from '@headlessui/react';
 
 type Props = {
   request: Request;
-  onChange: (value: DeclineReason[]) => void;
+  setDeclineReasons: (value: DeclineReason[]) => void;
+  selectedDeclineReasons: DeclineReason[];
 };
 
-const DeclineReasonComponent: React.FC<Props> = ({ request, onChange }) => {
-  const {
-    control,
-    formState: { errors },
-    clearErrors,
-    setValue,
-  } = useFormContext();
-  const shouldDisable =
-    request.status === 'Save Confirmed' ||
-    request.status === 'Declined' ||
-    request.status === 'Canceled';
-
+const DeclineReasonComponent: React.FC<Props> = ({
+  request,
+  setDeclineReasons,
+  selectedDeclineReasons,
+}) => {
   const { data: tenants } = useQuery({
     queryKey: ['tenants'],
     queryFn: getTenants,
@@ -38,59 +30,49 @@ const DeclineReasonComponent: React.FC<Props> = ({ request, onChange }) => {
   const options =
     provider?.requiredCustomerInfo?.map(field => ({
       field,
-      value: 'Wrong ' + getDisplayHeader(field),
+      label: 'Wrong ' + getDisplayHeader(field),
+      value: request.customerInfo[field] || '',
     })) ?? [];
 
-  const handleChange = (value: DeclineReason[]) => {
-    clearErrors('declineReason');
-    setValue('declineReason', value);
-    onChange(value);
+  const handleChange = (option: (typeof options)[0]) => {
+    const isAlreadySelected = selectedDeclineReasons.some(
+      reason => reason.field === option.field,
+    );
+
+    const newDeclineReasons = isAlreadySelected
+      ? selectedDeclineReasons.filter(reason => reason.field !== option.field)
+      : [...selectedDeclineReasons, option];
+
+    const reasonsWithNoLabels: DeclineReason[] = newDeclineReasons.map(
+      reason => ({
+        field: reason.field,
+        value: reason.value,
+      }),
+    );
+
+    setDeclineReasons(reasonsWithNoLabels);
   };
 
   return (
     <div onClick={e => e.stopPropagation()} className="text-base">
-      <Controller
-        name="declineReason"
-        control={control}
-        render={({ field }) => (
-          <Listbox
-            value={field.value}
-            onChange={handleChange}
-            disabled={shouldDisable}
-            multiple
-          >
-            <ListboxOptions
-              static
-              className="border border-gray-300 rounded-md p-2 bg-white"
-            >
-              {options.map(option => (
-                <ListboxOption
-                  key={option.field}
-                  value={option}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  {({ selected }) => (
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={selected}
-                        readOnly
-                        className="mr-2"
-                      />
-                      {option.value}
-                    </div>
-                  )}
-                </ListboxOption>
-              ))}
-            </ListboxOptions>
-          </Listbox>
-        )}
-      />
-      {errors.declineReason && (
-        <p className="text-red-500 text-sm mt-1">
-          {errors.declineReason.message as string}
-        </p>
-      )}
+      {options.map(option => (
+        <div
+          key={option.field}
+          className="p-2 hover:bg-gray-100 cursor-pointer"
+        >
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={selectedDeclineReasons.some(
+                reason => reason.field === option.field,
+              )}
+              onChange={() => handleChange(option)}
+              className="mr-2"
+            />
+            {option.label}
+          </label>
+        </div>
+      ))}
     </div>
   );
 };
