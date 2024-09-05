@@ -5,29 +5,20 @@ import SaveOfferModal from './SaveOfferModal';
 import ResolveModal from '../ResolveModal';
 import { Row } from '@tanstack/react-table';
 import ConfirmSaveOfferModal from './ConfirmSaveOfferModal';
-import { useAuth } from '@/hooks/useAuth';
-import { getTenants } from '@/lib/api/tenant';
-import { useQuery } from '@tanstack/react-query';
 import { InfoTooltip } from '@/components/ui/tooltip';
 
 interface ActionsCellProps {
   row: Row<Request>;
+  tenantHasSaveOffers: boolean;
 }
 
-const ActionsCell: React.FC<ActionsCellProps> = ({ row }) => {
+const ActionsCell: React.FC<ActionsCellProps> = ({
+  row,
+  tenantHasSaveOffers,
+}) => {
   const [saveOfferModal, setSaveOfferModal] = useState(false);
   const [resolveModal, setResolveModal] = useState(false);
   const [confirmSaveOfferModal, setConfirmSaveOfferModal] = useState(false);
-  const { userData } = useAuth();
-  const tenantId = userData?.tenantId;
-
-  const { data: tenant } = useQuery({
-    queryKey: ['tenants'],
-    queryFn: getTenants,
-    select: tenants => tenants.find(tenant => tenant.id === tenantId),
-  });
-
-  const tenantHasSaveOffers = Number(tenant?.saveOffers?.length) > 0;
 
   const [action, setAction] = useState<'cancel' | 'decline' | null>(null);
 

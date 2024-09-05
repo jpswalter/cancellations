@@ -17,6 +17,8 @@ import RequestDrawer from '../RequestDetails/RequestDrawer';
 import DataTable from '../ui/table/table';
 import ActionsCell from './cells/ActionsCell';
 import { Loader } from '../ui/spinner';
+import { getTenants } from '@/lib/api/tenant';
+import { useQuery } from '@tanstack/react-query';
 
 interface Props {
   requests: Request[];
@@ -34,12 +36,20 @@ const RequestsTable: FC<Props> = ({
   isLoading,
 }) => {
   const { userData } = useAuth();
+  const tenantId = userData?.tenantId;
   const isProviderUser = userData?.tenantType === 'provider';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [drawerPosition, setDrawerPosition] = useState<'left' | 'right'>(
     'right',
   );
+
+  const { data: tenant } = useQuery({
+    queryKey: ['tenants'],
+    queryFn: getTenants,
+    select: tenants => tenants.find(tenant => tenant.id === tenantId),
+  });
+
   const toggleDrawer = (request: Request, position?: 'left' | 'right') => {
     if (position) {
       setDrawerPosition(position);
@@ -84,7 +94,14 @@ const RequestsTable: FC<Props> = ({
           {
             id: 'Actions',
             header: 'Actions',
-            cell: ({ row }: { row: Row<Request> }) => <ActionsCell row={row} />,
+            cell: ({ row }: { row: Row<Request> }) => (
+              <ActionsCell
+                row={row}
+                tenantHasSaveOffers={
+                  tenant !== undefined && Number(tenant?.saveOffers?.length) > 0
+                }
+              />
+            ),
           },
         ]
       : []),
