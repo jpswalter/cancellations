@@ -97,7 +97,10 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
                 <InfoItem label="Save Offer" value={saveOffer.title} />
               )}
               {declineReason && (
-                <InfoItem label="Decline Reason" value={declineReason} />
+                <InfoItem
+                  label="Decline Reason"
+                  value={declineReason.join(', ')}
+                />
               )}
               {notes && <InfoItem label="Notes" value={notes} />}
             </div>
