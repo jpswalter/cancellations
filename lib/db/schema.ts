@@ -32,7 +32,6 @@ export interface Request {
   proxyTenantId: string;
   providerTenantId: string;
   customerInfo: CustomerInfo;
-  successfullyResolved: boolean | null;
   saveOffer: RequestSaveOffer | null;
   declineReason: DeclineReason[] | null;
   notes: string | null;
@@ -50,8 +49,8 @@ export interface RequestWithLog extends Request {
 
 export interface RequestChange {
   field: string;
-  oldValue: string | number | boolean | null;
-  newValue: string | number | boolean | null;
+  oldValue: string | number | boolean | null | DeclineReason[];
+  newValue: string | number | boolean | null | DeclineReason[];
   changedBy: {
     email: string;
     tenantType: TenantType;

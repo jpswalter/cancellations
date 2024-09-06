@@ -1,4 +1,4 @@
-import { RequestChange } from '@/lib/db/schema';
+import { DeclineReason, RequestChange } from '@/lib/db/schema';
 import { getDisplayHeader } from '@/utils/template.utils';
 
 export type ChangeGroup = {
@@ -85,13 +85,14 @@ export const renderDescription = (
   );
 
   if (saveOfferChangeTitle) {
-    return <p>Offer: {saveOfferChangeTitle?.newValue}</p>;
+    return <p>Offer: {saveOfferChangeTitle?.newValue as string}</p>;
   }
 
   const declineReasonChange = changes.find(
     change => change.field === 'declineReason',
   );
   if (declineReasonChange) {
+    console.log('declineReasonChange', declineReasonChange);
     if (
       declineReasonChange.newValue === null &&
       declineReasonChange.oldValue !== null
@@ -111,7 +112,12 @@ export const renderDescription = (
         return <p>{changedFields}</p>;
       }
     }
-    return <p>Reason: {declineReasonChange.newValue}</p>;
+    const declineReasons = (declineReasonChange.newValue as DeclineReason[])
+      ?.map((reason: DeclineReason) => {
+        return `Wrong ${getDisplayHeader(reason.field)}`;
+      })
+      .join(', ');
+    return <p>Reason: {declineReasons}</p>;
   }
 
   return null;

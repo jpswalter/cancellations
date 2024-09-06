@@ -78,13 +78,13 @@ const FixCustomerInfo: React.FC<{
             {getDisplayHeader(reason.field)}
           </p>
           <div className="py-4 bg-white text-gray-800 rounded p-4 flex items-start gap-4">
-            <div>
+            <div className="w-1/2">
               <p className="font-medium">Current value</p>
               <p className="text-red-500 mt-4">
                 {reason.value === '' ? 'empty' : reason.value}
               </p>
             </div>
-            <div>
+            <div className="w-1/2">
               <label>
                 New value
                 <input

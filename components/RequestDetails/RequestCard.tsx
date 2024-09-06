@@ -25,7 +25,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
     proxyTenantId,
     providerTenantId,
     customerInfo,
-    successfullyResolved,
     saveOffer,
     declineReason,
     notes,
@@ -45,12 +44,6 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
             label="Request Type"
             value={<RequestType type={requestType as 'Cancellation'} />}
           />
-          {successfullyResolved !== null && (
-            <InfoItem
-              label="Successfully Resolved"
-              value={successfullyResolved ? 'Yes' : 'No'}
-            />
-          )}
           <InfoItem
             label="Source"
             value={
@@ -99,7 +92,9 @@ const RequestDetails: React.FC<{ request: Request | null }> = ({ request }) => {
               {declineReason && (
                 <InfoItem
                   label="Decline Reason"
-                  value={declineReason.join(', ')}
+                  value={declineReason
+                    .map(reason => 'Wrong ' + getDisplayHeader(reason.field))
+                    .join(', ')}
                 />
               )}
               {notes && <InfoItem label="Notes" value={notes} />}
@@ -118,7 +113,7 @@ const InfoItem: React.FC<{
 }> = ({ label, value, isLoading }) => {
   const valueElement = typeof value === 'string' ? <span>{value}</span> : value;
   return (
-    <div className="mb-2 flex items-center gap-2">
+    <div className="mb-2 flex items-start gap-2">
       <span className="font-medium">{label}: </span>
       {isLoading ? <Spinner className="p-2" /> : valueElement}
     </div>
