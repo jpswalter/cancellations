@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { Modal, Button } from '@/components/ui/';
-import { Request } from '@/lib/db/schema';
+import { Request, DeclineReason } from '@/lib/db/schema';
 import UserInfoCard from './UserInfoCard';
 import {
   IoMdCheckmarkCircleOutline,
@@ -9,7 +9,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateRequest } from '@/lib/api/request';
 import { useAuth } from '@/hooks/useAuth';
-import DeclineReason from './DeclineReason';
+import DeclineReasonComponent from './DeclineReason';
 import { useTableRowAnimation } from '../ui/table/animation-context';
 
 interface Props {
@@ -20,11 +20,13 @@ interface Props {
 }
 
 const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
-  const [declineReason, setDeclineReason] = useState<string | null>(null);
+  const [declineReasons, setDeclineReasons] = useState<DeclineReason[]>([]);
+
   const queryClient = useQueryClient();
   const { userData } = useAuth();
   const { closeRow } = useTableRowAnimation();
-  const isConfirmDisabled = action === 'decline' && !declineReason;
+  const isConfirmDisabled =
+    action === 'decline' && (!declineReasons || declineReasons.length === 0);
 
   const mutation = useMutation({
     mutationFn: updateRequest,
@@ -75,10 +77,9 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
     e.preventDefault();
     const updatedRequest: Request = {
       ...request,
-      successfullyResolved: action === 'cancel',
       dateResponded: new Date().toISOString(),
       status: action === 'cancel' ? 'Canceled' : 'Declined',
-      declineReason: action === 'decline' ? declineReason : null,
+      declineReason: action === 'decline' ? declineReasons : null,
     };
     mutation.mutate(updatedRequest);
   };
@@ -117,7 +118,11 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
           {action === 'decline' && (
             <>
               <p className="font-bold my-1">Please provide a reason</p>
-              <DeclineReason request={request} onChange={setDeclineReason} />
+              <DeclineReasonComponent
+                request={request}
+                setDeclineReasons={setDeclineReasons}
+                selectedDeclineReasons={declineReasons}
+              />
             </>
           )}
         </div>
