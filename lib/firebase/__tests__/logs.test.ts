@@ -20,8 +20,7 @@ describe('detectChanges', () => {
     id: 'koytT9Bcxo6q7WydfRKD',
     dateSubmitted: '2024-08-14T16:01:50.774Z',
     dateResponded: '2024-08-14T18:16:42.380Z',
-    successfullyResolved: false,
-    declineReason: 'Wrong Customer Email',
+    declineReason: [{ field: 'customerEmail', value: 'Wrong Customer Email' }],
     status: 'Declined',
   };
 
@@ -43,7 +42,6 @@ describe('detectChanges', () => {
     id: 'koytT9Bcxo6q7WydfRKD',
     dateSubmitted: '2024-08-14T16:01:50.774Z',
     dateResponded: '2024-08-14T18:16:42.380Z',
-    successfullyResolved: null,
     declineReason: null,
     status: 'Pending',
   };
@@ -57,13 +55,8 @@ describe('detectChanges', () => {
         newValue: 'james.white@example.ru',
       },
       {
-        field: 'successfullyResolved',
-        oldValue: false,
-        newValue: null,
-      },
-      {
         field: 'declineReason',
-        oldValue: 'Wrong Customer Email',
+        oldValue: [{ field: 'customerEmail', value: 'Wrong Customer Email' }],
         newValue: null,
       },
       {

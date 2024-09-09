@@ -77,7 +77,6 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
     e.preventDefault();
     const updatedRequest: Request = {
       ...request,
-      successfullyResolved: action === 'cancel',
       dateResponded: new Date().toISOString(),
       status: action === 'cancel' ? 'Canceled' : 'Declined',
       declineReason: action === 'decline' ? declineReasons : null,
