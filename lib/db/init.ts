@@ -38,6 +38,10 @@ async function initializeTestData(db: FirebaseFirestore.Firestore) {
   for (const tenant of TENANTS) {
     await db.collection(collections.tenants).doc(tenant.id).set(tenant);
   }
+  console.log(
+    'Created successfully the following tenants:',
+    TENANTS.map(t => t.name),
+  );
 
   // Create test users
   for (const user of USERS) {

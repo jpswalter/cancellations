@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 
 const initializeFirebaseAdmin = () => {
@@ -42,11 +43,21 @@ export const deletAllCollections = async () => {
   console.log('All documents in all collections have been deleted.');
 };
 
+const deleteAllUsers = async () => {
+  const app = initializeFirebaseAdmin();
+  const auth = getAuth(app);
+  const users = await auth.listUsers();
+  for (const user of users.users) {
+    await auth.deleteUser(user.uid);
+  }
+  console.log('All users have been deleted.');
+};
+
 // Self-invoking async function to run the script
 (async () => {
   try {
     await deletAllCollections();
-    console.log('Deletion of all collections completed successfully.');
+    await deleteAllUsers();
   } catch (error) {
     if (error instanceof Error) {
       console.error('Error message:', error.message);

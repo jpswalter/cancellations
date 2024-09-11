@@ -42,7 +42,6 @@ export const TENANTS: Tenant[] = [
     createdAt: currentDate,
     active: true,
     version: CURRENT_SCHEMA_VERSION,
-    requiredCustomerInfo: ['customerName', 'customerEmail'],
   },
 ];
 
