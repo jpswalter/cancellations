@@ -39,5 +39,4 @@ async function createUser(user: User) {
   }
 }
 
-createUser(USERS[4]).then(console.log).catch(console.error);
 createUser(USERS[5]).then(console.log).catch(console.error);

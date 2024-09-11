@@ -103,7 +103,7 @@ export const USERS: User[] = [
   },
   {
     id: uuidv4(),
-    email: 'john@proxz.ai',
+    email: 'john@proxylink.co',
     name: 'John Walter',
     tenantId: TENANTS[3].id,
     tenantName: TENANTS[3].name,
