@@ -59,7 +59,7 @@ export interface RequestChange {
   updatedAt: string; // ISO 8601 date string
 }
 
-export type TenantType = 'proxy' | 'provider';
+export type TenantType = 'proxy' | 'provider' | 'management';
 
 export interface User {
   id: string;
@@ -67,7 +67,7 @@ export interface User {
   email: string;
   tenantId: string;
   tenantName: string;
-  tenantType: 'proxy' | 'provider';
+  tenantType: TenantType;
   role: 'admin' | 'user';
   createdAt: string;
   name: string;
@@ -92,7 +92,7 @@ export interface Tenant {
   id: string;
   version: number;
   name: string;
-  type: 'proxy' | 'provider';
+  type: TenantType;
   createdAt: string;
   active: boolean;
   requiredCustomerInfo?: CustomerInfoField[]; // Only for provider tenants

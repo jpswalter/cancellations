@@ -5,9 +5,9 @@ import { initializeFirebaseAdmin } from '../firebase/admin';
 const app = initializeFirebaseAdmin();
 
 import { getFirestore } from 'firebase-admin/firestore';
-import { collections, CURRENT_SCHEMA_VERSION, Tenant, User } from './schema';
+import { collections } from './schema';
 import { getAuth } from 'firebase-admin/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { STANDARD_PASSWORD, TENANTS, USERS } from './seed/data';
 
 export async function initializeDatabase() {
   try {
@@ -33,174 +33,20 @@ export async function initializeDatabase() {
 
 async function initializeTestData(db: FirebaseFirestore.Firestore) {
   const auth = getAuth();
-  const currentDate = new Date().toISOString();
 
   // Create test tenants
-  const tenants: Tenant[] = [
-    {
-      id: uuidv4(),
-      name: 'RocketMoney',
-      type: 'proxy',
-      createdAt: currentDate,
-      active: true,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      name: 'BillShark',
-      type: 'proxy',
-      createdAt: currentDate,
-      active: true,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      name: 'ESPN',
-      type: 'provider',
-      createdAt: currentDate,
-      active: true,
-      version: CURRENT_SCHEMA_VERSION,
-      requiredCustomerInfo: [
-        'customerName',
-        'customerEmail',
-        'accountNumber',
-        'lastFourCCDigits',
-      ],
-    },
-    {
-      id: uuidv4(),
-      name: 'Netflix',
-      type: 'provider',
-      createdAt: currentDate,
-      active: true,
-      version: CURRENT_SCHEMA_VERSION,
-      requiredCustomerInfo: [
-        'customerName',
-        'customerEmail',
-        'lastFourCCDigits',
-      ],
-    },
-    {
-      id: uuidv4(),
-      name: 'Demo Corp',
-      type: 'provider',
-      createdAt: currentDate,
-      active: true,
-      version: CURRENT_SCHEMA_VERSION,
-      requiredCustomerInfo: [
-        'customerName',
-        'customerEmail',
-        'accountNumber',
-        'lastFourCCDigits',
-      ],
-    },
-  ];
-
-  for (const tenant of tenants) {
+  for (const tenant of TENANTS) {
     await db.collection(collections.tenants).doc(tenant.id).set(tenant);
   }
 
   // Create test users
-  const users: User[] = [
-    {
-      id: uuidv4(),
-      email: 'employee1@rocketmoney.com',
-      name: 'Rocket Employee 1',
-      tenantId: tenants[0].id,
-      tenantName: 'RocketMoney',
-      tenantType: 'proxy',
-      role: 'user',
-      createdAt: currentDate,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      email: 'employee2@rocketmoney.com',
-      name: 'Rocket Employee 2',
-      tenantId: tenants[0].id,
-      tenantName: 'RocketMoney',
-      tenantType: 'proxy',
-      role: 'user',
-      createdAt: currentDate,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      email: 'employee1@billshark.com',
-      name: 'BillShark Employee 1',
-      tenantId: tenants[1].id,
-      tenantName: 'BillShark',
-      tenantType: 'proxy',
-      role: 'user',
-      createdAt: currentDate,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      email: 'employee1@espn.com',
-      name: 'Coach Bryant',
-      tenantId: tenants[2].id,
-      tenantName: 'ESPN',
-      tenantType: 'provider',
-      role: 'user',
-      createdAt: currentDate,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      email: 'employee1@netflix.com',
-      name: 'Peter Parker',
-      tenantId: tenants[3].id,
-      tenantName: 'Netflix',
-      tenantType: 'provider',
-      role: 'user',
-      createdAt: currentDate,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      email: 'admin@espn.com',
-      name: 'Admin ESPN',
-      tenantId: tenants[2].id,
-      tenantName: 'ESPN',
-      tenantType: 'provider',
-      role: 'admin',
-      createdAt: currentDate,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      email: 'employee1@democorp.com',
-      name: 'Zephyr Stormwind',
-      tenantId: tenants[tenants.length - 1].id,
-      tenantName: 'Demo Corp',
-      tenantType: 'provider',
-      role: 'user',
-      createdAt: currentDate,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-    {
-      id: uuidv4(),
-      email: 'admin@democorp.com',
-      name: 'Nova Starlight',
-      tenantId: tenants[tenants.length - 1].id,
-      tenantName: 'Demo Corp',
-      tenantType: 'provider',
-      role: 'admin',
-      createdAt: currentDate,
-      version: CURRENT_SCHEMA_VERSION,
-    },
-  ];
-
-  for (const user of users) {
+  for (const user of USERS) {
     try {
-      const standardPassword = 'q1w2e3';
-
       // Create user in Firebase Authentication
       const userRecord = await auth.createUser({
         uid: user.id,
         email: user.email,
-        password: standardPassword,
+        password: STANDARD_PASSWORD,
         displayName: user.name,
       });
 
@@ -221,7 +67,10 @@ async function initializeTestData(db: FirebaseFirestore.Firestore) {
     }
   }
 
-  console.log('Test data initialized');
+  console.log(
+    'Seed data initialized for the project with id',
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  );
 }
 
 initializeDatabase()

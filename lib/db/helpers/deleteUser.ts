@@ -5,7 +5,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 
 // Ensure the Firebase Admin SDK is initialized before running this script
-import { initializeFirebaseAdmin } from '../firebase/admin';
+import { initializeFirebaseAdmin } from '../../firebase/admin';
 
 const EMAIL_TO_DELETE = 'admin@espn.com';
 
