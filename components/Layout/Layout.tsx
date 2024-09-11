@@ -22,6 +22,7 @@ export default function ClientLayout({
   const { loading, userData } = useAuth();
   const isProvider = userData?.tenantType === 'provider';
   const isProxy = userData?.tenantType === 'proxy';
+  const isManagement = userData?.tenantType === 'management';
 
   if (loading || !userData) {
     return null;
@@ -57,17 +58,15 @@ export default function ClientLayout({
                       link="/overview"
                       label="Overview"
                       Icon={FaChartSimple}
-                      activePaths={[
-                        '/overview-customer-support',
-                        '/overview-refunds',
-                      ]}
                     />
                   )}
-                  <SidebarButton
-                    link="/actions"
-                    label="Actions Needed"
-                    Icon={MdNotificationsActive}
-                  />
+                  {!isManagement && (
+                    <SidebarButton
+                      link="/actions"
+                      label="Actions Needed"
+                      Icon={MdNotificationsActive}
+                    />
+                  )}
                   {isProxy && (
                     <SidebarButton
                       link="/resolved"
@@ -75,17 +74,20 @@ export default function ClientLayout({
                       Icon={MdOutlineAssignmentTurnedIn}
                     />
                   )}
-                  <SidebarButton
-                    link="/requests"
-                    label="All Requests"
-                    Icon={BsListUl}
-                  />
-                  <SidebarButton
-                    link="/upload"
-                    label="Upload CSV"
-                    Icon={FaFileCsv}
-                    hideButton={userData?.tenantType === 'provider'}
-                  />
+                  {!isManagement && (
+                    <SidebarButton
+                      link="/requests"
+                      label="All Requests"
+                      Icon={BsListUl}
+                    />
+                  )}
+                  {isProxy && (
+                    <SidebarButton
+                      link="/upload"
+                      label="Upload CSV"
+                      Icon={FaFileCsv}
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-y-2">
                   <SidebarButton

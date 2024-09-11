@@ -8,6 +8,7 @@ import Profile from '@/components/Profile/Profile';
 import { getArticles } from '@/lib/api/article';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '@/components/ui/spinner';
+import { getUrlForSuccessfullLogin } from '@/components/Login/login.utils';
 
 const Header: FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -48,7 +49,7 @@ const Header: FC = () => {
             {userData && (
               <div className="flex items-center gap-2">
                 <Profile popupAlign="bottom" />
-                <Link href="/overview">
+                <Link href={getUrlForSuccessfullLogin(userData.tenantType)}>
                   <Button outline={true} className="mx-2">
                     Login
                   </Button>

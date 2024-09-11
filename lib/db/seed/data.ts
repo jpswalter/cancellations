@@ -91,6 +91,28 @@ export const USERS: User[] = [
     createdAt: currentDate,
     version: CURRENT_SCHEMA_VERSION,
   },
+  {
+    id: uuidv4(),
+    email: 'sorokinvj@gmail.com',
+    name: 'Vladislav Sorokin',
+    tenantId: TENANTS[3].id,
+    tenantName: TENANTS[3].name,
+    tenantType: TENANTS[3].type,
+    role: 'admin',
+    createdAt: currentDate,
+    version: CURRENT_SCHEMA_VERSION,
+  },
+  {
+    id: uuidv4(),
+    email: 'john@proxz.ai',
+    name: 'John Walter',
+    tenantId: TENANTS[3].id,
+    tenantName: TENANTS[3].name,
+    tenantType: TENANTS[3].type,
+    role: 'admin',
+    createdAt: currentDate,
+    version: CURRENT_SCHEMA_VERSION,
+  },
 ];
 
 export const STANDARD_PASSWORD = 'q1w2e3';

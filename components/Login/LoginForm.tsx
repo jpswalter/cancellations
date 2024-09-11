@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase/config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { getUrlForSuccessfullLogin } from './login.utils';
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -46,11 +47,8 @@ const LoginForm: React.FC = () => {
       // Parse response
       const data = await response.json();
       setError('');
-      if (data.tenantType === 'provider') {
-        router.push('/overview');
-      } else {
-        router.push('/actions');
-      }
+      const url = getUrlForSuccessfullLogin(data.tenantType);
+      router.push(url);
     } catch (error) {
       console.error('Error signing in:', error);
       setError('Invalid email or password');
