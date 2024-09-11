@@ -1,9 +1,9 @@
-import { DeclineReason, RequestChange } from '@/lib/db/schema';
+import { DeclineReason, RequestChange, TenantType } from '@/lib/db/schema';
 import { getDisplayHeader } from '@/utils/template.utils';
 
 export type ChangeGroup = {
   changedBy: string;
-  tenantType: 'proxy' | 'provider';
+  tenantType: TenantType;
   changes: RequestChange[];
 };
 

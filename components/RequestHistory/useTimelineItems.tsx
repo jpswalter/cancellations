@@ -20,6 +20,7 @@ export const useTimelineItems = (
     const dotsMap = {
       proxy: 'border-blue-500',
       provider: 'border-purple-600',
+      management: 'border-lime-600',
     };
     if (!request) return [];
 
