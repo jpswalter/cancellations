@@ -1,3 +1,4 @@
+// file: lib/db/createAdminUser.ts
 import dotenv from 'dotenv';
 dotenv.config();
 import { getAuth } from 'firebase-admin/auth';

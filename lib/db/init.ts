@@ -1,3 +1,4 @@
+// file: lib/db/init.ts
 import dotenv from 'dotenv';
 dotenv.config();
 import { initializeFirebaseAdmin } from '../firebase/admin';
