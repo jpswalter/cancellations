@@ -4,14 +4,13 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { CustomColumnMeta } from '@/components/ui/table/table';
 import clsx from 'clsx';
 import { useTableRowAnimation } from './animation-context';
-import { Request } from '@/lib/db/schema';
 
 interface RequestRowProps<T> {
   row: Row<T>;
   toggleDrawer: (data: T) => void;
 }
 
-const RequestRow = <T extends Request>({
+const RequestRow = <T extends { id: string }>({
   row,
   toggleDrawer,
 }: RequestRowProps<T>) => {
@@ -51,7 +50,7 @@ const RequestRow = <T extends Request>({
               key={cell.id}
               className={cellClassName}
               style={{
-                minWidth: `${width}px`,
+                width: `${width}px`,
               }}
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}

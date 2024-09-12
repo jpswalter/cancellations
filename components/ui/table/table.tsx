@@ -12,7 +12,6 @@ import {
 import clsx from 'clsx';
 import { TablePagination } from '../pagination';
 import RequestRow from './table-row';
-import { Request } from '@/lib/db/schema';
 import { TableRowAnimationProvider } from './animation-context';
 
 export type CustomColumnMeta = {
@@ -37,7 +36,7 @@ interface GenericTableProps<T> {
   columnVisibility?: VisibilityState;
 }
 
-const GenericTable = <T extends Request>({
+const GenericTable = <T extends { id: string }>({
   data,
   columns,
   defaultSort = [],
@@ -97,7 +96,7 @@ const GenericTable = <T extends Request>({
                         key={header.id}
                         className={headerClassName}
                         style={{
-                          minWidth: `${width}px`,
+                          width: `${width}px`,
                         }}
                       >
                         {header.isPlaceholder

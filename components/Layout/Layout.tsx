@@ -1,18 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import React from 'react';
-import { FaChartSimple, FaFileCsv } from 'react-icons/fa6';
-import { BsListUl } from 'react-icons/bs';
-import {
-  MdOutlineAssignmentTurnedIn,
-  MdNotificationsActive,
-} from 'react-icons/md';
 import { Toaster } from 'react-hot-toast';
 import clsx from 'clsx';
 import { useAuth } from '@/hooks/useAuth';
 import Profile from '../Profile/Profile';
 import SidebarButton from '../SidebarButton/SidebarButton';
-import { FaCog } from 'react-icons/fa';
+
+import { useMenuItems } from './useMenuItems';
 
 export default function ClientLayout({
   children,
@@ -20,9 +15,7 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const { loading, userData } = useAuth();
-  const isProvider = userData?.tenantType === 'provider';
-  const isProxy = userData?.tenantType === 'proxy';
-  const isManagement = userData?.tenantType === 'management';
+  const { mainItems, settingsItem } = useMenuItems(userData?.tenantType);
 
   if (loading || !userData) {
     return null;
@@ -44,56 +37,29 @@ export default function ClientLayout({
             <img
               src="/images/Logo.svg"
               className="w-60 mt-6 mb-4"
-              alt="Intermediary logo"
+              alt="ProxyLink logo"
             />
 
             <nav className="mt-3 flex flex-1 flex-col">
               <ul
                 role="list"
-                className="flex flex-1 flex-col gap-y-5 justify-between pb-4"
+                className="flex flex-1 flex-col justify-between pb-4"
               >
                 <div className="flex flex-col gap-y-2">
-                  {isProvider && (
+                  {mainItems.map(item => (
                     <SidebarButton
-                      link="/overview"
-                      label="Overview"
-                      Icon={FaChartSimple}
+                      key={item.link}
+                      link={item.link}
+                      label={item.label}
+                      Icon={item.Icon}
                     />
-                  )}
-                  {!isManagement && (
-                    <SidebarButton
-                      link="/actions"
-                      label="Actions Needed"
-                      Icon={MdNotificationsActive}
-                    />
-                  )}
-                  {isProxy && (
-                    <SidebarButton
-                      link="/resolved"
-                      label="Resolved"
-                      Icon={MdOutlineAssignmentTurnedIn}
-                    />
-                  )}
-                  {!isManagement && (
-                    <SidebarButton
-                      link="/requests"
-                      label="All Requests"
-                      Icon={BsListUl}
-                    />
-                  )}
-                  {isProxy && (
-                    <SidebarButton
-                      link="/upload"
-                      label="Upload CSV"
-                      Icon={FaFileCsv}
-                    />
-                  )}
+                  ))}
                 </div>
                 <div className="flex flex-col gap-y-2">
                   <SidebarButton
-                    link="/settings"
-                    label="Settings"
-                    Icon={FaCog}
+                    link={settingsItem.link}
+                    label={settingsItem.label}
+                    Icon={settingsItem.Icon}
                   />
                   {userData && <Profile />}
                 </div>
