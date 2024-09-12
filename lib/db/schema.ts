@@ -97,6 +97,7 @@ export interface Tenant {
   active: boolean;
   requiredCustomerInfo?: CustomerInfoField[]; // Only for provider tenants
   saveOffers?: SaveOffer[];
+  admins: string[];
 }
 
 export const CURRENT_SCHEMA_VERSION = 2;

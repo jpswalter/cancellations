@@ -53,7 +53,7 @@ const SaveOfferModal: React.FC<SaveOfferModalProps> = ({
             queryKey: ['requests', userData.tenantType, userData.tenantId],
           });
         }
-      }, 300);
+      }, 300); // 300 is time for row animation
     },
     onSettled: () => {
       closeModal();
