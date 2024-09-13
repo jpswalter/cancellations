@@ -85,11 +85,11 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: { tenantId: string; saveOfferId: string } },
 ) {
   const { tenantId, saveOfferId } = params;
-  console.log('DELETE triggered', tenantId, saveOfferId);
+
   if (!tenantId || !saveOfferId) {
     return NextResponse.json(
       { message: 'Invalid tenant ID or offer ID' },

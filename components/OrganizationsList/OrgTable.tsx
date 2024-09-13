@@ -4,7 +4,8 @@ import { Row } from '@tanstack/react-table';
 import { Loader } from '@/components/ui/spinner';
 
 import { useQuery } from '@tanstack/react-query';
-import { getOrganisations, Organization } from '@/lib/api/organizations';
+import { getOrganisations, Organization } from '@/lib/api/organization';
+import OrgActions from './OrgActions';
 
 const OrgTable: FC = () => {
   const { data: organizations, isLoading } = useQuery<Organization[]>({
@@ -16,6 +17,14 @@ const OrgTable: FC = () => {
     {
       header: 'Organization Name',
       accessorKey: 'name',
+    },
+    {
+      header: 'Status',
+      cell: ({ row }: { row: Row<Organization> }) => (
+        <p className="whitespace-normal break-words">
+          {row.original.active ? 'Live' : 'Pending'}
+        </p>
+      ),
     },
     {
       header: 'User Count',
@@ -46,6 +55,13 @@ const OrgTable: FC = () => {
       accessorKey: 'adminEmails',
       cell: ({ row }: { row: Row<Organization> }) =>
         row.original.adminEmails?.join(', ') || '-',
+    },
+    {
+      header: '',
+      id: 'actions',
+      cell: ({ row }: { row: Row<Organization> }) => (
+        <OrgActions organization={row.original} />
+      ),
     },
   ];
 

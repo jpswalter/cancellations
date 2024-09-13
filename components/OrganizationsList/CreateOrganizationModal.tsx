@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import allAuthenticatingFields from './allAuthenticatingFields.json';
 import { Modal, Button } from '@/components/ui';
 import { Card } from '@tremor/react';
-import { createOrganization } from '@/lib/api/organizations';
+import { createOrganization } from '@/lib/api/organization';
 import { toast } from 'react-hot-toast';
 
 interface Props {

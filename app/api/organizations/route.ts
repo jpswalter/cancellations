@@ -3,7 +3,7 @@ import { getFirestore, Firestore } from 'firebase-admin/firestore';
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
 import { CURRENT_SCHEMA_VERSION, Tenant, User } from '@/lib/db/schema';
 import { parseErrorMessage } from '@/utils/general';
-import { Organization } from '@/lib/api/organizations';
+import { Organization } from '@/lib/api/organization';
 import { sendEmailInvitation } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -72,6 +72,7 @@ export async function GET(): Promise<NextResponse> {
           connectedTenants,
           adminEmails: tenant.admins,
           requiredCustomerInfo: tenant.requiredCustomerInfo,
+          active: tenant.active,
         };
       }),
     );
