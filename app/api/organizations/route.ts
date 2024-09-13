@@ -1,25 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getFirestore, Firestore } from 'firebase-admin/firestore';
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
-import { CustomerInfoField, Tenant, TenantType, User } from '@/lib/db/schema';
+import { CURRENT_SCHEMA_VERSION, Tenant, User } from '@/lib/db/schema';
 import { parseErrorMessage } from '@/utils/general';
+import { Organization } from '@/lib/api/organization';
+import { sendEmailInvitation } from '@/lib/utils';
+import { v4 as uuidv4 } from 'uuid';
 
 initializeFirebaseAdmin();
-
-export type TenantStats = {
-  id: string; // Unique identifier for the tenant
-  name: string; // Name of the tenant organization
-  type: TenantType; // Type of the tenant (proxy or provider)
-  userCount: number; // Number of users associated with this tenant
-  requestCount: number; // Number of requests associated with this tenant
-  connectedTenants: {
-    // List of tenants connected to this tenant
-    id: string; // ID of the connected tenant
-    name: string; // Name of the connected tenant
-  }[];
-  adminEmails: string[];
-  requiredCustomerInfo?: CustomerInfoField[];
-};
 
 export async function GET(): Promise<NextResponse> {
   const db: Firestore = getFirestore();
@@ -30,7 +18,7 @@ export async function GET(): Promise<NextResponse> {
       doc => ({ id: doc.id, ...doc.data() }) as Tenant,
     );
 
-    const stats: TenantStats[] = await Promise.all(
+    const stats: Organization[] = await Promise.all(
       tenants.map(async tenant => {
         const usersSnapshot = await db
           .collection('users')
@@ -38,9 +26,6 @@ export async function GET(): Promise<NextResponse> {
           .get();
         const users = usersSnapshot.docs.map(doc => doc.data() as User);
         const userCount = users.length;
-        const adminEmails = users
-          .filter(user => user.role === 'admin')
-          .map(admin => admin.email);
 
         const requestCount = (
           await db
@@ -85,8 +70,9 @@ export async function GET(): Promise<NextResponse> {
           userCount,
           requestCount,
           connectedTenants,
-          adminEmails,
+          adminEmails: tenant.admins,
           requiredCustomerInfo: tenant.requiredCustomerInfo,
+          active: tenant.active,
         };
       }),
     );
@@ -96,6 +82,53 @@ export async function GET(): Promise<NextResponse> {
     console.error('Error fetching tenant stats:', error);
     return NextResponse.json(
       { error: 'Error fetching tenant stats: ' + parseErrorMessage(error) },
+      { status: 500 },
+    );
+  }
+}
+
+export async function POST(request: Request): Promise<NextResponse> {
+  const db: Firestore = getFirestore();
+
+  try {
+    const { name, adminEmails, orgType, authFields } = await request.json();
+
+    const newTenant: Tenant = {
+      id: uuidv4(),
+      version: CURRENT_SCHEMA_VERSION,
+      name,
+      type: orgType,
+      createdAt: new Date().toISOString(),
+      active: true,
+      requiredCustomerInfo: authFields,
+      saveOffers: [],
+      admins: adminEmails,
+    };
+
+    await db.collection('tenants').doc(newTenant.id).set(newTenant);
+
+    // Invite all admins
+    const invitePromises = adminEmails.map((email: string) =>
+      sendEmailInvitation({
+        sendTo: email,
+        isAdmin: true,
+        invitedBy: 'john@proxylink.co',
+      }),
+    );
+
+    await Promise.all(invitePromises);
+
+    return NextResponse.json(
+      {
+        message: 'Tenant created and invitations sent successfully',
+        tenant: newTenant,
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error('Error creating tenant:', error);
+    return NextResponse.json(
+      { error: 'Error creating tenant: ' + parseErrorMessage(error) },
       { status: 500 },
     );
   }

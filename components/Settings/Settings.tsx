@@ -44,8 +44,6 @@ const Settings: React.FC<{ tenantId: string }> = ({ tenantId }) => {
 
   if (!userData) return null;
 
-  console.log('tenant', tenant?.saveOffers);
-
   return (
     <div className="flex w-full">
       <div className="flex h-full flex-1 flex-col overflow-hidden">

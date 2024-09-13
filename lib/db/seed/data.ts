@@ -12,6 +12,7 @@ export const TENANTS: Tenant[] = [
     createdAt: currentDate,
     active: true,
     version: CURRENT_SCHEMA_VERSION,
+    admins: ['admin@demoproxy1.com'],
   },
   {
     id: uuidv4(),
@@ -20,6 +21,7 @@ export const TENANTS: Tenant[] = [
     createdAt: currentDate,
     active: true,
     version: CURRENT_SCHEMA_VERSION,
+    admins: ['admin@demoproxy2.com'],
   },
   {
     id: uuidv4(),
@@ -34,6 +36,7 @@ export const TENANTS: Tenant[] = [
       'accountNumber',
       'lastFourCCDigits',
     ],
+    admins: ['admin@demoprovider.com'],
   },
   {
     id: uuidv4(),
@@ -42,6 +45,7 @@ export const TENANTS: Tenant[] = [
     createdAt: currentDate,
     active: true,
     version: CURRENT_SCHEMA_VERSION,
+    admins: ['sorokinvj@gmail.com', 'john@proxylink.co'],
   },
 ];
 
@@ -70,7 +74,7 @@ export const USERS: User[] = [
   },
   {
     id: uuidv4(),
-    email: 'employee1@demoproxy.com',
+    email: 'employee1@demoproxy1.com',
     name: 'Michael Scott',
     tenantId: TENANTS[0].id,
     tenantName: TENANTS[0].name,
@@ -81,11 +85,33 @@ export const USERS: User[] = [
   },
   {
     id: uuidv4(),
-    email: 'admin@demoproxy.com',
+    email: 'admin@demoproxy1.com',
     name: 'Dwight Schrute',
     tenantId: TENANTS[0].id,
     tenantName: TENANTS[0].name,
     tenantType: TENANTS[0].type,
+    role: 'admin',
+    createdAt: currentDate,
+    version: CURRENT_SCHEMA_VERSION,
+  },
+  {
+    id: uuidv4(),
+    email: 'employee1@demoproxy2.com',
+    name: 'James Sawyer',
+    tenantId: TENANTS[1].id,
+    tenantName: TENANTS[1].name,
+    tenantType: TENANTS[1].type,
+    role: 'user',
+    createdAt: currentDate,
+    version: CURRENT_SCHEMA_VERSION,
+  },
+  {
+    id: uuidv4(),
+    email: 'admin@demoproxy2.com',
+    name: 'Carol Schulz',
+    tenantId: TENANTS[1].id,
+    tenantName: TENANTS[1].name,
+    tenantType: TENANTS[1].type,
     role: 'admin',
     createdAt: currentDate,
     version: CURRENT_SCHEMA_VERSION,

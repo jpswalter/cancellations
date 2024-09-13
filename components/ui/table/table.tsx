@@ -29,7 +29,7 @@ export type CustomColumnDef<T> = ColumnDef<T, any> & {
 interface GenericTableProps<T> {
   data: T[];
   columns: CustomColumnDef<T>[];
-  defaultSort?: { id: string; desc: boolean }[];
+  defaultSort: { id: string; desc: boolean }[];
   EmptyComponent?: React.ComponentType;
   onRowClick?: (row: T) => void;
   pageSize?: number;
@@ -39,7 +39,7 @@ interface GenericTableProps<T> {
 const GenericTable = <T extends { id: string }>({
   data,
   columns,
-  defaultSort = [],
+  defaultSort,
   EmptyComponent,
   onRowClick,
   pageSize = 10,

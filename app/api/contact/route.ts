@@ -6,12 +6,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing credentials' }, { status: 500 });
   }
 
-  console.log(
-    'Sending email with this credentials:',
-    process.env.EMAIL_USER,
-    process.env.EMAIL_PASS,
-  );
-
   const { firstName, lastName, phone, email, company, message } =
     await request.json();
 

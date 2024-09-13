@@ -1,0 +1,70 @@
+[
+  {
+    "field": "customerName",
+    "display": "Customer Name"
+  },
+  {
+    "field": "customerEmail",
+    "display": "Customer Email"
+  },
+  {
+    "field": "accountNumber",
+    "display": "Account Number"
+  },
+  {
+    "field": "lastFourCCDigits",
+    "display": "Last 4 Credit Card Digits"
+  },
+  {
+    "field": "phoneNumber",
+    "display": "Phone Number"
+  },
+  {
+    "field": "dateOfBirth",
+    "display": "Date of Birth"
+  },
+  {
+    "field": "postalCode",
+    "display": "Postal Code"
+  },
+  {
+    "field": "customerID",
+    "display": "Customer ID"
+  },
+  {
+    "field": "lastPurchaseDate",
+    "display": "Last Purchase Date"
+  },
+  {
+    "field": "billingAddress",
+    "display": "Billing Address"
+  },
+  {
+    "field": "contractNumber",
+    "display": "Contract Number"
+  },
+  {
+    "field": "socialSecurityNumber",
+    "display": "Social Security Number"
+  },
+  {
+    "field": "driverLicenseNumber",
+    "display": "Driver's License Number"
+  },
+  {
+    "field": "passportNumber",
+    "display": "Passport Number"
+  },
+  {
+    "field": "membershipNumber",
+    "display": "Membership Number"
+  },
+  {
+    "field": "loyaltyCardNumber",
+    "display": "Loyalty Card Number"
+  },
+  {
+    "field": "securityQuestion",
+    "display": "Security Question Answer"
+  }
+]
