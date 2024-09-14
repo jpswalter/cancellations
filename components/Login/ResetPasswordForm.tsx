@@ -10,7 +10,7 @@ import {
 import { auth } from '@/lib/firebase/config';
 import { useSearchParams } from 'next/navigation';
 
-const ResetForm: React.FC = () => {
+const ResetPasswordForm: React.FC = () => {
   const searchParams = useSearchParams();
   const oobCode = searchParams.get('oobCode');
   const mode = searchParams.get('mode');
@@ -209,4 +209,4 @@ const ResetForm: React.FC = () => {
   );
 };
 
-export default ResetForm;
+export default ResetPasswordForm;

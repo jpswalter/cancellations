@@ -91,12 +91,13 @@ export async function POST(request: Request): Promise<NextResponse> {
   const db: Firestore = getFirestore();
 
   try {
-    const { name, adminEmails, orgType, authFields } = await request.json();
+    const { orgName, userName, adminEmails, orgType, authFields } =
+      await request.json();
 
     const newTenant: Tenant = {
       id: uuidv4(),
       version: CURRENT_SCHEMA_VERSION,
-      name,
+      name: orgName,
       type: orgType,
       createdAt: new Date().toISOString(),
       active: true,
@@ -113,6 +114,10 @@ export async function POST(request: Request): Promise<NextResponse> {
         sendTo: email,
         isAdmin: true,
         invitedBy: 'john@proxylink.co',
+        tenantType: orgType,
+        tenantName: orgName,
+        tenantId: newTenant.id,
+        name: userName,
       }),
     );
 

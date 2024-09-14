@@ -1,21 +1,31 @@
 // file: app/login/page.tsx
-// file: app/login/page.tsx
 'use client';
 import { FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
 import LoginForm from '@/components/Login/LoginForm';
 import { FC } from 'react';
-import ResetForm from './ResetForm';
+import ResetPasswordForm from './ResetPasswordForm';
 import Link from 'next/link';
 import { Button } from '@headlessui/react';
 import Footer from '@/app/(public)/components/Footer';
+import SignUpForm from './SignUpForm';
+import { NewUserData } from '@/lib/jwt/utils';
+import { User } from '@/lib/db/schema';
+
 type Props = {
   type?: 'reset-password' | 'sign-up';
+  newUserData?: NewUserData | null | 'expired';
+  handleSignUp?: (formData: FormData) => Promise<User | null>;
 };
 
-const Login: FC<Props> = ({ type }) => {
+const Login: FC<Props> = ({ type, newUserData, handleSignUp }) => {
   const renderLoginComponent = () => {
     if (type === 'reset-password') {
-      return <ResetForm />;
+      return <ResetPasswordForm />;
+    }
+    if (type === 'sign-up' && handleSignUp) {
+      return (
+        <SignUpForm newUserData={newUserData} handleSignUp={handleSignUp} />
+      );
     }
     return <LoginForm />;
   };

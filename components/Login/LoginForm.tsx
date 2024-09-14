@@ -130,7 +130,7 @@ const LoginForm: React.FC = () => {
           >
             Login with Email
           </Button>
-          {error && <p className="text-sm font-light text-red-500">{error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
         </form>
       </div>
     </div>

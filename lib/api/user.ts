@@ -1,4 +1,4 @@
-// file: Projects/intermediary.cc/lib/api/user.ts
+// file: lib/api/user.ts
 
 /**
  * Sends a PATCH request to update the user's info.

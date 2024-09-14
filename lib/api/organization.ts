@@ -43,7 +43,7 @@ export const createOrganization = async ({
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ name, adminEmails, orgType, authFields }),
+    body: JSON.stringify({ orgName: name, adminEmails, orgType, authFields }),
   });
   if (!response.ok) {
     throw new Error('Failed to create organization');

@@ -1,23 +1,36 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import nodemailer from 'nodemailer';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { generateInvitationToken } from './jwt/utils';
+import { TenantType } from './db/schema';
 
 export async function sendEmailInvitation({
   sendTo,
   isAdmin,
   invitedBy,
+  tenantType,
+  tenantName,
+  tenantId,
+  name,
 }: {
   sendTo: string;
   isAdmin: boolean;
   invitedBy: string;
+  tenantType: TenantType;
+  tenantName: string;
+  tenantId: string;
+  name: string;
 }) {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     throw new Error('Missing email credentials');
   }
+
+  const invitationToken = generateInvitationToken({
+    tenantType,
+    tenantName,
+    tenantId,
+    email: sendTo,
+    isAdmin,
+    name,
+  });
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -27,24 +40,28 @@ export async function sendEmailInvitation({
     },
   });
 
+  const invitationLink = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}/signup?token=${invitationToken}`
+    : `http://localhost:3000/signup?token=${invitationToken}`;
+
   const subject = isAdmin
     ? 'You are invited to lead on ProxyLink!'
     : 'You are invited to join ProxyLink!';
 
   const text = isAdmin
-    ? `Hello,
+    ? `Hello${name ? ` ${name}` : ''},
 
 You have been invited by ${invitedBy} to join ProxyLink as an admin. As an admin, you will have access to manage your organization's settings and users.
 
-Please log in to your account to get started.
+Please follow this link to set your password and get started: ${invitationLink}. It is valid for 24 hours.
 
 Best regards,
 The ProxyLink Team`
-    : `Hello,
+    : `Hello${name ? ` ${name}` : ''},
 
 You have been invited by ${invitedBy} to join ProxyLink. As a user, you will have access to the features and services provided by your organization.
 
-Please log in to your account to get started.
+Please follow this link to set your password and get started: ${invitationLink}. It is valid for 24 hours.
 
 Best regards,
 The ProxyLink Team`;
