@@ -40,9 +40,16 @@ export async function sendEmailInvitation({
     },
   });
 
-  const invitationLink = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}/signup?token=${invitationToken}`
-    : `http://localhost:3000/signup?token=${invitationToken}`;
+  let baseUrl: string;
+  if (process.env.VERCEL_ENV === 'production') {
+    baseUrl = 'https://proxylink.co';
+  } else if (process.env.VERCEL_URL) {
+    baseUrl = `https://${process.env.VERCEL_URL}`;
+  } else {
+    baseUrl = 'http://localhost:3000';
+  }
+
+  const invitationLink = `${baseUrl}/signup?token=${invitationToken}`;
 
   const subject = isAdmin
     ? 'You are invited to lead on ProxyLink!'

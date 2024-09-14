@@ -125,7 +125,9 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(
       {
-        message: 'Tenant created and invitations sent successfully',
+        message: `Organization created and invitation${
+          adminEmails.length > 1 ? 's' : ''
+        } sent successfully`,
         tenant: newTenant,
       },
       { status: 201 },
