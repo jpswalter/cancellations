@@ -90,7 +90,7 @@ const LoginForm: React.FC<Props> = ({
         {successMsg ? (
           <SucessMessage />
         ) : (
-          <div>
+          <div className="space-y-4">
             <div className="flex flex-col text-left">
               <div className="mb-1 text-4xl font-bold">
                 You are invited to join {newUserData?.tenantName}{' '}
@@ -100,7 +100,6 @@ const LoginForm: React.FC<Props> = ({
             <div className="flex items-center space-x-2">
               <hr className="h-px flex-1 border-0 bg-gray-300" />
             </div>
-
             <form className="flex flex-col gap-4" onSubmit={onSubmit}>
               <div>
                 <label
