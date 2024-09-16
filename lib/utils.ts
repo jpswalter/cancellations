@@ -56,21 +56,21 @@ export async function sendEmailInvitation({
     : 'You are invited to join ProxyLink!';
 
   const text = isAdmin
-    ? `Hello${name ? ` ${name}` : ''},
+    ? `Hello,
 
 You have been invited by ${invitedBy} to join ProxyLink as an admin. As an admin, you will have access to manage your organization's settings and users.
+Please follow this link to set your password and get started: ${invitationLink}
+The link is valid for 24 hours.
 
-Please follow this link to set your password and get started: ${invitationLink}. It is valid for 24 hours.
-
-Best regards,
+Thank you,
 The ProxyLink Team`
     : `Hello${name ? ` ${name}` : ''},
 
-You have been invited by ${invitedBy} to join ProxyLink. As a user, you will have access to the features and services provided by your organization.
+You have been invited by ${invitedBy} to join ProxyLink.
+Please follow this link to set your password and get started: ${invitationLink}. 
+The link is valid for 24 hours.
 
-Please follow this link to set your password and get started: ${invitationLink}. It is valid for 24 hours.
-
-Best regards,
+Thank you,
 The ProxyLink Team`;
 
   const mailOptions = {
