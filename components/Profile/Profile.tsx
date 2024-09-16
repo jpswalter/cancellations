@@ -65,7 +65,9 @@ const Profile: React.FC<{ popupAlign?: 'top' | 'bottom' }> = ({
         <div ref={dropdownRef} className={popupClassName}>
           <div className="px-4 py-2">
             <div className="flex items-center gap-x-2 text-gray-600">
-              <span className="font-bold">{userData.name}</span>
+              <span className="font-bold">
+                {userData.firstName} {userData.lastName}
+              </span>
             </div>
             <div className="flex items-center gap-x-2 text-gray-600 mt-1">
               <span>{userData.tenantName}</span>
