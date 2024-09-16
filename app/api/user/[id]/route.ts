@@ -17,10 +17,10 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } },
 ): Promise<NextResponse> {
-  const { name }: Partial<User> = await req.json();
+  const { firstName, lastName }: Partial<User> = await req.json();
   const { id } = params;
 
-  if (!id || !name) {
+  if (!id) {
     return new NextResponse(
       JSON.stringify({ error: 'Missing user information' }),
       {
@@ -34,7 +34,7 @@ export async function PATCH(
   const userRef = db.collection('users').doc(id);
 
   try {
-    await userRef.update({ name });
+    await userRef.update({ firstName, lastName });
 
     return new NextResponse(JSON.stringify({ message: 'User updated' }), {
       status: 200,

@@ -12,12 +12,24 @@ const MyAccountTab: FC<{
   userData: User;
   tenantName?: string;
 }> = ({ userData, tenantName }) => {
-  const [name, setName] = useState(userData.name);
+  const [firstName, setFirstName] = useState(userData.firstName);
+  const [lastName, setLastName] = useState(userData.lastName);
 
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (newName: string) => updateUser(userData.id, newName),
+    mutationFn: ({
+      firstName,
+      lastName,
+    }: {
+      firstName: string;
+      lastName: string;
+    }) =>
+      updateUser({
+        firstName,
+        lastName,
+        id: userData.id,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
       toast.success('User updated successfully', {
@@ -30,10 +42,13 @@ const MyAccountTab: FC<{
   });
 
   const handleSaveName = () => {
-    mutation.mutate(name);
+    mutation.mutate({
+      firstName,
+      lastName,
+    });
   };
 
-  if (!userData.name || !userData.email) {
+  if (!userData.email) {
     return null;
   }
 
@@ -41,19 +56,31 @@ const MyAccountTab: FC<{
     <div className="h-full w-full py-8">
       <Fieldset>
         <FieldGroup>
-          <Field className="w-fit">
-            <Label>Name</Label>
-            <div className="flex gap-x-2">
-              <Input
-                name="name"
-                value={name}
-                onChange={e => setName(e.target.value)}
-              />
-              <Button onClick={handleSaveName}>
-                {mutation.isPending ? <Spinner color="white" /> : 'Save'}
-              </Button>
-            </div>
-          </Field>
+          <div className="flex gap-4 items-center">
+            <Field className="w-fit">
+              <Label>First Name</Label>
+              <div className="flex gap-x-2">
+                <Input
+                  name="firstName"
+                  value={firstName}
+                  onChange={e => setFirstName(e.target.value)}
+                />
+              </div>
+            </Field>
+            <Field className="w-fit">
+              <Label>Last Name</Label>
+              <div className="flex gap-x-2">
+                <Input
+                  name="lastName"
+                  value={lastName}
+                  onChange={e => setLastName(e.target.value)}
+                />
+                <Button onClick={handleSaveName}>
+                  {mutation.isPending ? <Spinner color="white" /> : 'Save'}
+                </Button>
+              </div>
+            </Field>
+          </div>
         </FieldGroup>
         <FieldGroup>
           <Field className="w-fit">
