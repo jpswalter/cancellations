@@ -100,7 +100,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       name: orgName,
       type: orgType,
       createdAt: new Date().toISOString(),
-      active: true,
+      active: false,
       requiredCustomerInfo: authFields,
       saveOffers: [],
       admins: adminEmails,
