@@ -53,7 +53,8 @@ export const USERS: User[] = [
   {
     id: uuidv4(),
     email: 'employee1@demoprovider.com',
-    name: 'Zephyr Stormwind',
+    firstName: 'Zephyr',
+    lastName: 'Stormwind',
     tenantId: TENANTS[2].id,
     tenantName: TENANTS[2].name,
     tenantType: TENANTS[2].type,
@@ -64,7 +65,8 @@ export const USERS: User[] = [
   {
     id: uuidv4(),
     email: 'admin@demoprovider.com',
-    name: 'Admin Starlight',
+    firstName: 'Admin',
+    lastName: 'Starlight',
     tenantId: TENANTS[2].id,
     tenantName: TENANTS[2].name,
     tenantType: TENANTS[2].type,
@@ -75,7 +77,8 @@ export const USERS: User[] = [
   {
     id: uuidv4(),
     email: 'employee1@demoproxy1.com',
-    name: 'Michael Scott',
+    firstName: 'Michael',
+    lastName: 'Scott',
     tenantId: TENANTS[0].id,
     tenantName: TENANTS[0].name,
     tenantType: TENANTS[0].type,
@@ -86,7 +89,8 @@ export const USERS: User[] = [
   {
     id: uuidv4(),
     email: 'admin@demoproxy1.com',
-    name: 'Dwight Schrute',
+    firstName: 'Dwight',
+    lastName: 'Schrute',
     tenantId: TENANTS[0].id,
     tenantName: TENANTS[0].name,
     tenantType: TENANTS[0].type,
@@ -97,7 +101,8 @@ export const USERS: User[] = [
   {
     id: uuidv4(),
     email: 'employee1@demoproxy2.com',
-    name: 'James Sawyer',
+    firstName: 'James',
+    lastName: 'Sawyer',
     tenantId: TENANTS[1].id,
     tenantName: TENANTS[1].name,
     tenantType: TENANTS[1].type,
@@ -108,7 +113,8 @@ export const USERS: User[] = [
   {
     id: uuidv4(),
     email: 'admin@demoproxy2.com',
-    name: 'Carol Schulz',
+    firstName: 'Carol',
+    lastName: 'Schulz',
     tenantId: TENANTS[1].id,
     tenantName: TENANTS[1].name,
     tenantType: TENANTS[1].type,
@@ -119,7 +125,8 @@ export const USERS: User[] = [
   {
     id: uuidv4(),
     email: 'sorokinvj@gmail.com',
-    name: 'Vladislav Sorokin',
+    firstName: 'Vladislav',
+    lastName: 'Sorokin',
     tenantId: TENANTS[3].id,
     tenantName: TENANTS[3].name,
     tenantType: TENANTS[3].type,
@@ -130,7 +137,8 @@ export const USERS: User[] = [
   {
     id: uuidv4(),
     email: 'john@proxylink.co',
-    name: 'John Walter',
+    firstName: 'John',
+    lastName: 'Walter',
     tenantId: TENANTS[3].id,
     tenantName: TENANTS[3].name,
     tenantType: TENANTS[3].type,
