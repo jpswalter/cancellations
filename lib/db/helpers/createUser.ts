@@ -19,8 +19,7 @@ async function createUser(user: User) {
     const userRecord = await auth.createUser({
       uid: user.id,
       email: user.email,
-      password: STANDARD_PASSWORD, // Standard password
-      displayName: user.name,
+      password: STANDARD_PASSWORD,
     });
     // Set custom claims for JWT tokens
     await auth.setCustomUserClaims(userRecord.uid, {

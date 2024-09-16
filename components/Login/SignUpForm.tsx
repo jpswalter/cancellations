@@ -51,7 +51,8 @@ const LoginForm: React.FC<Props> = ({
   newUserData = 'expired',
   handleSignUp,
 }) => {
-  const [name, setName] = useState((newUserData as NewUserData)?.name || '');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [verifiedPassword, setVerifiedPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,7 +94,9 @@ const LoginForm: React.FC<Props> = ({
           <div className="space-y-4">
             <div className="flex flex-col text-left">
               <div className="mb-1 text-4xl font-bold">
-                You are invited to join {newUserData?.tenantName}{' '}
+                You are invited to join the{' '}
+                <span className="text-blue-500">{newUserData?.tenantName}</span>{' '}
+                organization on ProxyLink
               </div>
               <p className="text-large text-gray-500">Create your account</p>
             </div>
@@ -118,23 +121,41 @@ const LoginForm: React.FC<Props> = ({
                   disabled
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="name"
-                  className="mb-2 block text-sm font-medium text-gray-900"
-                >
-                  Name<span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900"
-                  placeholder="Enter your name"
-                  required
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                />
+              <div className="flex gap-4">
+                <div>
+                  <label
+                    htmlFor="firstName"
+                    className="mb-2 block text-sm font-medium text-gray-900"
+                  >
+                    First name<span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900"
+                    required
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="lastName"
+                    className="mb-2 block text-sm font-medium text-gray-900"
+                  >
+                    Last name<span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900"
+                    required
+                    value={lastName}
+                    onChange={e => setLastName(e.target.value)}
+                  />
+                </div>
               </div>
               <div>
                 <label

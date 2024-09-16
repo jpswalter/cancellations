@@ -51,7 +51,6 @@ async function initializeTestData(db: FirebaseFirestore.Firestore) {
         uid: user.id,
         email: user.email,
         password: STANDARD_PASSWORD,
-        displayName: user.name,
       });
 
       // Set custom claims for JWT tokens

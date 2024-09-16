@@ -27,7 +27,8 @@ export default async function SignUpPage({
       return null;
     }
     try {
-      const name = formData.get('name') as string;
+      const firstName = formData.get('firstName') as string;
+      const lastName = formData.get('lastName') as string;
       const password = formData.get('password') as string;
 
       const app = initializeFirebaseAdmin();
@@ -36,7 +37,8 @@ export default async function SignUpPage({
       const newUser: User = {
         id: uuidv4(),
         email: newUserData?.email,
-        name,
+        firstName,
+        lastName,
         tenantId: newUserData?.tenantId,
         tenantType: newUserData?.tenantType,
         tenantName: newUserData?.tenantName,
@@ -48,7 +50,6 @@ export default async function SignUpPage({
         uid: newUser.id,
         email: newUser.email,
         password,
-        displayName: name,
       });
 
       // Set custom user claims

@@ -70,7 +70,8 @@ export interface User {
   tenantType: TenantType;
   role: 'admin' | 'user';
   createdAt: string;
-  name: string;
+  firstName: string;
+  lastName: string;
 }
 
 export type SaveOffer = {
@@ -100,7 +101,7 @@ export interface Tenant {
   admins: string[];
 }
 
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3;
 
 export const collections = {
   requests: 'requests',
