@@ -29,6 +29,7 @@ const MyAccountTab: FC<{
         firstName,
         lastName,
         id: userData.id,
+        role: userData.role,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });

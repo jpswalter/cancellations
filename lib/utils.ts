@@ -9,7 +9,6 @@ export async function sendEmailInvitation({
   tenantType,
   tenantName,
   tenantId,
-  name,
 }: {
   sendTo: string;
   isAdmin: boolean;
@@ -17,7 +16,6 @@ export async function sendEmailInvitation({
   tenantType: TenantType;
   tenantName: string;
   tenantId: string;
-  name: string;
 }) {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     throw new Error('Missing email credentials');
@@ -29,7 +27,6 @@ export async function sendEmailInvitation({
     tenantId,
     email: sendTo,
     isAdmin,
-    name,
   });
 
   const transporter = nodemailer.createTransport({
@@ -64,7 +61,7 @@ The link is valid for 24 hours.
 
 Thank you,
 The ProxyLink Team`
-    : `Hello${name ? ` ${name}` : ''},
+    : `Hello,
 
 You have been invited by ${invitedBy} to join ProxyLink.
 Please follow this link to set your password and get started: ${invitationLink}. 

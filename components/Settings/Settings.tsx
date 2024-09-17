@@ -2,6 +2,7 @@
 import clsx from 'clsx';
 import { useState } from 'react';
 import MyAccountTab from './MyAccountTab';
+import MyTeamTab from './MyTeamTab';
 import { useAuth } from '@/hooks/useAuth';
 import { getTenant } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
@@ -29,6 +30,11 @@ const Settings: React.FC<{ tenantId: string }> = ({ tenantId }) => {
       name: 'My Account',
       current: activeTab === 'My Account',
       isEnabled: true,
+    },
+    {
+      name: 'My Team',
+      current: activeTab === 'My Team',
+      isEnabled: isAdmin,
     },
     {
       name: 'Save Offers',
@@ -90,6 +96,9 @@ const Settings: React.FC<{ tenantId: string }> = ({ tenantId }) => {
                 )}
                 {activeTab === 'Proxy Fee Admin' && isProvider && (
                   <ProxyFeeAdminTab />
+                )}
+                {activeTab === 'My Team' && isAdmin && (
+                  <MyTeamTab tenantId={tenantId} />
                 )}
               </div>
             </div>

@@ -3,25 +3,10 @@ import { sendEmailInvitation } from '@/lib/utils';
 
 export async function POST(request: Request) {
   try {
-    const {
-      sendTo,
-      isAdmin,
-      invitedBy,
-      tenantType,
-      tenantName,
-      tenantId,
-      name,
-    } = await request.json();
+    const { sendTo, isAdmin, invitedBy, tenantType, tenantName, tenantId } =
+      await request.json();
 
-    if (
-      !sendTo ||
-      !isAdmin ||
-      !invitedBy ||
-      !tenantType ||
-      !tenantName ||
-      !tenantId ||
-      !name
-    ) {
+    if (!sendTo || !invitedBy || !tenantType || !tenantName || !tenantId) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 },
@@ -35,7 +20,6 @@ export async function POST(request: Request) {
       tenantType,
       tenantName,
       tenantId,
-      name,
     });
 
     return NextResponse.json(
