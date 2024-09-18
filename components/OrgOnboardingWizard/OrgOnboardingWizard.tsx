@@ -75,37 +75,43 @@ const OrgOnboardingWizard = () => {
         );
       case 2:
         return (
-          <>
-            <h3 className="text-3xl">Confirm Authenticating Fields</h3>
-            <p className="text-left">
-              We call it &quot;Authenticating Fields&quot; you might call it
-              differently, but in a nutshell these are the fields that will be
-              used to generate templates for your organization. Companies that
-              are using ProxyLink will be required to fill in these fields if
-              they want to send Cancellation and other types of requests to your
-              organization.
+          <div className="flex flex-col h-full">
+            <h3 className="text-3xl mb-4">Confirm Authenticating Fields</h3>
+            <p className="text-left mb-4">
+              These &quot;Authenticating Fields&quot; are essential details
+              we&apos;ll use to verify customer requests. When ProxyLink users
+              upload CSVs with cancellations or other requests, we&apos;ll use
+              these fields to create templates they must complete. to create
+              templates they must complete.
             </p>
-            <div className="my-4 space-y-2 flex flex-col w-full overflow-y-scroll">
-              {AUTH_FIELDS.map(item => (
-                <label key={item.field} className="inline-flex items-center">
-                  <input
-                    type="checkbox"
-                    className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    value={item.field}
-                    checked={authFields.includes(item.field)}
-                    onChange={e => {
-                      if (e.target.checked) {
-                        setAuthFields([...authFields, item.field]);
-                      } else {
-                        setAuthFields(authFields.filter(f => f !== item.field));
-                      }
-                    }}
-                  />
-                  <span className="ml-2">{item.display}</span>
-                </label>
-              ))}
+            <div
+              className="flex-grow overflow-y-auto mb-4"
+              style={{ maxHeight: 'calc(80vh - 300px)' }}
+            >
+              <div className="space-y-2 flex flex-col w-full">
+                {AUTH_FIELDS.map(item => (
+                  <label key={item.field} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      value={item.field}
+                      checked={authFields.includes(item.field)}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setAuthFields([...authFields, item.field]);
+                        } else {
+                          setAuthFields(
+                            authFields.filter(f => f !== item.field),
+                          );
+                        }
+                      }}
+                    />
+                    <span className="ml-2">{item.display}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-            <div className="flex justify-between w-full">
+            <div className="flex justify-between w-full mt-auto">
               <Button outline={true} onClick={() => setStep(1)}>
                 Back
               </Button>
@@ -113,7 +119,7 @@ const OrgOnboardingWizard = () => {
                 Proceed
               </Button>
             </div>
-          </>
+          </div>
         );
       case 3:
         if (isTermsLoading) return <Loader />;
@@ -162,11 +168,12 @@ const OrgOnboardingWizard = () => {
       case 4:
         return (
           <>
+            <div className="text-6xl">🎉</div>
             <Title>Congratulations!</Title>
-            <Text>
+            <p className="text-center">
               You successfully completed the onboarding process for{' '}
               <span>{userData?.tenantName}</span> organization on ProxyLink.
-            </Text>
+            </p>
             <Button color="indigo" onClick={() => setIsOpen(false)}>
               Finish
             </Button>
