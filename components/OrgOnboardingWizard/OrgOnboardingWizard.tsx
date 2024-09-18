@@ -143,7 +143,7 @@ const OrgOnboardingWizard = () => {
                 onClick={handleAcceptTerms}
                 color="indigo"
                 disabled={!termsConditionsAccepted}
-                loading={mutation.isPending}
+                loading={activateTenantMutation.isPending}
               >
                 Accept and Continue
               </Button>
@@ -168,7 +168,7 @@ const OrgOnboardingWizard = () => {
     }
   };
 
-  const mutation = useMutation({
+  const activateTenantMutation = useMutation({
     mutationFn: (data: Tenant) => updateTenant(data),
     onSuccess: () => {
       setStep(currStep => currStep + 1);
@@ -183,7 +183,7 @@ const OrgOnboardingWizard = () => {
       console.error('Organization not found');
       return;
     }
-    await mutation.mutate({
+    await activateTenantMutation.mutate({
       ...org,
       active: true,
       requiredCustomerInfo: authFields as CustomerInfoField[],
