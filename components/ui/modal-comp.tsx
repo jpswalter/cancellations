@@ -40,7 +40,7 @@ export const Modal: React.FC<ModalProps> = ({
             />
           )}
         </div>
-        <div className="mb-4">{children}</div>
+        <div className="mb-4 overflow-hidden">{children}</div>
         {footer && <div className="flex justify-end">{footer}</div>}
       </DialogPanel>
     </Dialog>

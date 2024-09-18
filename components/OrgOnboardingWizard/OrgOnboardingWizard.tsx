@@ -56,18 +56,18 @@ const OrgOnboardingWizard = () => {
       case 1:
         return (
           <>
-            <Title>Let&apos;s get you set up</Title>
-            <Text>
+            <h3 className="text-3xl">Let&apos;s get you set up</h3>
+            <p className="text-center">
               {userData?.tenantType === 'provider'
                 ? 'The onboarding process for your organization means setting up authenticating fields and accepting terms and conditions.'
                 : 'The onboarding process for your organization means just accepting terms and conditions.'}
-            </Text>
+            </p>
             <Button
               color="indigo"
               onClick={() =>
                 setStep(userData?.tenantType === 'provider' ? 2 : 3)
               }
-              className="mt-4"
+              className="mt-2"
             >
               Get Started
             </Button>
@@ -76,16 +76,16 @@ const OrgOnboardingWizard = () => {
       case 2:
         return (
           <>
-            <Title>Confirm Authenticating Fields</Title>
-            <Text>
+            <h3 className="text-3xl">Confirm Authenticating Fields</h3>
+            <p className="text-left">
               We call it &quot;Authenticating Fields&quot; you might call it
               differently, but in a nutshell these are the fields that will be
               used to generate templates for your organization. Companies that
               are using ProxyLink will be required to fill in these fields if
               they want to send Cancellation and other types of requests to your
               organization.
-            </Text>
-            <div className="my-4 space-y-2 flex flex-col w-full">
+            </p>
+            <div className="my-4 space-y-2 flex flex-col w-full overflow-y-scroll">
               {AUTH_FIELDS.map(item => (
                 <label key={item.field} className="inline-flex items-center">
                   <input
@@ -118,37 +118,46 @@ const OrgOnboardingWizard = () => {
       case 3:
         if (isTermsLoading) return <Loader />;
         return (
-          <>
-            <Title>{termsConditionsArticle?.title}</Title>
+          <div className="flex flex-col h-full">
+            <h3 className="text-3xl mb-4 text-center">
+              {termsConditionsArticle?.title}
+            </h3>
             <div
-              className="text-base leading-normal hygraph-content"
-              dangerouslySetInnerHTML={{
-                __html: termsConditionsArticle?.body?.html ?? '',
-              }}
-            />
-            <div className="flex space-x-2 w-full">
-              <Checkbox
-                checked={termsConditionsAccepted}
-                onChange={() =>
-                  setTermsConditionsAccepted(!termsConditionsAccepted)
-                }
+              className="flex-grow overflow-y-auto mb-4"
+              style={{ maxHeight: 'calc(80vh - 200px)' }}
+            >
+              <div
+                className="text-base leading-normal hygraph-content"
+                dangerouslySetInnerHTML={{
+                  __html: termsConditionsArticle?.body?.html ?? '',
+                }}
               />
-              <Text>Please accept our terms and conditions.</Text>
             </div>
-            <div className="flex justify-between w-full">
-              <Button outline={true} onClick={() => setStep(1)}>
-                Back
-              </Button>
-              <Button
-                onClick={handleAcceptTerms}
-                color="indigo"
-                disabled={!termsConditionsAccepted}
-                loading={activateTenantMutation.isPending}
-              >
-                Accept and Continue
-              </Button>
+            <div className="mt-auto">
+              <div className="flex space-x-2 w-full mb-4">
+                <Checkbox
+                  checked={termsConditionsAccepted}
+                  onChange={() =>
+                    setTermsConditionsAccepted(!termsConditionsAccepted)
+                  }
+                />
+                <Text>Please accept our terms and conditions.</Text>
+              </div>
+              <div className="flex justify-between w-full">
+                <Button outline={true} onClick={() => setStep(1)}>
+                  Back
+                </Button>
+                <Button
+                  onClick={handleAcceptTerms}
+                  color="indigo"
+                  disabled={!termsConditionsAccepted}
+                  loading={activateTenantMutation.isPending}
+                >
+                  Accept and Continue
+                </Button>
+              </div>
             </div>
-          </>
+          </div>
         );
       case 4:
         return (
@@ -193,20 +202,22 @@ const OrgOnboardingWizard = () => {
   if (!userData || !org || !termsConditionsArticle) return null;
 
   return (
-    <Modal shown={isOpen} title="Welcome to ProxyLink">
-      <Card className="max-w-2xl mx-auto">
+    <Modal shown={isOpen} title="" size="lg">
+      <Card className="w-full max-h-[80vh] h-full flex flex-col overflow-hidden p-0">
         <Flex
           flexDirection="col"
           alignItems="center"
-          justifyContent="center"
-          className="space-y-6"
+          justifyContent="start"
+          className="h-full"
         >
           <ProgressBar
             value={getCurrentProgress()}
-            className="mt-4"
+            className="w-full mb-6"
             color="indigo"
           />
-          {renderStep()}
+          <div className="w-full overflow-y-auto flex-grow flex flex-col items-center gap-4 px-4">
+            {renderStep()}
+          </div>
         </Flex>
       </Card>
     </Modal>
