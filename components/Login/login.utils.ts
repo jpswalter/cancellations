@@ -6,5 +6,5 @@ export const getUrlForSuccessfullLogin = (tenantType: TenantType): string => {
   } else if (tenantType === 'proxy') {
     return '/actions';
   }
-  return '/settings';
+  return '/organizations';
 };
