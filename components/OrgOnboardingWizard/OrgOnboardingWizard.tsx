@@ -1,35 +1,28 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, Title, Text, Flex, ProgressBar } from '@tremor/react';
 import { Modal, Button } from '@/components/ui/';
 import { useAuth } from '@/hooks/useAuth';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { getTenant, updateTenant } from '@/lib/api/tenant';
-import { Tenant } from '@/lib/db/schema';
+import { CustomerInfoField, Tenant } from '@/lib/db/schema';
 import AUTH_FIELDS from '@/constants/authFields.json';
 import { getArticle } from '@/lib/api/article';
 import { Loader } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const OrgOnboardingWizard = () => {
   const [step, setStep] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const { userData } = useAuth();
-  const totalSteps = useMemo(() => {
-    if (userData?.tenantType === 'provider') {
-      return 4;
-    }
-    return 3;
-  }, [userData?.tenantType]);
 
   const { data: org } = useQuery({
     queryKey: ['organization', userData?.tenantId],
     queryFn: () => getTenant(userData?.tenantId),
     enabled: !!userData?.tenantId,
   });
-
-  console.log(org);
 
   useEffect(() => {
     if (org?.active === false && userData?.role === 'admin') {
@@ -46,6 +39,17 @@ const OrgOnboardingWizard = () => {
     queryKey: ['terms-and-conditions'],
     queryFn: () => getArticle('terms-and-conditions'),
   });
+
+  const [termsConditionsAccepted, setTermsConditionsAccepted] = useState(false);
+
+  const getCurrentProgress = useCallback(() => {
+    const isProvider = userData?.tenantType === 'provider';
+    const totalSteps = isProvider ? 4 : 3;
+    if (isProvider) {
+      return (step / totalSteps) * 100;
+    }
+    return step === 1 ? 33 : step === 2 ? 33 : step === 3 ? 66 : 100;
+  }, [userData?.tenantType, step]);
 
   const renderStep = () => {
     switch (step) {
@@ -81,7 +85,7 @@ const OrgOnboardingWizard = () => {
               they want to send Cancellation and other types of requests to your
               organization.
             </Text>
-            <div className="mt-2 space-y-2 flex flex-col w-full">
+            <div className="my-4 space-y-2 flex flex-col w-full">
               {AUTH_FIELDS.map(item => (
                 <label key={item.field} className="inline-flex items-center">
                   <input
@@ -101,7 +105,7 @@ const OrgOnboardingWizard = () => {
                 </label>
               ))}
             </div>
-            <div className="flex justify-between w-full mt-4">
+            <div className="flex justify-between w-full">
               <Button outline={true} onClick={() => setStep(1)}>
                 Back
               </Button>
@@ -122,12 +126,28 @@ const OrgOnboardingWizard = () => {
                 __html: termsConditionsArticle?.body?.html ?? '',
               }}
             />
-            <Text className="mt-4 text-xl font-semibold text-center">
-              Please accept our terms and conditions to continue.
-            </Text>
-            <Button onClick={handleAcceptTerms} className="mt-2" color="indigo">
-              Accept and Continue
-            </Button>
+            <div className="flex space-x-2 w-full">
+              <Checkbox
+                checked={termsConditionsAccepted}
+                onChange={() =>
+                  setTermsConditionsAccepted(!termsConditionsAccepted)
+                }
+              />
+              <Text>Please accept our terms and conditions.</Text>
+            </div>
+            <div className="flex justify-between w-full">
+              <Button outline={true} onClick={() => setStep(1)}>
+                Back
+              </Button>
+              <Button
+                onClick={handleAcceptTerms}
+                color="indigo"
+                disabled={!termsConditionsAccepted}
+                loading={mutation.isPending}
+              >
+                Accept and Continue
+              </Button>
+            </div>
           </>
         );
       case 4:
@@ -163,7 +183,11 @@ const OrgOnboardingWizard = () => {
       console.error('Organization not found');
       return;
     }
-    await mutation.mutate({ ...org, active: true });
+    await mutation.mutate({
+      ...org,
+      active: true,
+      requiredCustomerInfo: authFields as CustomerInfoField[],
+    });
   };
 
   if (!userData || !org || !termsConditionsArticle) return null;
@@ -178,7 +202,7 @@ const OrgOnboardingWizard = () => {
           className="space-y-6"
         >
           <ProgressBar
-            value={(step / totalSteps) * 100}
+            value={getCurrentProgress()}
             className="mt-4"
             color="indigo"
           />
