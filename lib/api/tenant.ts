@@ -113,12 +113,33 @@ export const deleteSaveOffer = async (
  * @returns {Promise<Tenant>} A promise that resolves to the tenant.
  * @throws {Error} If the request fails.
  */
-export async function getTenant(tenantId: string): Promise<Tenant> {
+export async function getTenant(tenantId?: string): Promise<Tenant> {
+  if (!tenantId) {
+    throw new Error('No tenant id provided');
+  }
   const response = await fetch(`/api/tenants/${tenantId}`, {
     cache: 'no-store',
   });
   if (!response.ok) {
-    throw new Error('Failed to fetch tenant');
+    throw new Error('Failed to fetch organization');
   }
   return response.json();
 }
+
+export const updateTenant = async (data: Tenant): Promise<Tenant | Error> => {
+  const { id } = data;
+  if (!id) {
+    throw new Error('No tenant id provided');
+  }
+  const response = await fetch(`/api/tenants/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to update organization');
+  }
+  return response.json();
+};

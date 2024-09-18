@@ -4,7 +4,7 @@ import { Dialog, DialogPanel, Button } from '@tremor/react';
 
 interface ModalProps {
   shown: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   title: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
@@ -26,17 +26,19 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <Dialog open={shown} onClose={onClose} static={false}>
+    <Dialog open={shown} onClose={onClose || (() => {})} static={true}>
       <DialogPanel className={`w-full ${sizeClasses[size]}`}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <Button
-            size="xs"
-            variant="light"
-            icon={X}
-            onClick={onClose}
-            color="gray"
-          />
+          {onClose && (
+            <Button
+              size="xs"
+              variant="light"
+              icon={X}
+              onClick={onClose}
+              color="gray"
+            />
+          )}
         </div>
         <div className="mb-4">{children}</div>
         {footer && <div className="flex justify-end">{footer}</div>}

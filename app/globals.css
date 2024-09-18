@@ -36,32 +36,6 @@ code {
     monospace;
 }
 
-@layer components {
-  .blue-btn-primary {
-    @apply rounded bg-blue-500 font-bold normal-case shadow hover:bg-blue-600 active:bg-blue-700 text-white flex items-center space-x-1 justify-center;
-  }
-
-  .blue-btn-primary.btn-disabled {
-    @apply bg-blue-300;
-  }
-
-  .blue-btn-secondary {
-    @apply rounded border border-neutral-200 bg-white font-bold normal-case shadow hover:bg-gray-100 active:bg-gray-200 text-gray-600 flex items-center space-x-1 justify-center;
-  }
-
-  .blue-centerify {
-    @apply flex justify-center items-center;
-  }
-}
-
-.dropdown-content {
-  @apply border border-slate-200;
-}
-
-.menu li > *:not(ul):not(.menu-title):not(details):active {
-  @apply bg-gray-300 text-slate-900;
-}
-
 @layer base {
   h1 {
     @apply text-2xl;
@@ -74,30 +48,10 @@ code {
   }
 }
 
-.select {
-  /* @apply text-base; */
+.hygraph-content ul {
+  @apply list-disc pl-4 my-2;
 }
 
-.label-text {
-  @apply font-medium;
-}
-
-.bg-dot-pattern {
-  --d: 1.5px;
-
-  background: radial-gradient(
-      circle at var(--d) var(--d),
-      #dddddd calc(var(--d) - 1px),
-      #fafafa var(--d)
-    )
-    0 0 / 20px 20px;
-}
-
-.tremor-BarList-bar,
-.tremor-BarList-labelWrapper {
-  height: 60px;
-}
-
-.blue-audio.rap-container {
-  box-shadow: none;
+.hygraph-content ol {
+  @apply list-decimal pl-4 my-2;
 }

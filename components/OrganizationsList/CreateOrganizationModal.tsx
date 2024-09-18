@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { Radio, RadioGroup, RadioField } from '@/components/ui/radio';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import allAuthenticatingFields from './allAuthenticatingFields.json';
+import AUTH_FIELDS from '@/constants/authFields.json';
 import { Modal, Button } from '@/components/ui';
 import { Card } from '@tremor/react';
 import { createOrganization } from '@/lib/api/organization';
@@ -150,7 +150,7 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
               Authenticating Fields
             </label>
             <div className="mt-2 space-y-2 flex flex-col">
-              {allAuthenticatingFields.map(item => (
+              {AUTH_FIELDS.map(item => (
                 <label key={item.field} className="inline-flex items-center">
                   <input
                     type="checkbox"

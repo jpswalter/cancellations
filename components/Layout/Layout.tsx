@@ -8,6 +8,7 @@ import Profile from '../Profile/Profile';
 import SidebarButton from '../SidebarButton/SidebarButton';
 
 import { useMenuItems } from './useMenuItems';
+import OrgOnboardingWizard from '../OrgOnboardingWizard/OrgOnboardingWizard';
 
 export default function ClientLayout({
   children,
@@ -68,6 +69,7 @@ export default function ClientLayout({
           </div>
         </div>
         <div className="col-start-2 row-span-2 row-start-1">{children}</div>
+        <OrgOnboardingWizard />
       </div>
     </>
   );
