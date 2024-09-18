@@ -195,7 +195,9 @@ const OrgOnboardingWizard = () => {
     await activateTenantMutation.mutate({
       ...org,
       active: true,
-      requiredCustomerInfo: authFields as CustomerInfoField[],
+      ...(userData?.tenantType === 'provider'
+        ? { requiredCustomerInfo: authFields as CustomerInfoField[] }
+        : {}),
     });
   };
 
