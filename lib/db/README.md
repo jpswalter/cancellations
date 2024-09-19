@@ -1,3 +1,5 @@
+# ProxyLink
+
 # Database Management
 
 This directory contains files for managing the Firestore database schema and initialization.
