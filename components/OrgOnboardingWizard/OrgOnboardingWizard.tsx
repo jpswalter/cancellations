@@ -78,11 +78,9 @@ const OrgOnboardingWizard = () => {
           <div className="flex flex-col h-full">
             <h3 className="text-3xl mb-4">Confirm Authenticating Fields</h3>
             <p className="text-left mb-4">
-              These &quot;Authenticating Fields&quot; are essential details
-              we&apos;ll use to verify customer requests. When ProxyLink users
-              upload CSVs with cancellations or other requests, we&apos;ll use
-              these fields to create templates they must complete. to create
-              templates they must complete.
+              Please confirm the information you require to authenticate your
+              customers. Proxies will be required to provide this information
+              when submitting a request.
             </p>
             <div
               className="flex-grow overflow-y-auto mb-4"
