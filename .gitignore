@@ -40,3 +40,4 @@ assistant-demo.json
 analytics-credentials.json
 extension.json
 .env
+.env.production
