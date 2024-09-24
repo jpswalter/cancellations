@@ -1,7 +1,7 @@
 import React from 'react';
 import { DonutChart, List, ListItem } from '@tremor/react';
 import clsx from 'clsx';
-import { StatsResponse } from '@/lib/api/stats';
+import { StatsResponse } from '@/functions/src/calculateTenantStats';
 
 interface SourcesCardProps {
   data?: Record<string, number>;

@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFirestore, Firestore } from 'firebase-admin/firestore';
-import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
-import { calculateStats } from '@/lib/firebase/stats';
-
-initializeFirebaseAdmin();
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { app } from '@/lib/firebase/config';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const url = new URL(req.url);
@@ -26,18 +23,32 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const db: Firestore = getFirestore();
-
   try {
-    const stats = await calculateStats({
-      db,
+    const functions = getFunctions(app, 'us-central1');
+    console.log('functions', functions);
+    const calculateTenantStats = httpsCallable(
+      functions,
+      'calculateTenantStats',
+    );
+    console.log('calculateTenantStats', calculateTenantStats);
+    console.log('GET calculateTenantStats calling args', {
       tenantType,
       tenantId,
       fromDate: fromDate || undefined,
       toDate: toDate || undefined,
       sourceId: sourceId || undefined,
     });
-    return new NextResponse(JSON.stringify(stats), {
+    const result = await calculateTenantStats({
+      data: {
+        tenantType,
+        tenantId,
+        fromDate: fromDate || undefined,
+        toDate: toDate || undefined,
+        sourceId: sourceId || undefined,
+      },
+    });
+    console.log('GET calculateTenantStats result', result);
+    return new NextResponse(JSON.stringify(result.data), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

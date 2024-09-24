@@ -41,3 +41,10 @@ analytics-credentials.json
 extension.json
 .env
 .env.production
+
+# firebase functions
+functions/lib
+functions/node_modules
+functions/package-lock.json
+functions/yarn.lock
+functions/.env.*

@@ -1,6 +1,6 @@
 import { DonutChart, List, ListItem } from '@tremor/react';
 import { FC } from 'react';
-import { StatsResponse } from '@/lib/api/stats';
+import { StatsResponse } from '@/functions/src/calculateTenantStats';
 import clsx from 'clsx';
 
 type Props = {

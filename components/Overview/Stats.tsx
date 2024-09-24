@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { DonutChart } from '@tremor/react';
-import { StatsResponse } from '@/lib/api/stats';
+import { StatsResponse } from '@/functions/src/calculateTenantStats';
 import { Loader } from '@/components/ui/spinner';
 
 type Props = {

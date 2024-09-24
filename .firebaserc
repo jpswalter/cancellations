@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "intermediarycc"
-  }
+    "default": "intermediarycc",
+    "dev": "intermediarycc"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

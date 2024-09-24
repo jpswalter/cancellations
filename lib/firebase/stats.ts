@@ -11,7 +11,7 @@ import {
   CollectionReference,
 } from 'firebase-admin/firestore';
 import { addDays, format, subDays, startOfMonth, isBefore } from 'date-fns';
-import { StatsResponse } from '../api/stats';
+import { StatsResponse } from '@/functions/src/calculateTenantStats';
 
 const ALL_STATUSES: RequestStatus[] = [
   'Pending',

@@ -30,6 +30,7 @@ import {
   Select,
   SelectItem,
 } from '@tremor/react';
+import { useAuth } from '@/hooks/useAuth';
 
 export const metadata: Metadata = {
   title: 'Overview',
@@ -48,10 +49,14 @@ ChartJS.register(
   Filler,
 );
 
-const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
-  tenantType,
-  tenantId,
-}) => {
+const Overview: React.FC<{
+  tenantType?: TenantType;
+  tenantId?: string;
+}> = () => {
+  const { userData } = useAuth();
+  const tenantType = userData?.tenantType;
+  const tenantId = userData?.tenantId;
+
   const [dateRange, setDateRange] = useState<DateRangePickerValue>({
     from: undefined,
     to: undefined,
@@ -60,12 +65,30 @@ const Overview: React.FC<{ tenantType: TenantType; tenantId: string }> = ({
     undefined,
   );
 
-  const { data: stats, isLoading } = useQuery({
+  console.log('tenantType', tenantType);
+  console.log('tenantId', tenantId);
+  console.log('dateRange', dateRange);
+  console.log('selectedSource', selectedSource);
+
+  const {
+    data: stats,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['stats', tenantType, tenantId, dateRange, selectedSource],
     queryFn: () =>
       fetchStats({ tenantType, tenantId, dateRange, selectedSource }),
     enabled: !!tenantType && !!tenantId,
   });
+
+  console.log('Auth data:', { tenantType, tenantId, userData });
+  console.log('Query status:', {
+    isLoading,
+    error: error ? error.toString() : null,
+    stats,
+  });
+  console.log('Query enabled:', !!tenantType && !!tenantId);
+  console.log('Stats:', stats);
 
   const dailyVolumeData = useMemo(() => {
     if (!stats?.requests.dailyVolume) return null;

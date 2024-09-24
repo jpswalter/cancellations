@@ -13,5 +13,14 @@
   },
   "firestore": {
     "rules": "lib/db/firestore.rules"
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20",
+    "env": {
+      "PL_FIREBASE_PROJECT_ID": "${param:PL_FIREBASE_PROJECT_ID}",
+      "PL_FIREBASE_CLIENT_EMAIL": "${param:PL_FIREBASE_CLIENT_EMAIL}",
+      "PL_FIREBASE_PRIVATE_KEY": "${param:PL_FIREBASE_PRIVATE_KEY}"
+    }
   }
 }
