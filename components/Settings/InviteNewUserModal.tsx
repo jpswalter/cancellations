@@ -83,6 +83,7 @@ const InviteUserModal: FC<Props> = ({ isOpen, closeModal }) => {
           </Button>
         </div>
       }
+      data-testid="invite-user-modal"
     >
       <div className="py-4">
         <h3 className="text-lg text-gray-900 mb-4">

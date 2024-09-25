@@ -16,7 +16,7 @@ const MyTeamTab: FC<{ tenantId: string }> = ({ tenantId }) => {
   });
 
   const queryClient = useQueryClient();
-  const makeAdmin = useMutation({
+  const changeAdminStatus = useMutation({
     mutationFn: ({
       firstName,
       lastName,
@@ -25,7 +25,7 @@ const MyTeamTab: FC<{ tenantId: string }> = ({ tenantId }) => {
     }: {
       firstName: string;
       lastName: string;
-      role: 'admin';
+      role: 'admin' | 'user';
       id: string;
     }) =>
       updateUser({
@@ -96,17 +96,20 @@ const MyTeamTab: FC<{ tenantId: string }> = ({ tenantId }) => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {role === 'user' && (
-                <Button
-                  outline
-                  onClick={() =>
-                    makeAdmin.mutate({ firstName, lastName, role: 'admin', id })
-                  }
-                >
-                  <FaUserShield />
-                  Make admin
-                </Button>
-              )}
+              <Button
+                outline
+                onClick={() =>
+                  changeAdminStatus.mutate({
+                    firstName,
+                    lastName,
+                    role: role === 'admin' ? 'user' : 'admin',
+                    id,
+                  })
+                }
+              >
+                <FaUserShield />
+                {role === 'admin' ? 'Remove Admin' : 'Make Admin'}
+              </Button>
             </div>
           </li>
         ))}
