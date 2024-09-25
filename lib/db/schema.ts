@@ -105,6 +105,21 @@ export const CURRENT_SCHEMA_VERSION = 3;
 
 export const collections = {
   requests: 'requests',
+  invitations: 'invitations',
   users: 'users',
   tenants: 'tenants',
+  requestsLog: 'requestsLog',
 };
+
+// Add this new type
+export interface Invitation {
+  id: string;
+  email: string;
+  tenantId: string;
+  tenantName: string;
+  tenantType: TenantType;
+  isAdmin: boolean;
+  invitedBy: string;
+  invitedAt: string;
+  expiresAt: string;
+}

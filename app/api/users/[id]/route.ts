@@ -17,7 +17,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } },
 ): Promise<NextResponse> {
-  const { firstName, lastName }: Partial<User> = await req.json();
+  const { firstName, lastName, role }: Partial<User> = await req.json();
   const { id } = params;
 
   if (!id) {
@@ -34,7 +34,7 @@ export async function PATCH(
   const userRef = db.collection('users').doc(id);
 
   try {
-    await userRef.update({ firstName, lastName });
+    await userRef.update({ firstName, lastName, role });
 
     return new NextResponse(JSON.stringify({ message: 'User updated' }), {
       status: 200,

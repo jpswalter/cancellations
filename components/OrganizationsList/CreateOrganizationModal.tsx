@@ -1,12 +1,12 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import { Radio, RadioGroup, RadioField } from '@/components/ui/radio';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import AUTH_FIELDS from '@/constants/authFields.json';
 import { Modal, Button } from '@/components/ui';
 import { Card } from '@tremor/react';
 import { createOrganization } from '@/lib/api/organization';
 import { toast } from 'react-hot-toast';
-import { fetchUsers } from '@/lib/api/user'; // You'll need to create this function
+import { useEmailValidation } from '@/hooks/useEmailValidation';
 
 interface Props {
   isOpen: boolean;
@@ -18,45 +18,15 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
   const [adminEmails, setAdminEmails] = useState('');
   const [orgType, setOrgType] = useState<'proxy' | 'provider'>('provider');
   const [authFields, setAuthFields] = useState<string[]>([]);
-  const [emailError, setEmailError] = useState<string | null>(null);
+  const { emailError, invalidEmails } = useEmailValidation(adminEmails);
 
   const resetState = () => {
     setName('');
     setAdminEmails('');
     setAuthFields([]);
-    setEmailError(null);
   };
 
   const queryClient = useQueryClient();
-
-  const { data: existingUsers } = useQuery({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
-  });
-
-  useEffect(() => {
-    if (adminEmails && existingUsers) {
-      const inputEmails = adminEmails
-        .split(',')
-        .map(email => email.trim().toLowerCase());
-      const existingEmails = existingUsers.map(user =>
-        user.email?.toLowerCase(),
-      );
-      const usedEmails = inputEmails.filter(email =>
-        existingEmails.includes(email),
-      );
-
-      if (usedEmails.length > 0) {
-        setEmailError(
-          `User${usedEmails.length > 1 ? 's' : ''}: ${
-            usedEmails.length > 1 ? usedEmails.join(', ') : usedEmails[0]
-          } already created on ProxyLink, please use another email(s)`,
-        );
-      } else {
-        setEmailError(null);
-      }
-    }
-  }, [adminEmails, existingUsers]);
 
   const mutation = useMutation({
     mutationFn: createOrganization,
@@ -115,7 +85,8 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
               !name ||
               !adminEmails ||
               (orgType === 'provider' && !authFields.length) ||
-              !!emailError
+              !!emailError ||
+              invalidEmails.length > 0
             }
           >
             Create
@@ -161,6 +132,11 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
           />
           {emailError && (
             <p className="mt-2 text-sm text-red-600">{emailError}</p>
+          )}
+          {invalidEmails.length > 0 && (
+            <p className="mt-2 text-sm text-red-600">
+              Invalid email(s): {invalidEmails.join(', ')}
+            </p>
           )}
         </div>
 

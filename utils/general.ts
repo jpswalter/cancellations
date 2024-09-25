@@ -87,3 +87,17 @@ export const parseErrorMessage = (error: unknown): string => {
 export const getRandomNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+export const getInitials = (firstName: string, lastName: string) => {
+  if (!firstName && !lastName) return '?';
+  if (!firstName) return lastName?.charAt(0).toUpperCase();
+  if (!lastName) return firstName?.charAt(0).toUpperCase();
+  return `${firstName?.charAt(0).toUpperCase()}${lastName?.charAt(0).toUpperCase()}`;
+};
+
+export const getFullName = (firstName: string, lastName: string) => {
+  if (!firstName && !lastName) return 'Anonymous User';
+  if (!firstName) return lastName;
+  if (!lastName) return firstName;
+  return `${firstName} ${lastName}`;
+};

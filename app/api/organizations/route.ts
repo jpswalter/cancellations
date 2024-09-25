@@ -91,8 +91,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   const db: Firestore = getFirestore();
 
   try {
-    const { orgName, userName, adminEmails, orgType, authFields } =
-      await request.json();
+    const { orgName, adminEmails, orgType, authFields } = await request.json();
 
     const newTenant: Tenant = {
       id: uuidv4(),
@@ -117,7 +116,6 @@ export async function POST(request: Request): Promise<NextResponse> {
         tenantType: orgType,
         tenantName: orgName,
         tenantId: newTenant.id,
-        name: userName,
       }),
     );
 

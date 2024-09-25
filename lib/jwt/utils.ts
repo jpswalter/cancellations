@@ -7,11 +7,10 @@ export type NewUserData = {
   tenantId: string;
   email: string;
   isAdmin: boolean;
-  name: string;
 };
 
 export const generateInvitationToken = (
-  { tenantType, tenantName, tenantId, email, isAdmin, name }: NewUserData,
+  { tenantType, tenantName, tenantId, email, isAdmin }: NewUserData,
   expiresIn = '24h',
 ) => {
   const payload = {
@@ -20,7 +19,6 @@ export const generateInvitationToken = (
     tenantId,
     email,
     isAdmin,
-    name,
   };
 
   const SECRET_KEY = process.env.JWT_SECRET_KEY;
