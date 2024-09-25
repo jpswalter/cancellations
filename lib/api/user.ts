@@ -40,11 +40,15 @@ export const updateUser = async ({
   return response.json();
 };
 
-export const getUsers = async ({
+export const fetchUsers = async ({
   tenantId,
 }: {
-  tenantId: string;
+  tenantId: string | undefined;
 }): Promise<User[] | Error> => {
+  if (!tenantId) {
+    return new Error('Tenant ID is required');
+  }
+
   try {
     const response = await fetch('/api/users?tenantId=' + tenantId, {
       method: 'GET',
@@ -72,6 +76,7 @@ export const inviteUser = async ({
   tenantType,
   tenantName,
   isAdmin = false,
+  isResend = false,
 }: {
   sendTo: string;
   invitedBy: string;
@@ -79,7 +84,8 @@ export const inviteUser = async ({
   tenantName: string;
   tenantId: string;
   isAdmin?: boolean;
-}): Promise<Invitation | Error> => {
+  isResend?: boolean;
+}): Promise<Invitation> => {
   try {
     const response = await fetch('/api/invite', {
       method: 'POST',
@@ -93,6 +99,7 @@ export const inviteUser = async ({
         tenantName,
         tenantId,
         sendTo,
+        isResend,
       }),
     });
 
@@ -101,10 +108,9 @@ export const inviteUser = async ({
       throw new Error(error.error || 'Failed to invite user');
     }
 
-    const invitation: Invitation = await response.json();
-    return invitation;
+    return response.json() as Promise<Invitation>;
   } catch (error) {
-    return new Error(parseErrorMessage(error));
+    throw new Error(parseErrorMessage(error));
   }
 };
 

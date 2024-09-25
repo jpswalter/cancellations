@@ -5,6 +5,8 @@ import { toast } from 'react-hot-toast';
 import { inviteUser } from '@/lib/api/user';
 import { useAuth } from '@/hooks/useAuth';
 import { Invitation } from '@/lib/db/schema';
+import { useEmailValidation } from '@/hooks/useEmailValidation';
+
 interface Props {
   isOpen: boolean;
   closeModal: () => void;
@@ -12,6 +14,7 @@ interface Props {
 
 const InviteUserModal: FC<Props> = ({ isOpen, closeModal }) => {
   const [emails, setEmails] = useState<string>('');
+  const { emailError, invalidEmails } = useEmailValidation(emails);
   const { userData } = useAuth();
   const {
     tenantType,
@@ -26,19 +29,27 @@ const InviteUserModal: FC<Props> = ({ isOpen, closeModal }) => {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: inviteUser,
-    onSuccess: invitation => {
+  const mutation = useMutation<Invitation, Error, { sendTo: string }>({
+    mutationFn: ({ sendTo }) =>
+      inviteUser({
+        sendTo,
+        invitedBy: adminEmail!,
+        tenantType: tenantType!,
+        tenantName: tenantName!,
+        tenantId: tenantId!,
+      }),
+    onSuccess: () => {
       resetState();
       closeModal();
       toast.success(
-        `Invitation to ${(invitation as Invitation).email} sent successfully`,
+        `Invitation${emails.includes(',') ? 's' : ''} sent successfully`,
       );
-      queryClient.invalidateQueries({ queryKey: ['users', 'invitations'] });
+      if (tenantId) {
+        queryClient.invalidateQueries({ queryKey: ['invitations', tenantId] });
+      }
     },
-    onError: ({ message }) => {
-      resetState();
-      toast.error(message);
+    onError: error => {
+      toast.error(error.message);
     },
   });
 
@@ -54,13 +65,7 @@ const InviteUserModal: FC<Props> = ({ isOpen, closeModal }) => {
     }
 
     emails.split(',').forEach(newUserEmail => {
-      mutation.mutate({
-        sendTo: newUserEmail,
-        invitedBy: adminEmail,
-        tenantType,
-        tenantName,
-        tenantId,
-      });
+      mutation.mutate({ sendTo: newUserEmail.trim() });
     });
   };
 
@@ -76,7 +81,9 @@ const InviteUserModal: FC<Props> = ({ isOpen, closeModal }) => {
             color="blue"
             onClick={handleInvite}
             loading={mutation.isPending}
-            disabled={emails.length === 0}
+            disabled={
+              emails.length === 0 || !!emailError || invalidEmails.length > 0
+            }
           >
             Invite
           </Button>
@@ -92,8 +99,8 @@ const InviteUserModal: FC<Props> = ({ isOpen, closeModal }) => {
           Invite users to join the {tenantName} organization on ProxyLink
         </h3>
         <label
-          htmlFor="adminEmails"
-          className="block text-sm font-medium text-gray-700"
+          htmlFor="emails"
+          className="block text-base font-medium text-gray-500 mb-2 pl-2"
         >
           Emails (comma-separated)
         </label>
@@ -102,9 +109,17 @@ const InviteUserModal: FC<Props> = ({ isOpen, closeModal }) => {
           id="emails"
           value={emails}
           onChange={e => setEmails(e.target.value)}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          className="text-black w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           required
         />
+        {emailError && (
+          <p className="mt-2 text-sm text-red-600">{emailError}</p>
+        )}
+        {invalidEmails.length > 0 && (
+          <p className="mt-2 text-sm text-red-600">
+            Invalid email(s): {invalidEmails.join(', ')}
+          </p>
+        )}
       </div>
     </Modal>
   );

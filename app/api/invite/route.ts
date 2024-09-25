@@ -1,63 +1,96 @@
 import { NextResponse } from 'next/server';
 import { getFirestore } from 'firebase-admin/firestore';
-import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
-import { collections, Invitation } from '@/lib/db/schema';
 import { sendEmailInvitation } from '@/lib/utils';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: Request) {
   try {
-    const { sendTo, isAdmin, invitedBy, tenantType, tenantName, tenantId } =
-      await request.json();
+    const {
+      sendTo,
+      invitedBy,
+      tenantType,
+      tenantName,
+      tenantId,
+      isAdmin,
+      isResend,
+    } = await request.json();
 
-    if (!sendTo || !invitedBy || !tenantType || !tenantName || !tenantId) {
-      return NextResponse.json(
-        { message: 'Missing required fields' },
-        { status: 400 },
-      );
+    const db = getFirestore();
+    const invitationsRef = db.collection('invitations');
+    const existingInvitationQuery = await invitationsRef
+      .where('email', '==', sendTo)
+      .where('tenantId', '==', tenantId)
+      .limit(1)
+      .get();
+
+    if (!existingInvitationQuery.empty && isResend) {
+      const existingInvitation = existingInvitationQuery.docs[0];
+      await existingInvitation.ref.update({
+        invitedAt: new Date().toISOString(),
+        invitedBy,
+      });
+
+      const updatedInvitation = await existingInvitation.ref.get();
+
+      await sendEmailInvitation({
+        sendTo,
+        isAdmin,
+        invitedBy,
+        tenantType,
+        tenantName,
+        tenantId,
+      });
+
+      return NextResponse.json({
+        id: updatedInvitation.id,
+        ...updatedInvitation.data(),
+      });
     }
 
-    // Initialize Firebase Admin
-    initializeFirebaseAdmin();
-    const db = getFirestore();
+    if (existingInvitationQuery.empty && !isResend) {
+      const EXPIRATION_TIME_24H = 24 * 60 * 60 * 1000; // 24 hours
+      const newInvitationRef = await invitationsRef.add({
+        email: sendTo,
+        invitedBy,
+        tenantType,
+        tenantName,
+        tenantId,
+        isAdmin: isAdmin ?? false,
+        invitedAt: new Date().toISOString(),
+        expiresAt: new Date(
+          new Date().getTime() + EXPIRATION_TIME_24H,
+        ).toISOString(),
+      });
 
-    // Create a new invitation
-    const newInvitation: Invitation = {
-      id: uuidv4(),
-      email: sendTo,
-      tenantId,
-      tenantName,
-      tenantType,
-      isAdmin,
-      invitedBy,
-      invitedAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days expiration
-    };
+      const newInvitation = await newInvitationRef.get();
 
-    // Save the invitation to Firestore
-    await db
-      .collection(collections.invitations)
-      .doc(newInvitation.id)
-      .set(newInvitation);
+      await sendEmailInvitation({
+        sendTo,
+        isAdmin,
+        invitedBy,
+        tenantType,
+        tenantName,
+        tenantId,
+      });
 
-    // Send the email invitation
-    await sendEmailInvitation({
-      sendTo,
-      isAdmin,
-      invitedBy,
-      tenantType,
-      tenantName,
-      tenantId,
-    });
-
-    return NextResponse.json(
-      { message: 'Invitation sent successfully', invitation: newInvitation },
-      { status: 200 },
-    );
+      return NextResponse.json({
+        id: newInvitation.id,
+        ...newInvitation.data(),
+      });
+    } else if (!existingInvitationQuery.empty && !isResend) {
+      return NextResponse.json(
+        { error: 'Invitation already exists' },
+        { status: 400 },
+      );
+    } else {
+      return NextResponse.json(
+        { error: 'Invitation not found' },
+        { status: 404 },
+      );
+    }
   } catch (error) {
-    console.error('Failed to send invitation:', error);
+    console.error('Error processing invitation:', error);
     return NextResponse.json(
-      { message: 'Failed to send the invitation' },
+      { error: 'Failed to process invitation' },
       { status: 500 },
     );
   }

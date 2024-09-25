@@ -1,5 +1,5 @@
 import {
-  getUsers,
+  fetchUsers,
   updateUser,
   inviteUser,
   getInvitations,
@@ -26,7 +26,7 @@ const MyTeamTab: FC<{ tenantId: string }> = ({ tenantId }) => {
     error: usersError,
   } = useQuery({
     queryKey: ['users', tenantId],
-    queryFn: () => getUsers({ tenantId }),
+    queryFn: () => fetchUsers({ tenantId }),
     select: data => (Array.isArray(data) ? data : []),
   });
 
@@ -126,11 +126,18 @@ const MyTeamTab: FC<{ tenantId: string }> = ({ tenantId }) => {
                   tenantName: item.tenantName,
                   tenantId: item.tenantId,
                   isAdmin: item.isAdmin,
+                  isResend: true,
                 })
               }
             >
-              <FaEnvelope />
-              Resend Invite
+              {inviteMutation.isPending ? (
+                <Loader />
+              ) : (
+                <>
+                  <FaEnvelope />
+                  Resend Invite
+                </>
+              )}
             </Button>
           ) : (
             <Button

@@ -8,6 +8,8 @@ export async function GET(req: Request): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
   const tenantId = searchParams.get('tenantId');
 
+  console.log('tenantId', tenantId);
+
   if (!tenantId) {
     return new NextResponse(
       JSON.stringify({ error: 'Tenant ID is required' }),
