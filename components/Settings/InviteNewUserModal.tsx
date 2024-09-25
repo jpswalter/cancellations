@@ -4,7 +4,7 @@ import { Modal, Button } from '@/components/ui';
 import { toast } from 'react-hot-toast';
 import { inviteUser } from '@/lib/api/user';
 import { useAuth } from '@/hooks/useAuth';
-
+import { Invitation } from '@/lib/db/schema';
 interface Props {
   isOpen: boolean;
   closeModal: () => void;
@@ -28,11 +28,13 @@ const InviteUserModal: FC<Props> = ({ isOpen, closeModal }) => {
 
   const mutation = useMutation({
     mutationFn: inviteUser,
-    onSuccess: ({ message }) => {
+    onSuccess: invitation => {
       resetState();
       closeModal();
-      toast.success(message);
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success(
+        `Invitation to ${(invitation as Invitation).email} sent successfully`,
+      );
+      queryClient.invalidateQueries({ queryKey: ['users', 'invitations'] });
     },
     onError: ({ message }) => {
       resetState();

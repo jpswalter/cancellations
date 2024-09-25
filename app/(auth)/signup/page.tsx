@@ -20,6 +20,7 @@ export default async function SignUpPage({
   const token = searchParams.token;
   const newUserData = decodeToken(token);
   console.log('newUserData', newUserData);
+
   // Server Action to handle sign-up
   const handleSignUp = async (formData: FormData): Promise<User | null> => {
     'use server';
@@ -34,18 +35,20 @@ export default async function SignUpPage({
       const app = initializeFirebaseAdmin();
       const auth = getAuth();
       const db = getFirestore(app);
+
       const newUser: User = {
         id: uuidv4(),
-        email: newUserData?.email,
+        email: newUserData.email,
         firstName,
         lastName,
-        tenantId: newUserData?.tenantId,
-        tenantType: newUserData?.tenantType,
-        tenantName: newUserData?.tenantName,
-        role: newUserData?.isAdmin ? 'admin' : 'user',
+        tenantId: newUserData.tenantId,
+        tenantType: newUserData.tenantType,
+        tenantName: newUserData.tenantName,
+        role: newUserData.isAdmin ? 'admin' : 'user',
         createdAt: new Date().toISOString(),
         version: CURRENT_SCHEMA_VERSION,
       };
+
       const userRecord = await auth.createUser({
         uid: newUser.id,
         email: newUser.email,
@@ -54,13 +57,26 @@ export default async function SignUpPage({
 
       // Set custom user claims
       await auth.setCustomUserClaims(userRecord.uid, {
-        tenantId: newUserData?.tenantId,
-        tenantType: newUserData?.tenantType,
-        tenantName: newUserData?.tenantName,
+        tenantId: newUserData.tenantId,
+        tenantType: newUserData.tenantType,
+        tenantName: newUserData.tenantName,
         role: newUser.role,
       });
 
+      // Create user document in Firestore
       await db.collection(collections.users).doc(newUser.id).set(newUser);
+
+      // Delete the invitation document
+      const invitationSnapshot = await db
+        .collection(collections.invitations)
+        .where('email', '==', newUserData.email)
+        .where('tenantId', '==', newUserData.tenantId)
+        .get();
+
+      if (!invitationSnapshot.empty) {
+        const invitationDoc = invitationSnapshot.docs[0];
+        await invitationDoc.ref.delete();
+      }
 
       return newUser;
     } catch (error) {

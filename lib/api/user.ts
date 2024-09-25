@@ -1,7 +1,5 @@
-// file: lib/api/user.ts
-
 import { parseErrorMessage } from '@/utils/general';
-import { TenantType, User } from '@/lib/db/schema';
+import { TenantType, User, Invitation } from '@/lib/db/schema';
 
 /**
  * Sends a PATCH request to update the user's info.
@@ -73,33 +71,62 @@ export const inviteUser = async ({
   invitedBy,
   tenantType,
   tenantName,
+  isAdmin = false,
 }: {
   sendTo: string;
   invitedBy: string;
   tenantType: TenantType;
   tenantName: string;
   tenantId: string;
-}): Promise<{ message: string } | Error> => {
-  const response = await fetch('/api/invite', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      isAdmin: false,
-      invitedBy,
-      tenantType,
-      tenantName,
-      tenantId,
-      sendTo,
-    }),
-  });
+  isAdmin?: boolean;
+}): Promise<Invitation | Error> => {
+  try {
+    const response = await fetch('/api/invite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        isAdmin,
+        invitedBy,
+        tenantType,
+        tenantName,
+        tenantId,
+        sendTo,
+      }),
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    console.error(parseErrorMessage(error));
-    throw new Error('Failed to invite user');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to invite user');
+    }
+
+    const invitation: Invitation = await response.json();
+    return invitation;
+  } catch (error) {
+    return new Error(parseErrorMessage(error));
   }
+};
 
-  return response.json();
+export const getInvitations = async (
+  tenantId: string,
+): Promise<Invitation[] | Error> => {
+  try {
+    const response = await fetch(`/api/invitations?tenantId=${tenantId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to get invitations');
+    }
+
+    const invitations: Invitation[] = await response.json();
+    return invitations;
+  } catch (error) {
+    return new Error(parseErrorMessage(error));
+  }
 };
