@@ -193,9 +193,7 @@ const ResetPasswordForm: React.FC = () => {
             Send Reset Email
           </Button>
           {message && (
-            <p className="font-bold text-base text-center text-gray-500">
-              {message}
-            </p>
+            <p className="font-bold text-base text-gray-500">{message}</p>
           )}
           <p className="text-sm font-light text-gray-500">
             Remembered your password?{' '}
