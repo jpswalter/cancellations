@@ -57,6 +57,20 @@ const MyTeamTab: FC<{ tenantId: string }> = ({ tenantId }) => {
     );
   }
 
+  const getInitials = (firstName: string, lastName: string) => {
+    if (!firstName && !lastName) {
+      return '?';
+    }
+    return `${firstName?.charAt(0).toUpperCase()}${lastName?.charAt(0).toUpperCase()}`;
+  };
+
+  const getFullName = (firstName: string, lastName: string) => {
+    if (!firstName && !lastName) {
+      return 'Anonymous User';
+    }
+    return `${firstName} ${lastName}`;
+  };
+
   return (
     <div className="flex w-full flex-col items-center justify-center">
       <div className="w-full flex py-4">
@@ -73,13 +87,12 @@ const MyTeamTab: FC<{ tenantId: string }> = ({ tenantId }) => {
           <li key={email} className="flex py-5 justify-between items-center">
             <div className="flex shrink-0 gap-x-4">
               <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-xl font-bold text-gray-600">
-                {firstName?.charAt(0).toUpperCase() +
-                  lastName?.charAt(0).toUpperCase()}
+                {getInitials(firstName, lastName)}
               </div>
               <div className="min-w-0 flex-auto">
                 <div className="flex items-center gap-4">
                   <p className="text-md font-semibold leading-6 text-gray-900">
-                    {firstName} {lastName}
+                    {getFullName(firstName, lastName)}
                   </p>
                   <Badge
                     className="shrink-0"
