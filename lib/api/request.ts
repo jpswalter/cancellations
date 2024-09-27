@@ -40,23 +40,24 @@ export const getRequest = async <T extends boolean = true>({
  * @returns {Promise<Request[]>} A promise that resolves to an array of requests.
  * @throws {Error} If the request fails.
  */
-export const getRequests = async (
+export const getRequests = async <T extends boolean = true>(
   tenantType: string | undefined,
   tenantId: string | undefined,
-): Promise<Request[]> => {
+  includeLog: T = true as T,
+): Promise<T extends true ? RequestWithLog[] : Request[]> => {
   if (!tenantType || !tenantId) {
     throw new Error('Tenant information missing from token');
   }
 
   try {
     const response = await fetch(
-      `/api/requests?tenantType=${tenantType}&tenantId=${tenantId}`,
+      `/api/requests?tenantType=${tenantType}&tenantId=${tenantId}&includeLog=${includeLog}`,
     );
     if (!response.ok) {
       throw new Error('Failed to fetch requests');
     }
-    const requests = (await response.json()) as Request[];
-    return requests;
+    const requests = await response.json();
+    return requests as T extends true ? RequestWithLog[] : Request[];
   } catch (error) {
     throw new Error('Error getting requests: ' + (error as Error).message);
   }

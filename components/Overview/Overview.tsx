@@ -23,10 +23,10 @@ import Image from 'next/image';
 import { getTenants } from '@/lib/api/tenant';
 import { Request, Tenant } from '@/lib/db/schema';
 import SourcesCard from './SourcesCard';
-import ChartCard from './ChatCard';
-import SaveOffersPieChart from './SaveOffersPieChart';
 import Filters from '../Filters/Filters';
 import { useRequests } from '@/hooks/useRequests';
+import ChartCard from './ChatCard';
+import AvgResponseTimeChart from './AvgResponseTimeChart';
 
 export const metadata: Metadata = {
   title: 'Overview',
@@ -112,9 +112,11 @@ const Overview: React.FC = () => {
         <main className="flex-1 overflow-auto p-5 space-y-5 z-30">
           <Stats requests={requests} />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <ChartCard title="Save Offers">
-              <SaveOffersPieChart requests={requests} />
-            </ChartCard>
+            <AvgResponseTimeChart
+              requests={requests}
+              isLoading={areRequestsLoading}
+            />
+
             <SourcesCard data={sourcesData} isLoading={areRequestsLoading} />
           </div>
           <ChartCard title="Request Volume by Day" fullWidth>
