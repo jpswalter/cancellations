@@ -16,6 +16,9 @@ const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
   const { userData } = useAuth();
   const queryClient = useQueryClient();
   const [updateError, setUpdateError] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<
+    'accept' | 'decline' | null
+  >(null);
 
   const mutation = useMutation({
     mutationFn: (newStatus: RequestStatus) => {
@@ -57,6 +60,13 @@ const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
       setUpdateError(parseErrorMessage(error));
     },
   });
+
+  const handleMutation = (newStatus: 'Save Accepted' | 'Save Declined') => {
+    setPendingAction(newStatus === 'Save Accepted' ? 'accept' : 'decline');
+    mutation.mutate(newStatus, {
+      onSettled: () => setPendingAction(null),
+    });
+  };
 
   const isProviderUser = userData?.tenantType === 'provider';
   const isProxyUser = userData?.tenantType === 'proxy';
@@ -105,18 +115,26 @@ const SaveOfferWidget: FC<SaveOfferWidgetProps> = ({ request, onFix }) => {
       {isProxyUser && request.status === 'Save Offered' && (
         <div className="flex gap-4 items-center">
           <Button
-            onClick={() => mutation.mutate('Save Accepted')}
+            onClick={() => handleMutation('Save Accepted')}
             disabled={mutation.isPending}
             className="bg-green-600 hover:bg-green-700"
           >
-            {mutation.isPending ? <Spinner color="white" /> : 'Accept Offer'}
+            {pendingAction === 'accept' ? (
+              <Spinner color="white" />
+            ) : (
+              'Accept Offer'
+            )}
           </Button>
           <Button
-            onClick={() => mutation.mutate('Save Declined')}
+            onClick={() => handleMutation('Save Declined')}
             disabled={mutation.isPending}
             className="bg-red-600 hover:bg-red-700"
           >
-            {mutation.isPending ? <Spinner color="white" /> : 'Decline Offer'}
+            {pendingAction === 'decline' ? (
+              <Spinner color="white" />
+            ) : (
+              'Decline Offer'
+            )}
           </Button>
         </div>
       )}
