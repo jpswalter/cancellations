@@ -109,11 +109,11 @@ export async function PATCH(
 
     const currentRequest = doc.data() as Request;
     const updatedRequest: Partial<Request> = await req.json();
-    const changes = detectChanges(currentRequest, updatedRequest);
+    await docRef.update(updatedRequest);
 
+    const changes = detectChanges(currentRequest, updatedRequest);
     if (changes.length > 0) {
       await updateRequestLog(currentRequest.logId, changes, req);
-      await docRef.update(updatedRequest);
     }
 
     return new NextResponse(JSON.stringify({ success: true }), {

@@ -38,9 +38,14 @@ export interface Request {
   logId: string;
 }
 
+export type RequestAvgResponseTime = {
+  provider: number;
+  proxy: number;
+};
 export interface RequestLog {
   requestId: string;
   changes: RequestChange[];
+  avgResponseTime: RequestAvgResponseTime;
 }
 
 export interface RequestWithLog extends Request {
