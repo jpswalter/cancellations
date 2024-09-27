@@ -92,7 +92,6 @@ export const renderDescription = (
     change => change.field === 'declineReason',
   );
   if (declineReasonChange) {
-    console.log('declineReasonChange', declineReasonChange);
     if (
       declineReasonChange.newValue === null &&
       declineReasonChange.oldValue !== null

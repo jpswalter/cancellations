@@ -90,7 +90,7 @@ const FixCustomerInfo: React.FC<{
                 <input
                   type="text"
                   className="w-full px-2 border border-gray-300 rounded mt-2"
-                  value={newValues[reason.field] || ''}
+                  value={reason.value || ''}
                   onChange={e =>
                     handleInputChange(reason.field, e.target.value)
                   }
