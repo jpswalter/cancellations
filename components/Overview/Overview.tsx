@@ -112,12 +112,11 @@ const Overview: React.FC = () => {
         <main className="flex-1 overflow-auto p-5 space-y-5 z-30">
           <Stats requests={requests} />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <SourcesCard data={sourcesData} isLoading={areRequestsLoading} />
             <AvgResponseTimeChart
               requests={requests}
               isLoading={areRequestsLoading}
             />
-
-            <SourcesCard data={sourcesData} isLoading={areRequestsLoading} />
           </div>
           <ChartCard title="Request Volume by Day" fullWidth>
             <Bar

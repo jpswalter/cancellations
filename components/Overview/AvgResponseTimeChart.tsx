@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { DonutChart, List, ListItem } from '@tremor/react';
 import clsx from 'clsx';
-import Spinner from '../ui/spinner';
+import { Loader } from '../ui/spinner';
 import { RequestWithLog } from '@/lib/db/schema';
 
 const AvgResponseTimeChart: React.FC<{
@@ -43,9 +43,7 @@ const AvgResponseTimeChart: React.FC<{
       <h2 className="text-lg font-medium pl-2">Average Response Time</h2>
 
       {isLoading ? (
-        <div className="flex items-center justify-center h-full w-full">
-          <Spinner className="border-amber-300 w-36 h-36" />
-        </div>
+        <Loader />
       ) : (
         <div className="flex gap-5 pt-8">
           <div className="basis-1/2 h-full flex flex-col justify-center">

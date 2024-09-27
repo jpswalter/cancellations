@@ -16,9 +16,9 @@ const Stats: FC<Props> = ({ requests }) => {
   ).length;
 
   const averageTimeToRespondHours = useMemo(() => {
-    if (!requests) return 0;
+    if (!requests || requests.length === 0) return 0;
     const totalTime = requests.reduce((acc, request) => {
-      return acc + request.log.avgResponseTime.provider.hours;
+      return acc + (request.log?.avgResponseTime?.provider?.hours || 0);
     }, 0);
     return (totalTime / requests.length).toFixed(1);
   }, [requests]);
