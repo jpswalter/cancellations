@@ -53,7 +53,7 @@ const Stats: FC<Props> = ({ requests }) => {
         ),
       },
       {
-        name: 'Invalid',
+        name: 'Declined',
         stat: declinedRequestsCount,
         donut: (
           <DonutChart
