@@ -1,5 +1,6 @@
-import { detectChanges } from '../logs';
-import { Request } from '@/lib/db/schema';
+import { detectChanges, calculateAverageResponseTime } from '../logs';
+import { Request, RequestChange } from '@/lib/db/schema';
+import mockLog from './log.mock.json';
 
 describe('detectChanges', () => {
   const currentRequest: Request = {
@@ -94,5 +95,16 @@ describe('detectChanges', () => {
         newValue: null,
       },
     ]);
+  });
+});
+
+describe.only('calculateAverageResponseTime', () => {
+  it('should calculate average response time correctly based on provided logs', () => {
+    const changes = mockLog.changes as RequestChange[];
+    const avgResponseTime = calculateAverageResponseTime(changes);
+    expect(avgResponseTime.provider.ms).toBe(30862);
+    expect(avgResponseTime.proxy.ms).toBe(70724);
+    expect(avgResponseTime.provider.hours).toBe(0.01);
+    expect(avgResponseTime.proxy.hours).toBe(0.02);
   });
 });

@@ -1,0 +1,125 @@
+{
+  "id": "ahrpIwvVqkaHJPZZTszK",
+  "requestId": "5ISYnhoe8662F5DsZKk5",
+  "changes": [
+    {
+      "newValue": "Pending",
+      "field": "status",
+      "changedBy": {
+        "tenantType": "proxy",
+        "tenantId": "263c28b4-64c8-4678-ac6b-d3cd129c45c9",
+        "email": "employee1@demoproxy.com"
+      },
+      "oldValue": null,
+      "updatedAt": 1727444600277
+    },
+    {
+      "newValue": "2024-09-27T13:43:47.927Z",
+      "field": "dateResponded",
+      "changedBy": {
+        "tenantType": "provider",
+        "tenantId": "ae4e86ce-8cdb-4b41-b141-24aa5dc54ce9",
+        "email": "admin@demoprovider.com"
+      },
+      "oldValue": "2024-09-27T13:43:18.522Z",
+      "updatedAt": 1727444628752
+    },
+    {
+      "newValue": [
+        {
+          "field": "customerName",
+          "value": "Elijah Anderson"
+        }
+      ],
+      "field": "declineReason",
+      "changedBy": {
+        "tenantType": "provider",
+        "tenantId": "ae4e86ce-8cdb-4b41-b141-24aa5dc54ce9",
+        "email": "admin@demoprovider.com"
+      },
+      "oldValue": null,
+      "updatedAt": 1727444628752
+    },
+    {
+      "newValue": "Declined",
+      "field": "status",
+      "changedBy": {
+        "tenantType": "provider",
+        "tenantId": "ae4e86ce-8cdb-4b41-b141-24aa5dc54ce9",
+        "email": "admin@demoprovider.com"
+      },
+      "oldValue": "Pending",
+      "updatedAt": 1727444628752
+    },
+    {
+      "newValue": "Elijah Ander",
+      "field": "customerInfo.customerName",
+      "changedBy": {
+        "tenantType": "proxy",
+        "tenantId": "263c28b4-64c8-4678-ac6b-d3cd129c45c9",
+        "email": "employee1@demoproxy.com"
+      },
+      "oldValue": "Elijah Anderson",
+      "updatedAt": 1727444699476
+    },
+    {
+      "newValue": null,
+      "field": "declineReason",
+      "changedBy": {
+        "tenantType": "proxy",
+        "tenantId": "263c28b4-64c8-4678-ac6b-d3cd129c45c9",
+        "email": "employee1@demoproxy.com"
+      },
+      "oldValue": [
+        {
+          "field": "customerName",
+          "value": "Elijah Anderson"
+        }
+      ],
+      "updatedAt": 1727444699476
+    },
+    {
+      "newValue": "Pending",
+      "field": "status",
+      "changedBy": {
+        "tenantType": "proxy",
+        "tenantId": "263c28b4-64c8-4678-ac6b-d3cd129c45c9",
+        "email": "employee1@demoproxy.com"
+      },
+      "oldValue": "Declined",
+      "updatedAt": 1727444699476
+    },
+    {
+      "newValue": "2024-09-27T13:45:32.323Z",
+      "field": "dateResponded",
+      "changedBy": {
+        "tenantType": "provider",
+        "tenantId": "ae4e86ce-8cdb-4b41-b141-24aa5dc54ce9",
+        "email": "admin@demoprovider.com"
+      },
+      "oldValue": "2024-09-27T13:43:47.927Z",
+      "updatedAt": 1727444732725
+    },
+    {
+      "newValue": "Canceled",
+      "field": "status",
+      "changedBy": {
+        "tenantType": "provider",
+        "tenantId": "ae4e86ce-8cdb-4b41-b141-24aa5dc54ce9",
+        "email": "admin@demoprovider.com"
+      },
+      "oldValue": "Pending",
+      "updatedAt": 1727444732725
+    }
+  ],
+  "avgResponseTime": {
+    "proxy": {
+      "hours": 0.02,
+      "ms": 70724
+    },
+    "provider": {
+      "hours": 0.01,
+      "ms": 30862
+    }
+  }
+}

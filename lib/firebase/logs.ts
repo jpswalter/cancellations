@@ -30,12 +30,18 @@ export const createRequestLog = async (request: Request): Promise<void> => {
           tenantType: 'proxy',
           tenantId: request.proxyTenantId,
         },
-        updatedAt: new Date().toISOString(),
+        updatedAt: Date.now(),
       },
     ],
     avgResponseTime: {
-      provider: 0,
-      proxy: 0,
+      provider: {
+        ms: 0,
+        hours: 0,
+      },
+      proxy: {
+        ms: 0,
+        hours: 0,
+      },
     },
   };
 
@@ -136,7 +142,7 @@ export const updateRequestLog = async (
     const decodedClaim = await getAuth().verifySessionCookie(sessionCookie);
     const { email, tenantType, tenantId } = decodedClaim;
 
-    const updatedAt = new Date().toISOString();
+    const updatedAt = Date.now();
 
     const fullNewChanges: RequestChange[] = newChanges.map(change => ({
       ...change,
@@ -148,11 +154,9 @@ export const updateRequestLog = async (
       updatedAt,
     }));
 
-    // Получаем текущий документ
     const logDoc = await logRef.get();
     const currentLog = logDoc.data() as RequestLog;
 
-    // Объединяем существующие и новые изменения
     const allChanges = [...(currentLog.changes || []), ...fullNewChanges];
 
     await logRef.update({
@@ -168,53 +172,56 @@ export const updateRequestLog = async (
 /**
  * Calculates the average response time for provider and proxy based on status changes.
  * @param changes - An array of RequestChange objects representing the changes.
- * @returns An object containing average response times for provider and proxy.
+ * @returns An object containing average response times for provider and proxy in both milliseconds and hours.
  */
-const calculateAverageResponseTime = (
+export const calculateAverageResponseTime = (
   changes: RequestChange[],
 ): RequestAvgResponseTime => {
-  // Step 1: Filter only status changes
   const statusChanges = changes.filter(change => change.field === 'status');
 
-  // Variables for calculating response time
   let totalProviderResponseTime = 0;
   let providerResponseCount = 0;
-
   let totalProxyResponseTime = 0;
   let proxyResponseCount = 0;
 
-  // Step 2: Iterate through all status changes
   for (let i = 1; i < statusChanges.length; i++) {
     const currentChange = statusChanges[i];
     const previousChange = statusChanges[i - 1];
 
-    // Calculate the time difference between the current and previous change
-    const currentChangeTime = new Date(currentChange.updatedAt).getTime();
-    const previousChangeTime = new Date(previousChange.updatedAt).getTime();
-    const timeDifference = currentChangeTime - previousChangeTime;
+    const timeDifference = currentChange.updatedAt - previousChange.updatedAt;
 
-    // Step 3: Determine who made the current change
     if (currentChange.changedBy.tenantType === 'provider') {
-      // If the current change was made by the provider, this is their response time
       totalProviderResponseTime += timeDifference;
       providerResponseCount++;
     } else if (currentChange.changedBy.tenantType === 'proxy') {
-      // If the current change was made by the proxy, this is their response time
       totalProxyResponseTime += timeDifference;
       proxyResponseCount++;
     }
   }
 
-  // Calculate average response time for each side
-  const avgProviderResponseTime =
+  const convertMsToHours = (ms: number): number =>
+    parseFloat((ms / (1000 * 60 * 60)).toFixed(2));
+
+  const avgProviderResponseTimeMs =
     providerResponseCount > 0
       ? totalProviderResponseTime / providerResponseCount
       : 0;
-  const avgProxyResponseTime =
+  const avgProxyResponseTimeMs =
     proxyResponseCount > 0 ? totalProxyResponseTime / proxyResponseCount : 0;
 
+  const avgProviderResponseTimeHours = convertMsToHours(
+    avgProviderResponseTimeMs,
+  );
+  const avgProxyResponseTimeHours = convertMsToHours(avgProxyResponseTimeMs);
+
   return {
-    provider: avgProviderResponseTime,
-    proxy: avgProxyResponseTime,
+    provider: {
+      ms: avgProviderResponseTimeMs,
+      hours: avgProviderResponseTimeHours,
+    },
+    proxy: {
+      ms: avgProxyResponseTimeMs,
+      hours: avgProxyResponseTimeHours,
+    },
   };
 };
