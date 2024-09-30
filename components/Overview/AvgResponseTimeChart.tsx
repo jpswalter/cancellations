@@ -22,7 +22,7 @@ const AvgResponseTimeChart: React.FC<{
     const tierCounts = tiers.map(tier => ({ ...tier, count: 0 }));
 
     requests.forEach(request => {
-      const avgTime = request.log.avgResponseTime.provider.hours;
+      const avgTime = request.log?.avgResponseTime?.provider?.hours || 0;
       const tierIndex = tiers.findIndex(tier => avgTime < tier.max);
       if (tierIndex !== -1) {
         tierCounts[tierIndex].count++;
