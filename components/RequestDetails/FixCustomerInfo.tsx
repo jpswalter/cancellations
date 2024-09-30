@@ -11,7 +11,27 @@ const FixCustomerInfo: React.FC<{
   declineReasons: DeclineReason[];
   onFix?: () => void;
 }> = ({ request, declineReasons, onFix }) => {
-  const [newValues, setNewValues] = useState<Record<string, string>>({});
+  // type guard function
+  function isValidCustomerInfoField(
+    field: string,
+  ): field is keyof Request['customerInfo'] {
+    return field in request.customerInfo;
+  }
+
+  // state for new values initialized with the current values of the decline reasons
+  const [newValues, setNewValues] = useState<Partial<Request['customerInfo']>>(
+    () => {
+      return declineReasons.reduce(
+        (acc, reason) => {
+          if (isValidCustomerInfoField(reason.field)) {
+            acc[reason.field] = request.customerInfo[reason.field] || '';
+          }
+          return acc;
+        },
+        {} as Partial<Request['customerInfo']>,
+      );
+    },
+  );
   const [updateError, setUpdateError] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
@@ -90,7 +110,11 @@ const FixCustomerInfo: React.FC<{
                 <input
                   type="text"
                   className="w-full px-2 border border-gray-300 rounded mt-2"
-                  value={newValues[reason.field] || ''}
+                  value={
+                    isValidCustomerInfoField(reason.field)
+                      ? newValues[reason.field] || ''
+                      : ''
+                  }
                   onChange={e =>
                     handleInputChange(reason.field, e.target.value)
                   }

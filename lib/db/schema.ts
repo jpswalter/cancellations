@@ -38,9 +38,20 @@ export interface Request {
   logId: string;
 }
 
+export type RequestAvgResponseTime = {
+  provider: {
+    ms: number;
+    hours: number;
+  };
+  proxy: {
+    ms: number;
+    hours: number;
+  };
+};
 export interface RequestLog {
   requestId: string;
   changes: RequestChange[];
+  avgResponseTime: RequestAvgResponseTime;
 }
 
 export interface RequestWithLog extends Request {
@@ -56,7 +67,7 @@ export interface RequestChange {
     tenantType: TenantType;
     tenantId: string;
   };
-  updatedAt: string; // ISO 8601 date string
+  updatedAt: number;
 }
 
 export type TenantType = 'proxy' | 'provider' | 'management';

@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
 import { getAuth } from 'firebase-admin/auth';
+import { AUTH_COOKIE_NAME } from '@/constants/app.contants';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json(responsePayload, { status: 200 });
     response.cookies.set({
-      name: 'session',
+      name: AUTH_COOKIE_NAME,
       value: sessionCookie,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

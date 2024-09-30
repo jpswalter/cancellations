@@ -9,6 +9,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query';
 import { getRequests } from '@/lib/api/request';
+import { AUTH_COOKIE_NAME } from '@/constants/app.contants';
 
 export const metadata: Metadata = {
   title: 'ProxyLink | Requests',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default async function RequestsPage() {
   await initializeFirebaseAdmin();
 
-  const sessionCookie = cookies().get('session')?.value;
+  const sessionCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
   if (!sessionCookie) {
     return <div>Please log in to view this page.</div>;
   }

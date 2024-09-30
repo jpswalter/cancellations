@@ -9,6 +9,7 @@ import {
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
 import { getAuth } from 'firebase-admin/auth';
 import { cookies } from 'next/headers';
+import { AUTH_COOKIE_NAME } from '@/constants/app.contants';
 
 export const metadata: Metadata = {
   title: 'ProxyLink | Settings',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default async function SettingsPage() {
   await initializeFirebaseAdmin();
 
-  const sessionCookie = cookies().get('session')?.value;
+  const sessionCookie = cookies().get(AUTH_COOKIE_NAME)?.value;
   if (!sessionCookie) {
     return <div>Please log in to view this page.</div>;
   }

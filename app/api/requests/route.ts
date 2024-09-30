@@ -3,7 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFirestore, Firestore } from 'firebase-admin/firestore';
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
 import { parseErrorMessage } from '@/utils/general';
-import { Request, TenantType } from '@/lib/db/schema';
+import {
+  Request,
+  RequestLog,
+  RequestWithLog,
+  TenantType,
+} from '@/lib/db/schema';
 import { createRequestLog } from '@/lib/firebase/logs';
 
 initializeFirebaseAdmin();
@@ -17,6 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const url = new URL(req.url);
   const tenantType = url.searchParams.get('tenantType') as TenantType | null;
   const tenantId = url.searchParams.get('tenantId');
+  const includeLog = url.searchParams.get('includeLog') === 'true';
 
   if (!tenantType || !tenantId) {
     return new NextResponse(
@@ -45,7 +51,22 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   try {
     const snapshot = await query.get();
-    const requests = snapshot.docs.map(doc => doc.data() as Request);
+    const requests = await Promise.all(
+      snapshot.docs.map(async doc => {
+        const request = doc.data() as Request;
+        if (includeLog) {
+          const logRef = db.collection('requestsLog').doc(request.logId);
+          const logDoc = await logRef.get();
+          if (logDoc.exists) {
+            return {
+              ...request,
+              log: logDoc.data() as RequestLog,
+            } as RequestWithLog;
+          }
+        }
+        return request;
+      }),
+    );
 
     return new NextResponse(JSON.stringify(requests), {
       status: 200,
