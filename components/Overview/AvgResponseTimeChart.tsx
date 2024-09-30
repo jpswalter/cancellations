@@ -14,9 +14,9 @@ const AvgResponseTimeChart: React.FC<{
     const tiers = [
       { name: '0-3h', max: 3, color: 'bg-green-500' },
       { name: '3-6h', max: 6, color: 'bg-yellow-500' },
-      { name: '6-12h', max: 12, color: 'bg-orange-500' },
+      { name: '6-12h', max: 12, color: 'bg-red-200' },
       { name: '12-24h', max: 24, color: 'bg-red-500' },
-      { name: '24h+', max: Infinity, color: 'bg-purple-500' },
+      { name: '24h+', max: Infinity, color: 'bg-blue-500' },
     ];
 
     const tierCounts = tiers.map(tier => ({ ...tier, count: 0 }));
@@ -51,7 +51,7 @@ const AvgResponseTimeChart: React.FC<{
               data={chartData}
               category="amount"
               index="name"
-              colors={['green', 'yellow', 'orange', 'red', 'purple']}
+              colors={['green', 'yellow', 'pink', 'red', 'blue']}
               variant="donut"
               showAnimation={true}
             />

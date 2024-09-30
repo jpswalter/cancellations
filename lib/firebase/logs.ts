@@ -9,6 +9,7 @@ import {
 } from '@/lib/db/schema';
 import { NextRequest } from 'next/server';
 import { getAuth } from 'firebase-admin/auth';
+import { AUTH_COOKIE_NAME } from '@/constants/app.contants';
 
 /**
  * Creates a request log entry in Firestore.
@@ -133,7 +134,7 @@ export const updateRequestLog = async (
   const logRef = db.collection('requestsLog').doc(logId);
 
   // Get user info from session cookie
-  const sessionCookie = req.cookies.get('session')?.value;
+  const sessionCookie = req.cookies.get(AUTH_COOKIE_NAME)?.value;
   if (!sessionCookie) {
     throw new Error('Unauthorized: No session cookie found');
   }

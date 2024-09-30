@@ -16,7 +16,7 @@ const Spinner: FC<Props> = ({ className = 'h-6 w-6' }: Props) => (
 
 export const Loader = () => {
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center p-8">
       <Spinner className="w-24 h-24 border-blue-500" />
     </div>
   );

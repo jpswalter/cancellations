@@ -28,6 +28,14 @@ const Stats: FC<Props> = ({ requests }) => {
       request.status === 'Save Accepted' || request.status === 'Save Confirmed',
   ).length;
 
+  const getBackgroundColor = (hours: number) => {
+    if (hours < 3) return 'bg-green-200';
+    if (hours < 6) return 'bg-yellow-200';
+    if (hours < 12) return 'bg-red-100';
+    if (hours < 24) return 'bg-red-300';
+    return 'bg-blue-200';
+  };
+
   const stats = useMemo(
     () => [
       { name: 'Requests', stat: requests?.length },
@@ -80,6 +88,7 @@ const Stats: FC<Props> = ({ requests }) => {
       {
         name: 'Avg. Response Time',
         stat: `${averageTimeToRespondHours} hours`,
+        backgroundColor: getBackgroundColor(Number(averageTimeToRespondHours)),
       },
     ],
     [
@@ -98,7 +107,9 @@ const Stats: FC<Props> = ({ requests }) => {
       {stats.map(item => (
         <div
           key={item.name}
-          className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6"
+          className={`overflow-hidden rounded-lg px-4 py-5 shadow sm:p-6 ${
+            item.backgroundColor || 'bg-white'
+          }`}
         >
           <div className="flex items-center">
             <div className="flex-1">

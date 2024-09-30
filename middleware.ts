@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { AUTH_COOKIE_NAME } from '@/constants/app.contants';
 
 export const config = {
   matcher: [
@@ -13,7 +14,7 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export async function middleware(request: NextRequest) {
   try {
-    const session = request.cookies.get('session')?.value;
+    const session = request.cookies.get(AUTH_COOKIE_NAME)?.value;
     if (!session) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
