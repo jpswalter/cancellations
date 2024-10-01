@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Upload } from 'lucide-react';
 import { FileUploader } from 'react-drag-drop-files';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -10,12 +10,18 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import Spinner from '@/components/ui/spinner';
 
-import UploadErrors from './UploadErrors';
 import { SelectItem, Select as SelectTremor } from '@tremor/react';
 import useFirebase from '@/hooks/useFirebase';
 import { generateHeaders } from '@/utils/template.utils';
 import { RequestType } from '@/lib/db/schema';
-import { parseErrorMessage } from '@/utils/general';
+
+// Add this type definition at the top of your file
+type ErrorResponse = {
+  error?: string;
+  status?: string;
+  headers?: string[];
+  data?: Record<string, string>[];
+};
 
 const FileUpload: FC = () => {
   const {
@@ -32,9 +38,6 @@ const FileUpload: FC = () => {
   const [selectedRequestType, setSelectedRequestType] =
     useState<RequestType>('Cancellation');
 
-  const hasValidationError = csv?.status === 'error';
-  const csvValidationErrorMessage = hasValidationError ? csv?.error : undefined;
-
   const { data: tenants, loading: providersLoading } = useFirebase({
     collectionName: 'tenants',
     filterBy: 'type',
@@ -47,40 +50,26 @@ const FileUpload: FC = () => {
     resetCsvFile();
   };
 
-  const uploadMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      const response = await axios.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return response.data;
-    },
-    onSuccess: setCsvResponse,
-    onError: error => {
-      console.log('uploadMutation error', error);
-      const msg = parseErrorMessage(error);
-      setUploadError(msg);
-    },
-  });
-
   const handleUpload = async (file: File) => {
-    if (filename) {
-      setUploadError(undefined);
-      resetCsvFile();
+    try {
+      if (filename) {
+        setUploadError(undefined);
+        resetCsvFile();
+      }
+      setUploadedFilename(file.name);
+      const formData = new FormData();
+      formData.append('file', file);
+      if (selectedProviderId) {
+        formData.append('providerId', selectedProviderId);
+      }
+      formData.append('requestType', selectedRequestType);
+      setCsvFormData(formData);
+      await uploadMutation.mutateAsync(formData);
+    } catch (error) {
+      console.error('Error in handleUpload:', error);
+      // No need to set error here as it's handled in the mutation's onError
     }
-    setUploadedFilename(file.name);
-    const formData = new FormData();
-    formData.append('file', file);
-    if (selectedProviderId) {
-      formData.append('providerId', selectedProviderId);
-    }
-    formData.append('requestType', selectedRequestType);
-    setCsvFormData(formData);
-    await uploadMutation.mutateAsync(formData);
   };
-
-  console.log('uploadMutation erprr');
 
   const handleSelectProvider = (value: string) => {
     setSelectedProvider(value);
@@ -114,6 +103,31 @@ const FileUpload: FC = () => {
       document.body.removeChild(link);
     }
   }, [generateCSVTemplate, selectedProviderId, tenants]);
+
+  const uploadMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await axios.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    },
+    onSuccess: setCsvResponse,
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.log('uploadMutation error', error);
+      if (error.response) {
+        const errorData = error.response.data;
+        if (errorData && errorData.error) {
+          setUploadError(errorData.error);
+        } else {
+          setUploadError('Validation error occurred');
+        }
+      } else {
+        setUploadError('An unexpected error occurred. Please try again.');
+      }
+    },
+  });
 
   return (
     <div className="w-full flex flex-col gap-8 mt-4">
@@ -173,40 +187,56 @@ const FileUpload: FC = () => {
           </a>
           .
         </Text>
-        <FileUploader
-          handleChange={handleUpload}
-          name="file"
-          types={['CSV']}
-          disabled={uploadMutation.isPending || !selectedProviderId}
-        >
-          <div className="flex flex-col gap-4 items-center p-16 border-dashed border-2 border-gray-300 rounded-lg">
-            <Text>Drag and drop your file here or click to upload.</Text>
-            {csv && filename ? (
-              <div className="flex items-center justify-between p-2 border rounded gap-4">
-                <Text>{filename}</Text>
-                <Button onClick={deleteFile} outline={true}>
-                  <FaRegTrashAlt />
-                </Button>
-              </div>
-            ) : (
-              <div className="w-full flex items-center justify-center">
-                <Button
-                  disabled={uploadMutation.isPending || !selectedProviderId}
-                  className="justify-center"
+        <div className="relative">
+          <FileUploader
+            handleChange={handleUpload}
+            name="file"
+            types={['CSV']}
+            disabled={uploadMutation.isPending || !selectedProviderId}
+          >
+            <div className="flex flex-col gap-4 items-center p-16 border-dashed border-2 border-gray-300 rounded-lg">
+              <Text>Drag and drop your file here or click to upload.</Text>
+              {csv && filename ? (
+                <div className="flex items-center justify-between p-2 border rounded gap-4">
+                  <Text>{filename}</Text>
+                  <Button onClick={deleteFile} outline={true}>
+                    <FaRegTrashAlt />
+                  </Button>
+                </div>
+              ) : (
+                <div className="w-full flex items-center justify-center">
+                  <Button
+                    disabled={uploadMutation.isPending || !selectedProviderId}
+                    className="justify-center"
+                  >
+                    {uploadMutation.isPending ? (
+                      <Spinner className="mr-2" />
+                    ) : (
+                      <Upload className="mr-2" />
+                    )}
+                    {uploadMutation.isPending ? 'Uploading...' : 'Upload File'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </FileUploader>
+          {uploadError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 rounded-lg">
+              <div className="text-center p-4 bg-red-100 opacity-50 border border-red-400 text-red-700 rounded">
+                <p className="font-bold mb-2">Error</p>
+                <p>{uploadError}</p>
+                <button
+                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  onClick={() => setUploadError(undefined)}
                 >
-                  {uploadMutation.isPending ? (
-                    <Spinner className="mr-2" />
-                  ) : (
-                    <Upload className="mr-2" />
-                  )}
-                  {uploadMutation.isPending ? 'Uploading...' : 'Upload File'}
-                </Button>
+                  Dismiss
+                </button>
               </div>
-            )}
-          </div>
-        </FileUploader>
+            </div>
+          )}
+        </div>
       </div>
-      <UploadErrors message={uploadError ?? csvValidationErrorMessage} />
+      {/* Remove the UploadErrors component if you're using this overlay instead */}
     </div>
   );
 };
