@@ -57,6 +57,7 @@ const Filters: React.FC<FiltersProps> = ({
     'Save Declined',
     'Save Accepted',
     'Save Confirmed',
+    'Applied',
   ];
 
   const isProxy = tenantType === 'proxy';
