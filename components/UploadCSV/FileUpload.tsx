@@ -1,4 +1,5 @@
 import { FC, useCallback, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { Upload } from 'lucide-react';
 import { FileUploader } from 'react-drag-drop-files';
@@ -13,6 +14,8 @@ import UploadErrors from './UploadErrors';
 import { SelectItem, Select as SelectTremor } from '@tremor/react';
 import useFirebase from '@/hooks/useFirebase';
 import { generateHeaders } from '@/utils/template.utils';
+import { RequestType } from '@/lib/db/schema';
+import { parseErrorMessage } from '@/utils/general';
 
 const FileUpload: FC = () => {
   const {
@@ -25,8 +28,9 @@ const FileUpload: FC = () => {
     setSelectedProvider,
     selectedProviderId,
   } = useUpload();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | undefined>();
+  const [selectedRequestType, setSelectedRequestType] =
+    useState<RequestType>('Cancellation');
 
   const hasValidationError = csv?.status === 'error';
   const csvValidationErrorMessage = hasValidationError ? csv?.error : undefined;
@@ -41,40 +45,49 @@ const FileUpload: FC = () => {
     event.stopPropagation();
     setUploadError(undefined);
     resetCsvFile();
-    setIsLoading(false);
   };
 
-  const handleUpload = async (file: File) => {
-    setIsLoading(true);
-    try {
-      if (filename) {
-        setUploadError(undefined);
-        resetCsvFile();
-      }
-      setUploadedFilename(file.name);
-      const formData = new FormData();
-      formData.append('file', file);
-      setCsvFormData(formData);
-
+  const uploadMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
       const response = await axios.post('/api/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      setCsvResponse(response.data);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        setUploadError(error.response.data.message);
-      } else {
-        setUploadError('An unknown error occurred');
-      }
-    } finally {
-      setIsLoading(false);
+      return response.data;
+    },
+    onSuccess: setCsvResponse,
+    onError: error => {
+      console.log('uploadMutation error', error);
+      const msg = parseErrorMessage(error);
+      setUploadError(msg);
+    },
+  });
+
+  const handleUpload = async (file: File) => {
+    if (filename) {
+      setUploadError(undefined);
+      resetCsvFile();
     }
+    setUploadedFilename(file.name);
+    const formData = new FormData();
+    formData.append('file', file);
+    if (selectedProviderId) {
+      formData.append('providerId', selectedProviderId);
+    }
+    formData.append('requestType', selectedRequestType);
+    setCsvFormData(formData);
+    await uploadMutation.mutateAsync(formData);
   };
+
+  console.log('uploadMutation erprr');
 
   const handleSelectProvider = (value: string) => {
     setSelectedProvider(value);
+  };
+
+  const handleSelectRequestType = (value: string) => {
+    setSelectedRequestType(value as RequestType);
   };
 
   const generateCSVTemplate = useCallback(() => {
@@ -137,7 +150,22 @@ const FileUpload: FC = () => {
         </Text>
       </div>
       <div className="w-full flex flex-col gap-2">
-        <h3>2. Make sure your CSV file follows the required format</h3>
+        <h3>2. Select request type</h3>
+        <div className="flex gap-2">
+          <SelectTremor
+            enableClear={false}
+            className="z-20 w-52"
+            placeholder="Select request type"
+            onValueChange={handleSelectRequestType}
+            value={selectedRequestType}
+          >
+            <SelectItem value="Cancellation">Cancellation</SelectItem>
+            <SelectItem value="Discount">Discount</SelectItem>
+          </SelectTremor>
+        </div>
+      </div>
+      <div className="w-full flex flex-col gap-2">
+        <h3>3. Make sure your CSV file follows the required format</h3>
         <Text className="text-sm text-gray-600">
           For any issues or support, please contact our customer service team at{' '}
           <a href="mailto:admin@proxylink.co" className="underline">
@@ -149,7 +177,7 @@ const FileUpload: FC = () => {
           handleChange={handleUpload}
           name="file"
           types={['CSV']}
-          disabled={isLoading || !selectedProviderId}
+          disabled={uploadMutation.isPending || !selectedProviderId}
         >
           <div className="flex flex-col gap-4 items-center p-16 border-dashed border-2 border-gray-300 rounded-lg">
             <Text>Drag and drop your file here or click to upload.</Text>
@@ -163,17 +191,15 @@ const FileUpload: FC = () => {
             ) : (
               <div className="w-full flex items-center justify-center">
                 <Button
-                  disabled={
-                    isLoading || providersLoading || !selectedProviderId
-                  }
+                  disabled={uploadMutation.isPending || !selectedProviderId}
                   className="justify-center"
                 >
-                  {isLoading ? (
+                  {uploadMutation.isPending ? (
                     <Spinner className="mr-2" />
                   ) : (
                     <Upload className="mr-2" />
                   )}
-                  {isLoading ? 'Uploading...' : 'Upload File'}
+                  {uploadMutation.isPending ? 'Uploading...' : 'Upload File'}
                 </Button>
               </div>
             )}
