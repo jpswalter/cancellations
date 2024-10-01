@@ -55,3 +55,15 @@ code {
 .hygraph-content ol {
   @apply list-decimal pl-4 my-2;
 }
+
+.hygraph-content h1 {
+  @apply text-3xl font-bold mb-4;
+}
+
+.hygraph-content h2 {
+  @apply text-2xl font-bold mb-4;
+}
+
+.hygraph-content h3 {
+  @apply text-2xl font-bold mt-4 mb-2;
+}

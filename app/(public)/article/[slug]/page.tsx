@@ -21,7 +21,10 @@ export default async function ArticlePage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ArticleContent slug={params.slug} />
+      <ArticleContent
+        slug={params.slug}
+        showCategory={params.slug !== 'terms-and-conditions'}
+      />
     </HydrationBoundary>
   );
 }
