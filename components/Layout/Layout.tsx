@@ -68,7 +68,9 @@ export default function ClientLayout({
             </nav>
           </div>
         </div>
-        <div className="col-start-2 row-span-2 row-start-1">{children}</div>
+        <div className="col-start-2 row-span-2 row-start-1 bg-gray-50">
+          {children}
+        </div>
         <OrgOnboardingWizard />
       </div>
     </>
