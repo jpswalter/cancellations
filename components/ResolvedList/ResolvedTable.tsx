@@ -17,7 +17,8 @@ import { generateCustomerInfoColumns } from '../RequestsTable/table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import DataTable, { CustomColumnDef } from '@/components/ui/table/table';
 import { Loader } from '@/components/ui/spinner';
-import { Badge } from '@/components/ui/badge';
+import RequestTypeComponent from '../RequestType/RequestType';
+
 interface Props {
   requests: Request[];
   EmptyComponent?: React.ComponentType;
@@ -58,15 +59,13 @@ const RequestsTable: FC<Props> = ({
         className: 'text-center',
       },
       cell: ({ cell }: { cell: Cell<Request, RequestType> }) => (
-        <Badge color={cell.getValue() === 'Cancellation' ? 'red' : 'amber'}>
-          {cell.getValue()}
-        </Badge>
+        <RequestTypeComponent type={cell.getValue()} />
       ),
     },
     {
       header: 'Status',
       meta: {
-        className: 'flex justify-center',
+        className: '',
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
@@ -93,10 +92,6 @@ const RequestsTable: FC<Props> = ({
       header: 'Last Update',
       accessorKey: 'dateResponded',
       cell: DateCell,
-    },
-    {
-      header: 'Save Offer',
-      accessorKey: 'saveOffer.title',
     },
   ];
 

@@ -1,4 +1,4 @@
-import { getDisplayHeader } from '@/utils/template.utils';
+import { getCustomerFieldDisplayName } from '@/utils/template.utils';
 import { Request } from '@/lib/db/schema';
 
 export const generateCustomerInfoColumns = (requests: Request[]) => {
@@ -14,7 +14,7 @@ export const generateCustomerInfoColumns = (requests: Request[]) => {
       return a.localeCompare(b);
     })
     .map(field => ({
-      header: getDisplayHeader(field),
+      header: getCustomerFieldDisplayName(field),
       accessorKey: `customerInfo.${field}`,
       cell: ({ getValue }: { getValue: () => string }) => getValue() || '-',
       meta: {

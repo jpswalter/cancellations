@@ -12,7 +12,7 @@ import Spinner from '@/components/ui/spinner';
 
 import { SelectItem, Select as SelectTremor } from '@tremor/react';
 import useFirebase from '@/hooks/useFirebase';
-import { generateHeaders } from '@/utils/template.utils';
+import { generateCSVHeaders } from '@/utils/template.utils';
 import { RequestType } from '@/lib/db/schema';
 
 // Add this type definition at the top of your file
@@ -85,7 +85,7 @@ const FileUpload: FC = () => {
     const selectedProvider = tenants.find(p => p.id === selectedProviderId);
     if (!selectedProvider || !selectedProvider.requiredCustomerInfo) return '';
 
-    return generateHeaders(selectedProvider.requiredCustomerInfo);
+    return generateCSVHeaders(selectedProvider.requiredCustomerInfo);
   }, [selectedProviderId, tenants]);
 
   const handleDownloadTemplate = useCallback(() => {

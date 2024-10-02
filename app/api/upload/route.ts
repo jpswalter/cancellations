@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CsvError, parse } from 'csv-parse';
 import { StructuredCSVResponse } from '@/components/UploadCSV/upload.types';
-import { getCustomerInfoField } from '@/utils/template.utils';
+import { getCustomerAuthField } from '@/utils/template.utils';
 import { CustomerInfoField, RequestType, Tenant } from '@/lib/db/schema';
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
 import { getFirestore } from 'firebase-admin/firestore';
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest): Promise<void | Response> {
             );
           }
 
-          const headers = results[0].map(getCustomerInfoField);
+          const headers = results[0].map(getCustomerAuthField);
           const validHeaders = headers.filter(
             (header): header is CustomerInfoField => header !== undefined,
           );

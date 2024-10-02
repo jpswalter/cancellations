@@ -3,24 +3,21 @@
 import React, { FC, useState } from 'react';
 import {
   Request,
-  RequestSaveOffer,
   RequestStatus as RequestStatusType,
   RequestType,
 } from '@/lib/db/schema';
 import { Row, Cell, VisibilityState } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
-import SaveOfferCell from '@/components/RequestsTable/cells/SaveOfferCell';
 import { generateCustomerInfoColumns } from './table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import EmptyRequestsState from './EmptyTable';
 import CTACell from './cells/CTACell';
 import RequestDrawer from '../RequestDetails/RequestDrawer';
 import DataTable from '../ui/table/table';
-import ActionsCell from './cells/ActionsCell';
 import { Loader } from '../ui/spinner';
-import { getTenants } from '@/lib/api/tenant';
-import { useQuery } from '@tanstack/react-query';
-import { Badge } from '@/components/ui/badge';
+import RequestTypeComponent from '@/components/RequestType/RequestType';
+import RequestActions from '@/components/RequestActions/RequestActions';
+import Miscellaneous from '../Miscellaneous/Miscellaneous';
 
 interface Props {
   requests: Request[];
@@ -38,19 +35,12 @@ const RequestsTable: FC<Props> = ({
   isLoading,
 }) => {
   const { userData } = useAuth();
-  const tenantId = userData?.tenantId;
   const isProviderUser = userData?.tenantType === 'provider';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [drawerPosition, setDrawerPosition] = useState<'left' | 'right'>(
     'right',
   );
-
-  const { data: tenant } = useQuery({
-    queryKey: ['tenants'],
-    queryFn: getTenants,
-    select: tenants => tenants.find(tenant => tenant.id === tenantId),
-  });
 
   const toggleDrawer = (request: Request, position?: 'left' | 'right') => {
     if (position) {
@@ -89,16 +79,14 @@ const RequestsTable: FC<Props> = ({
         className: 'text-center',
       },
       cell: ({ cell }: { cell: Cell<Request, RequestType> }) => (
-        <Badge color={cell.getValue() === 'Cancellation' ? 'red' : 'amber'}>
-          {cell.getValue()}
-        </Badge>
+        <RequestTypeComponent type={cell.getValue()} />
       ),
       size: 120,
     },
     {
       header: 'Status',
       meta: {
-        className: 'flex justify-center',
+        className: '',
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
@@ -113,12 +101,7 @@ const RequestsTable: FC<Props> = ({
             id: 'Actions',
             header: 'Actions',
             cell: ({ row }: { row: Row<Request> }) => (
-              <ActionsCell
-                row={row}
-                tenantHasSaveOffers={
-                  tenant !== undefined && Number(tenant?.saveOffers?.length) > 0
-                }
-              />
+              <RequestActions request={row.original} />
             ),
           },
         ]
@@ -126,14 +109,10 @@ const RequestsTable: FC<Props> = ({
     ...(isProviderUser
       ? [
           {
-            header: 'Save Offer Status',
-            accessorKey: 'saveOffer',
-            cell: ({
-              row,
-            }: {
-              row: Row<Request>;
-              cell: Cell<Request, RequestSaveOffer>;
-            }) => <SaveOfferCell row={row} />,
+            header: 'Miscellaneous Info',
+            cell: ({ row }: { row: Row<Request> }) => (
+              <Miscellaneous request={row.original} />
+            ),
           },
         ]
       : []),

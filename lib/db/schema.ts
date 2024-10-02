@@ -1,4 +1,5 @@
 // file: lib/db/schema.ts
+import authFields from '@/constants/authFields.json';
 export type CancellationStatus =
   | 'Pending'
   | 'Canceled'
@@ -10,11 +11,7 @@ export type CancellationStatus =
 
 export type DiscountStatus = 'Pending' | 'Declined' | 'Applied';
 
-export type CustomerInfoField =
-  | 'customerName'
-  | 'customerEmail'
-  | 'accountNumber'
-  | 'lastFourCCDigits';
+export type CustomerInfoField = (typeof authFields)[number]['field'];
 
 export type CustomerInfo = { [K in CustomerInfoField]?: string };
 

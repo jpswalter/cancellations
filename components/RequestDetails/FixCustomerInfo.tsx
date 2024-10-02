@@ -1,10 +1,15 @@
 import { updateRequest } from '@/lib/api/request';
-import { RequestStatus, Request, DeclineReason } from '@/lib/db/schema';
+import {
+  RequestStatus,
+  Request,
+  DeclineReason,
+  CustomerInfo,
+} from '@/lib/db/schema';
 import { Button } from '@/components/ui/button';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import Spinner from '../ui/spinner';
-import { getDisplayHeader } from '@/utils/template.utils';
+import { getCustomerFieldDisplayName } from '@/utils/template.utils';
 
 const FixCustomerInfo: React.FC<{
   request: Request;
@@ -14,29 +19,24 @@ const FixCustomerInfo: React.FC<{
   // type guard function
   function isValidCustomerInfoField(
     field: string,
-  ): field is keyof Request['customerInfo'] {
+  ): field is keyof CustomerInfo {
     return field in request.customerInfo;
   }
 
   // state for new values initialized with the current values of the decline reasons
-  const [newValues, setNewValues] = useState<Partial<Request['customerInfo']>>(
-    () => {
-      return declineReasons.reduce(
-        (acc, reason) => {
-          if (isValidCustomerInfoField(reason.field)) {
-            acc[reason.field] = request.customerInfo[reason.field] || '';
-          }
-          return acc;
-        },
-        {} as Partial<Request['customerInfo']>,
-      );
-    },
-  );
+  const [newValues, setNewValues] = useState<Partial<CustomerInfo>>(() => {
+    return declineReasons.reduce((acc, reason) => {
+      if (isValidCustomerInfoField(reason.field)) {
+        acc[reason.field] = request.customerInfo[reason.field] || '';
+      }
+      return acc;
+    }, {} as Partial<CustomerInfo>);
+  });
   const [updateError, setUpdateError] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (updatedCustomerInfo: Record<string, string>) => {
+    mutationFn: (updatedCustomerInfo: Partial<CustomerInfo>) => {
       const updatedRequest = {
         ...request,
         customerInfo: {
@@ -95,7 +95,7 @@ const FixCustomerInfo: React.FC<{
       {declineReasons.map(reason => (
         <div key={reason.field} className="mb-4">
           <p className="font-semibold text-lg mb-2">
-            {getDisplayHeader(reason.field)}
+            {getCustomerFieldDisplayName(reason.field)}
           </p>
           <div className="py-4 bg-white text-gray-800 rounded p-4 flex items-start gap-4">
             <div className="w-1/2">

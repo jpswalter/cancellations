@@ -7,7 +7,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { getDisplayHeader } from '@/utils/template.utils';
+import { getCustomerFieldDisplayName } from '@/utils/template.utils';
 import SubmitDataButton from './SubmitDataButton';
 import { TablePagination } from '../ui/pagination';
 
@@ -19,7 +19,7 @@ const UploadTable: FC = () => {
     const columnHelper = createColumnHelper<Record<string, string>>();
     return csv.headers.map(header =>
       columnHelper.accessor(header, {
-        header: getDisplayHeader(header),
+        header: getCustomerFieldDisplayName(header),
         cell: info => info.getValue(),
       }),
     );
