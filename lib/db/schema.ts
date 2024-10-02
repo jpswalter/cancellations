@@ -9,7 +9,11 @@ export type CancellationStatus =
   | 'Save Accepted'
   | 'Save Confirmed';
 
-export type DiscountStatus = 'Pending' | 'Declined' | 'Applied';
+export type DiscountStatus =
+  | 'Pending'
+  | 'Declined'
+  | 'Applied'
+  | 'Not Qualified';
 
 export type CustomerInfoField = (typeof authFields)[number]['field'];
 

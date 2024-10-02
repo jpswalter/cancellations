@@ -12,7 +12,13 @@ const ResolvedList: React.FC = () => {
   const { tenantType, tenantId } = userData || {};
 
   const statusFilters = useMemo(
-    () => ['Save Confirmed', 'Canceled'] as RequestStatus[],
+    () =>
+      [
+        'Save Confirmed',
+        'Canceled',
+        'Applied',
+        'Not Qualified',
+      ] as RequestStatus[],
     [],
   );
 

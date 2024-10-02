@@ -90,7 +90,9 @@ const RequestsTable: FC<Props> = ({
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
-        <RequestStatus status={cell.getValue()} className="w-full" />
+        <div className="flex justify-center">
+          <RequestStatus status={cell.getValue()} />
+        </div>
       ),
       size: 120,
     },

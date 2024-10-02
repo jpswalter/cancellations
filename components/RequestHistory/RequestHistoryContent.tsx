@@ -37,6 +37,10 @@ export const renderHistoryTitle = (group: ChangeGroup): string => {
         return `Save offer accepted by ${changedBy}`;
       case 'Save Declined':
         return `Save offer declined by ${changedBy}`;
+      case 'Applied':
+        return `Discount applied by ${changedBy}`;
+      case 'Not Qualified':
+        return `Discount not qualified by ${changedBy}`;
     }
   }
 

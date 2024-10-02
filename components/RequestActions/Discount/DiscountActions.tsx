@@ -37,6 +37,10 @@ const DiscountActions: FC<{ request: Request }> = ({ request }) => {
     );
   };
 
+  if (status === 'Not Qualified' || status === 'Applied') {
+    return null;
+  }
+
   return (
     <div onClick={e => e.stopPropagation()}>
       <div className="flex space-x-2 justify-end">

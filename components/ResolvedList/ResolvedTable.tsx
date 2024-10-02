@@ -65,11 +65,13 @@ const RequestsTable: FC<Props> = ({
     {
       header: 'Status',
       meta: {
-        className: '',
+        className: 'text-center',
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
-        <RequestStatus status={cell.getValue()} />
+        <div className="flex justify-center">
+          <RequestStatus status={cell.getValue()} />
+        </div>
       ),
       size: 130,
     },

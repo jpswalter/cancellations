@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Modal, Button } from '@/components/ui/';
 import { Request, DeclineReason } from '@/lib/db/schema';
 import CustomerInfoCard from '@/components/CustomerInfoCard/CustomerInfoCard';
@@ -32,6 +32,26 @@ const ResolveDiscountModal: FC<Props> = ({
   const { closeRow } = useTableRowAnimation();
   const isConfirmDisabled =
     action === 'decline' && (!declineReasons || declineReasons.length === 0);
+
+  const getRequestStatus = useCallback(() => {
+    if (action === 'decline') {
+      if (declineReasons.some(reason => reason.field === 'notQualified')) {
+        return 'Not Qualified';
+      }
+      return 'Declined';
+    }
+    return 'Applied';
+  }, [action, declineReasons]);
+
+  const getDeclineReasons = useCallback(() => {
+    const hasQualifiedReason = declineReasons.some(
+      reason => reason.field === 'notQualified',
+    );
+    if (action === 'decline' && !hasQualifiedReason) {
+      return declineReasons;
+    }
+    return null;
+  }, [action, declineReasons]);
 
   const mutation = useMutation({
     mutationFn: updateRequest,
@@ -83,8 +103,8 @@ const ResolveDiscountModal: FC<Props> = ({
     const updatedRequest: Request = {
       ...request,
       dateResponded: new Date().toISOString(),
-      status: action === 'apply' ? 'Applied' : 'Declined',
-      declineReason: action === 'decline' ? declineReasons : null,
+      status: getRequestStatus(),
+      declineReason: getDeclineReasons(),
     };
     mutation.mutate(updatedRequest);
   };
