@@ -33,10 +33,10 @@ const FileUpload: FC = () => {
     setCsvFormData,
     setSelectedProvider,
     selectedProviderId,
+    setSelectedRequestType,
+    selectedRequestType,
   } = useUpload();
   const [uploadError, setUploadError] = useState<string | undefined>();
-  const [selectedRequestType, setSelectedRequestType] =
-    useState<RequestType>('Cancellation');
 
   const { data: tenants, loading: providersLoading } = useFirebase({
     collectionName: 'tenants',
@@ -59,10 +59,10 @@ const FileUpload: FC = () => {
       setUploadedFilename(file.name);
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('requestType', selectedRequestType);
       if (selectedProviderId) {
         formData.append('providerId', selectedProviderId);
       }
-      formData.append('requestType', selectedRequestType);
       setCsvFormData(formData);
       await uploadMutation.mutateAsync(formData);
     } catch (error) {

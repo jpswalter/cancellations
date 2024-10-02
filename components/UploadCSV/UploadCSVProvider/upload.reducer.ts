@@ -5,7 +5,9 @@ import {
   UPLOAD_ACTION_TYPES,
 } from '../upload.types';
 
-export const initialState: UploadState = {};
+export const initialState: UploadState = {
+  selectedRequestType: 'Cancellation',
+};
 
 export const uploadReducer = (
   state: UploadState,
@@ -41,6 +43,12 @@ export const uploadReducer = (
       return {
         ...state,
         selectedProviderId: action.payload,
+      };
+
+    case UPLOAD_ACTION_TYPES.SET_SELECTED_REQUEST_TYPE:
+      return {
+        ...state,
+        selectedRequestType: action.payload,
       };
 
     default:

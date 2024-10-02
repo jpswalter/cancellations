@@ -5,6 +5,7 @@ import {
   Request,
   RequestSaveOffer,
   RequestStatus as RequestStatusType,
+  RequestType,
 } from '@/lib/db/schema';
 import { Row, Cell, VisibilityState } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,6 +20,7 @@ import ActionsCell from './cells/ActionsCell';
 import { Loader } from '../ui/spinner';
 import { getTenants } from '@/lib/api/tenant';
 import { useQuery } from '@tanstack/react-query';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   requests: Request[];
@@ -71,6 +73,9 @@ const RequestsTable: FC<Props> = ({
           {
             header: '',
             accessorKey: 'id',
+            meta: {
+              className: 'flex justify-center',
+            },
             cell: ({ row }: { row: Row<Request> }) => (
               <CTACell row={row} toggleDrawer={toggleDrawer} />
             ),
@@ -78,15 +83,28 @@ const RequestsTable: FC<Props> = ({
         ]
       : []),
     {
+      header: 'Type',
+      accessorKey: 'requestType',
+      meta: {
+        className: 'text-center',
+      },
+      cell: ({ cell }: { cell: Cell<Request, RequestType> }) => (
+        <Badge color={cell.getValue() === 'Cancellation' ? 'red' : 'amber'}>
+          {cell.getValue()}
+        </Badge>
+      ),
+      size: 120,
+    },
+    {
       header: 'Status',
       meta: {
-        className: '',
+        className: 'flex justify-center',
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
         <RequestStatus status={cell.getValue()} className="w-full" />
       ),
-      size: 130,
+      size: 120,
     },
     ...customerInfoColumns,
     ...(isProviderUser

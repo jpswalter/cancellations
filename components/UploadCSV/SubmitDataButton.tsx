@@ -14,6 +14,7 @@ const SubmitDataButton = () => {
     setUploadedFilename,
     setSelectedProvider,
     selectedProviderId,
+    selectedRequestType,
   } = useUpload();
   const { userData } = useAuth();
   const router = useRouter();
@@ -52,7 +53,7 @@ const SubmitDataButton = () => {
         version: CURRENT_SCHEMA_VERSION,
         status: 'Pending',
         submittedBy: userData.email,
-        requestType: 'Cancellation',
+        requestType: selectedRequestType,
         dateSubmitted: new Date().toISOString(),
         dateResponded: new Date().toISOString(),
         proxyTenantId: userData.tenantId,
