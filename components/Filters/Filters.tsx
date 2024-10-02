@@ -11,14 +11,17 @@ import { getTenants } from '@/lib/api/tenant';
 import {
   RequestStatus as RequestStatusType,
   TenantType,
+  RequestType,
 } from '@/lib/db/schema';
 import RequestStatus from '../RequestStatus/RequestStatus';
 
 interface FiltersProps {
   dateRange: DateRangePickerValue;
   setDateRange: (value: DateRangePickerValue) => void;
-  selectedRequestType: RequestStatusType | undefined;
-  setSelectedRequestType: (status: RequestStatusType | undefined) => void;
+  selectedRequestStatus: RequestStatusType | undefined;
+  setSelectedRequestStatus: (status: RequestStatusType | undefined) => void;
+  selectedRequestType: RequestType | undefined;
+  setSelectedRequestType: (type: RequestType | undefined) => void;
   searchId: string;
   setSearchId: (id: string) => void;
   showStatusFilter: boolean;
@@ -31,6 +34,8 @@ interface FiltersProps {
 const Filters: React.FC<FiltersProps> = ({
   dateRange,
   setDateRange,
+  selectedRequestStatus,
+  setSelectedRequestStatus,
   selectedRequestType,
   setSelectedRequestType,
   searchId,
@@ -58,14 +63,17 @@ const Filters: React.FC<FiltersProps> = ({
     'Save Accepted',
     'Save Confirmed',
     'Applied',
+    'Not Qualified',
   ];
 
   const isProxy = tenantType === 'proxy';
   const filterLabel = isProxy ? 'Destination' : 'Source';
   const relevantTenants = isProxy ? providerTenants : proxyTenants;
 
+  const requestTypes: RequestType[] = ['Cancellation', 'Discount'];
+
   return (
-    <div className="z-50 flex space-x-4 flex-1 justify-end">
+    <div className="z-50 flex gap-4 flex-1 flex-wrap">
       <DateRangePicker
         className="w-30"
         value={dateRange}
@@ -76,10 +84,10 @@ const Filters: React.FC<FiltersProps> = ({
       {showStatusFilter && (
         <Select
           className="w-52"
-          value={selectedRequestType}
+          value={selectedRequestStatus}
           placeholder="Status"
           onValueChange={value =>
-            setSelectedRequestType(value as RequestStatusType)
+            setSelectedRequestStatus(value as RequestStatusType)
           }
           enableClear={true}
         >
@@ -103,9 +111,22 @@ const Filters: React.FC<FiltersProps> = ({
           </SelectItem>
         ))}
       </Select>
+      <Select
+        className="w-52"
+        value={selectedRequestType}
+        placeholder="Request Type"
+        onValueChange={value => setSelectedRequestType(value as RequestType)}
+        enableClear={true}
+      >
+        {requestTypes.map(type => (
+          <SelectItem key={type} value={type}>
+            {type}
+          </SelectItem>
+        ))}
+      </Select>
       {showSearchId && (
         <TextInput
-          className="w-52 flex-1"
+          className="w-fit"
           placeholder="Search by ID"
           value={searchId}
           onChange={e => setSearchId(e.target.value)}

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { RequestStatus, TenantType } from '@/lib/db/schema';
+import { RequestStatus, TenantType, RequestType } from '@/lib/db/schema';
 import { getRequests } from '@/lib/api/request';
 import { DateRangePickerValue } from '@tremor/react';
 
@@ -26,9 +26,13 @@ export const useRequests = ({
   const [selectedTenant, setSelectedTenant] = useState<string | undefined>(
     undefined,
   );
-  const [selectedRequestType, setSelectedRequestType] = useState<
+  const [selectedRequestStatus, setSelectedRequestStatus] = useState<
     RequestStatus | undefined
   >(undefined);
+  const [selectedRequestType, setSelectedRequestType] = useState<
+    RequestType | undefined
+  >(undefined);
+
   const [statusFilters, setStatusFilters] = useState<
     RequestStatus[] | undefined
   >(initialStatusFilters);
@@ -67,8 +71,8 @@ export const useRequests = ({
           : request.proxyTenantId === selectedTenant
         : true;
 
-      const requestStatusMatch = selectedRequestType
-        ? request.status === selectedRequestType
+      const requestStatusMatch = selectedRequestStatus
+        ? request.status === selectedRequestStatus
         : true;
 
       const statusMatch =
@@ -80,21 +84,27 @@ export const useRequests = ({
         ? request.id.toLowerCase().includes(searchId.toLowerCase())
         : true;
 
+      const requestTypeMatch = selectedRequestType
+        ? request.requestType === selectedRequestType
+        : true;
+
       return (
         dateInRange &&
         tenantMatch &&
         requestStatusMatch &&
         statusMatch &&
-        idMatch
+        idMatch &&
+        requestTypeMatch
       );
     });
   }, [
     requests,
     dateRange,
     selectedTenant,
-    selectedRequestType,
+    selectedRequestStatus,
     statusFilters,
     searchId,
+    selectedRequestType,
     tenantType,
   ]);
 
@@ -109,6 +119,8 @@ export const useRequests = ({
       setSelectedTenant,
       selectedRequestType,
       setSelectedRequestType,
+      selectedRequestStatus,
+      setSelectedRequestStatus,
       statusFilters,
       setStatusFilters,
       searchId,

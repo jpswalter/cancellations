@@ -31,7 +31,7 @@ const ActionsList: React.FC<Props> = ({ tenantType, tenantId }) => {
     <div className="flex w-full h-full">
       <div className="flex h-full flex-1 flex-col overflow-hidden">
         <div className="flex h-[72px] flex-none items-center justify-between gap-2 border-b bg-white px-[20px]">
-          <h1 className="truncate">Actions needed</h1>
+          <h1>Actions needed</h1>
           <div className="flex items-center gap-2">
             <Filters {...filters} />
           </div>
