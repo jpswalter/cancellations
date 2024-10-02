@@ -14,6 +14,7 @@ import {
   RequestType,
 } from '@/lib/db/schema';
 import RequestStatus from '../RequestStatus/RequestStatus';
+import clsx from 'clsx';
 
 interface FiltersProps {
   dateRange: DateRangePickerValue;
@@ -29,6 +30,7 @@ interface FiltersProps {
   tenantType: TenantType | undefined;
   selectedTenant: string | undefined;
   setSelectedTenant: (tenantId: string | undefined) => void;
+  doNotWrap?: boolean;
 }
 
 const Filters: React.FC<FiltersProps> = ({
@@ -45,6 +47,7 @@ const Filters: React.FC<FiltersProps> = ({
   tenantType,
   selectedTenant,
   setSelectedTenant,
+  doNotWrap,
 }) => {
   const { data: tenants } = useQuery({
     queryKey: ['tenants'],
@@ -73,7 +76,9 @@ const Filters: React.FC<FiltersProps> = ({
   const requestTypes: RequestType[] = ['Cancellation', 'Discount'];
 
   return (
-    <div className="z-50 flex gap-4 flex-1 flex-wrap">
+    <div
+      className={clsx('z-50 flex gap-4 flex-1', doNotWrap ? '' : 'flex-wrap')}
+    >
       <DateRangePicker
         className="w-30"
         value={dateRange}

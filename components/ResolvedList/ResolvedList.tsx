@@ -33,7 +33,7 @@ const ResolvedList: React.FC = () => {
     <div className="flex w-full bg-gray-50">
       <div className="flex h-full flex-1 flex-col overflow-hidden">
         <div className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-3xl font-semibold text-gray-900">
               Resolved Requests
             </h1>
