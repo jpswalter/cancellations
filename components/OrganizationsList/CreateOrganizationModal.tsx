@@ -21,7 +21,6 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
   const [authFields, setAuthFields] = useState<string[]>([]);
   const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
   const { emailError, invalidEmails } = useEmailValidation(adminEmails);
-
   const resetState = () => {
     setName('');
     setAdminEmails('');
