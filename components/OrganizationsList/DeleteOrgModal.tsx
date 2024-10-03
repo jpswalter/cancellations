@@ -38,7 +38,6 @@ const DeleteOrgModal: React.FC<DeleteOrgModalProps> = ({
     <Modal
       shown={isVisible}
       onClose={onClose}
-      title="Delete Organization"
       size="sm"
       footer={
         <div className="flex justify-end space-x-2">
@@ -55,12 +54,19 @@ const DeleteOrgModal: React.FC<DeleteOrgModalProps> = ({
         </div>
       }
     >
-      <div className="flex flex-col items-center text-center">
+      <div className="flex flex-col items-center text-center pt-2">
         <IoMdCloseCircleOutline className="text-red-500 text-6xl" />
-        <p className="font-semibold my-2">{orgName}</p>
-        <div className="p-4 flex items-start text-gray-600" role="alert">
-          <p className="font-bold">
-            Are you sure you want to delete this organization?
+        <p className="font-semibold my-2 text-2xl">
+          Delete organization
+          <br />
+          &quot;{orgName}&quot;
+        </p>
+        <div className="p-4 flex flex-col text-gray-600" role="alert">
+          <p className="font-bold text-left">Are you sure?</p>
+          <p className="text-left">
+            All users will be deleted too that is associated with this
+            organization. By the way, they can join another org on ProxyLink
+            after that.
           </p>
         </div>
       </div>
