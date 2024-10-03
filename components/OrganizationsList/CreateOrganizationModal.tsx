@@ -78,7 +78,7 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
       shown={isOpen}
       onClose={handleClose}
       title="Create New Organization"
-      size="lg"
+      size="xl"
       footer={
         <div className="flex justify-end space-x-4">
           <Button
@@ -101,7 +101,7 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
         </div>
       }
     >
-      <div className="space-y-8 py-4">
+      <div className="space-y-8 p-4">
         <div>
           <label
             htmlFor="name"
@@ -161,35 +161,7 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
         </div>
 
         {orgType === 'provider' && (
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">
-                Authenticating Fields
-              </label>
-              <div className="mt-2 space-y-2 flex flex-col">
-                {AUTH_FIELDS.map(item => (
-                  <label key={item.field} className="inline-flex items-center">
-                    <input
-                      type="checkbox"
-                      className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                      value={item.field}
-                      checked={authFields.includes(item.field)}
-                      onChange={e => {
-                        if (e.target.checked) {
-                          setAuthFields([...authFields, item.field]);
-                        } else {
-                          setAuthFields(
-                            authFields.filter(f => f !== item.field),
-                          );
-                        }
-                      }}
-                    />
-                    <span className="ml-2">{item.display}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
+          <div className="flex flex-col gap-8">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-4">
                 Request Types
@@ -214,6 +186,33 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
                       }}
                     />
                     <span className="ml-2">{type}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Authenticating Fields
+              </label>
+              <div className="mt-2 grid grid-cols-2 gap-4">
+                {AUTH_FIELDS.map(item => (
+                  <label key={item.field} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      value={item.field}
+                      checked={authFields.includes(item.field)}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setAuthFields([...authFields, item.field]);
+                        } else {
+                          setAuthFields(
+                            authFields.filter(f => f !== item.field),
+                          );
+                        }
+                      }}
+                    />
+                    <span className="ml-2">{item.display}</span>
                   </label>
                 ))}
               </div>
