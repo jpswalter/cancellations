@@ -91,7 +91,8 @@ export async function POST(request: Request): Promise<NextResponse> {
   const db: Firestore = getFirestore();
 
   try {
-    const { orgName, adminEmails, orgType, authFields } = await request.json();
+    const { orgName, adminEmails, orgType, authFields, requestTypes } =
+      await request.json();
 
     const newTenant: Tenant = {
       id: uuidv4(),
@@ -103,6 +104,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       requiredCustomerInfo: authFields,
       saveOffers: [],
       admins: adminEmails,
+      requestTypes,
     };
 
     await db.collection('tenants').doc(newTenant.id).set(newTenant);

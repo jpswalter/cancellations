@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { getTenant, updateTenant } from '@/lib/api/tenant';
-import { CustomerInfoField, Tenant } from '@/lib/db/schema';
+import { CustomerInfoField, RequestType } from '@/lib/db/schema';
 import AUTH_FIELDS from '@/constants/authFields.json';
 import { getArticle } from '@/lib/api/article';
 import { Loader } from 'lucide-react';
@@ -42,14 +42,58 @@ const OrgOnboardingWizard = () => {
 
   const [termsConditionsAccepted, setTermsConditionsAccepted] = useState(false);
 
+  const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
+
+  const getTotalSteps = useCallback(() => {
+    const baseSteps = 3; // Welcome, Terms & Conditions, Congratulations
+    const providerExtraSteps = 2; // Auth Fields, Request Types
+    return userData?.tenantType === 'provider'
+      ? baseSteps + providerExtraSteps
+      : baseSteps;
+  }, [userData?.tenantType]);
+
   const getCurrentProgress = useCallback(() => {
-    const isProvider = userData?.tenantType === 'provider';
-    const totalSteps = isProvider ? 4 : 3;
-    if (isProvider) {
-      return (step / totalSteps) * 100;
-    }
-    return step === 1 ? 33 : step === 2 ? 33 : step === 3 ? 66 : 100;
-  }, [userData?.tenantType, step]);
+    const totalSteps = getTotalSteps();
+    return (step / totalSteps) * 100;
+  }, [step, getTotalSteps]);
+
+  const getNextStep = useCallback(
+    (currentStep: number) => {
+      const isProvider = userData?.tenantType === 'provider';
+      switch (currentStep) {
+        case 1:
+          return isProvider ? 2 : 3;
+        case 2:
+          return 3;
+        case 3:
+          return isProvider ? 4 : 5;
+        case 4:
+          return 5;
+        default:
+          return currentStep;
+      }
+    },
+    [userData?.tenantType],
+  );
+
+  const getPreviousStep = useCallback(
+    (currentStep: number) => {
+      const isProvider = userData?.tenantType === 'provider';
+      switch (currentStep) {
+        case 5:
+          return isProvider ? 4 : 3;
+        case 4:
+          return 3;
+        case 3:
+          return isProvider ? 2 : 1;
+        case 2:
+          return 1;
+        default:
+          return currentStep;
+      }
+    },
+    [userData?.tenantType],
+  );
 
   const renderStep = () => {
     switch (step) {
@@ -59,14 +103,12 @@ const OrgOnboardingWizard = () => {
             <h3 className="text-3xl">Let&apos;s get you set up</h3>
             <p className="text-center">
               {userData?.tenantType === 'provider'
-                ? 'The onboarding process for your organization means setting up authenticating fields and accepting terms and conditions.'
-                : 'The onboarding process for your organization means just accepting terms and conditions.'}
+                ? 'The onboarding process for your organization includes setting up authenticating fields, confirming request types, and accepting terms and conditions.'
+                : 'The onboarding process for your organization includes accepting terms and conditions.'}
             </p>
             <Button
               color="indigo"
-              onClick={() =>
-                setStep(userData?.tenantType === 'provider' ? 2 : 3)
-              }
+              onClick={() => setStep(getNextStep(step))}
               className="mt-2"
             >
               Get Started
@@ -110,16 +152,68 @@ const OrgOnboardingWizard = () => {
               </div>
             </div>
             <div className="flex justify-between w-full mt-auto">
-              <Button outline={true} onClick={() => setStep(1)}>
+              <Button
+                outline={true}
+                onClick={() => setStep(getPreviousStep(step))}
+              >
                 Back
               </Button>
-              <Button color="indigo" onClick={() => setStep(3)}>
+              <Button color="indigo" onClick={() => setStep(getNextStep(step))}>
                 Proceed
               </Button>
             </div>
           </div>
         );
       case 3:
+        return (
+          <div className="flex flex-col h-full">
+            <h3 className="text-3xl mb-4">Confirm Request Types</h3>
+            <p className="text-left mb-4">
+              Please select the types of requests you want to receive from proxy
+              users.
+            </p>
+            <div
+              className="flex-grow overflow-y-auto mb-4"
+              style={{ maxHeight: 'calc(80vh - 300px)' }}
+            >
+              <div className="space-y-2 flex flex-col w-full">
+                {['Cancellation', 'Discount'].map(type => (
+                  <label key={type} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      value={type}
+                      checked={requestTypes.includes(type as RequestType)}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setRequestTypes([
+                            ...requestTypes,
+                            type as RequestType,
+                          ]);
+                        } else {
+                          setRequestTypes(requestTypes.filter(t => t !== type));
+                        }
+                      }}
+                    />
+                    <span className="ml-2">{type}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-between w-full mt-auto">
+              <Button
+                outline={true}
+                onClick={() => setStep(getPreviousStep(step))}
+              >
+                Back
+              </Button>
+              <Button color="indigo" onClick={() => setStep(getNextStep(step))}>
+                Proceed
+              </Button>
+            </div>
+          </div>
+        );
+      case 4:
         if (isTermsLoading) return <Loader />;
         return (
           <div className="flex flex-col h-full">
@@ -148,7 +242,10 @@ const OrgOnboardingWizard = () => {
                 <Text>Please accept our terms and conditions.</Text>
               </div>
               <div className="flex justify-between w-full">
-                <Button outline={true} onClick={() => setStep(1)}>
+                <Button
+                  outline={true}
+                  onClick={() => setStep(getPreviousStep(step))}
+                >
                   Back
                 </Button>
                 <Button
@@ -163,7 +260,7 @@ const OrgOnboardingWizard = () => {
             </div>
           </div>
         );
-      case 4:
+      case 5:
         return (
           <>
             <div className="text-6xl">🎉</div>
@@ -183,7 +280,7 @@ const OrgOnboardingWizard = () => {
   };
 
   const activateTenantMutation = useMutation({
-    mutationFn: (data: Tenant) => updateTenant(data),
+    mutationFn: updateTenant,
     onSuccess: () => {
       setStep(currStep => currStep + 1);
     },
@@ -201,7 +298,10 @@ const OrgOnboardingWizard = () => {
       ...org,
       active: true,
       ...(userData?.tenantType === 'provider'
-        ? { requiredCustomerInfo: authFields as CustomerInfoField[] }
+        ? {
+            requiredCustomerInfo: authFields as CustomerInfoField[],
+            requestTypes: requestTypes,
+          }
         : {}),
     });
   };

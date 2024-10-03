@@ -7,6 +7,7 @@ import { Card } from '@tremor/react';
 import { createOrganization } from '@/lib/api/organization';
 import { toast } from 'react-hot-toast';
 import { useEmailValidation } from '@/hooks/useEmailValidation';
+import { RequestType } from '@/lib/db/schema';
 
 interface Props {
   isOpen: boolean;
@@ -18,6 +19,7 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
   const [adminEmails, setAdminEmails] = useState('');
   const [orgType, setOrgType] = useState<'proxy' | 'provider'>('provider');
   const [authFields, setAuthFields] = useState<string[]>([]);
+  const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
   const { emailError, invalidEmails } = useEmailValidation(adminEmails);
 
   const resetState = () => {
@@ -46,7 +48,8 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
     if (
       !name ||
       !adminEmails ||
-      (orgType === 'provider' && authFields.length === 0)
+      (orgType === 'provider' && authFields.length === 0) ||
+      requestTypes.length === 0
     ) {
       return;
     }
@@ -55,6 +58,7 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
       adminEmails: adminEmails.split(',').map(email => email.trim()),
       orgType,
       authFields,
+      requestTypes,
     });
   };
 
@@ -157,29 +161,62 @@ const CreateOrganizationModal: FC<Props> = ({ isOpen, closeModal }) => {
         </div>
 
         {orgType === 'provider' && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-4">
-              Authenticating Fields
-            </label>
-            <div className="mt-2 space-y-2 flex flex-col">
-              {AUTH_FIELDS.map(item => (
-                <label key={item.field} className="inline-flex items-center">
-                  <input
-                    type="checkbox"
-                    className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    value={item.field}
-                    checked={authFields.includes(item.field)}
-                    onChange={e => {
-                      if (e.target.checked) {
-                        setAuthFields([...authFields, item.field]);
-                      } else {
-                        setAuthFields(authFields.filter(f => f !== item.field));
-                      }
-                    }}
-                  />
-                  <span className="ml-2">{item.display}</span>
-                </label>
-              ))}
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Authenticating Fields
+              </label>
+              <div className="mt-2 space-y-2 flex flex-col">
+                {AUTH_FIELDS.map(item => (
+                  <label key={item.field} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      value={item.field}
+                      checked={authFields.includes(item.field)}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setAuthFields([...authFields, item.field]);
+                        } else {
+                          setAuthFields(
+                            authFields.filter(f => f !== item.field),
+                          );
+                        }
+                      }}
+                    />
+                    <span className="ml-2">{item.display}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Request Types
+              </label>
+              <div className="mt-2 space-y-2 flex flex-col">
+                {['Cancellation', 'Discount'].map(type => (
+                  <label key={type} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      value={type}
+                      checked={requestTypes.includes(type as RequestType)}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setRequestTypes([
+                            ...requestTypes,
+                            type as RequestType,
+                          ]);
+                        } else {
+                          setRequestTypes(requestTypes.filter(t => t !== type));
+                        }
+                      }}
+                    />
+                    <span className="ml-2">{type}</span>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
         )}
