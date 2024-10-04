@@ -51,7 +51,7 @@ const Filters: React.FC<FiltersProps> = ({
 }) => {
   const { data: tenants } = useQuery({
     queryKey: ['tenants'],
-    queryFn: getTenants,
+    queryFn: () => getTenants(),
   });
   const proxyTenants = tenants?.filter(tenant => tenant.type === 'proxy') || [];
   const providerTenants =

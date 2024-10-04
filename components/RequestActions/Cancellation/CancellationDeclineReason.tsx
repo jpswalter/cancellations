@@ -1,7 +1,6 @@
 import { Request, DeclineReason } from '@/lib/db/schema';
 import { getCustomerFieldDisplayName } from '@/utils/template.utils';
-import { getTenants } from '@/lib/api/tenant';
-import { useQuery } from '@tanstack/react-query';
+import { useTenant } from '@/hooks/useTenant';
 
 type Props = {
   request: Request;
@@ -14,14 +13,7 @@ const CancellationDeclineReason: React.FC<Props> = ({
   setDeclineReasons,
   selectedDeclineReasons,
 }) => {
-  const { data: tenants } = useQuery({
-    queryKey: ['tenants'],
-    queryFn: getTenants,
-  });
-
-  const provider = tenants?.find(
-    tenant => tenant.id === request.providerTenantId,
-  );
+  const { data: provider } = useTenant(request.providerTenantId);
 
   if (!provider) {
     return <p>No provider found</p>;

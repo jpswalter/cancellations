@@ -35,7 +35,7 @@ const RequestsTable: FC<Props> = ({
   const { userData } = useAuth();
   const { data: tenants, isLoading: tenantsLoading } = useQuery({
     queryKey: ['tenants'],
-    queryFn: getTenants,
+    queryFn: () => getTenants({ minimal: true }),
   });
   const isProviderUser = userData?.tenantType === 'provider';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);

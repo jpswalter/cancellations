@@ -60,7 +60,7 @@ const Overview: React.FC = () => {
 
   const { data: tenants } = useQuery({
     queryKey: ['tenants'],
-    queryFn: getTenants,
+    queryFn: () => getTenants(),
   });
 
   const sourcesData = useMemo(() => {

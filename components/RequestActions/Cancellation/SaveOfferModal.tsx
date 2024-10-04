@@ -1,14 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { Modal, Button } from '@/components/ui/';
 import { Select as SelectTremor, SelectItem } from '@tremor/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IoMdSave } from 'react-icons/io';
 import { Request, RequestStatus, SaveOffer } from '@/lib/db/schema';
 import { updateRequest } from '@/lib/api/request';
-import { getTenants } from '@/lib/api/tenant';
 import Spinner from '@/components/ui/spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { useTableRowAnimation } from '@/components/ui/table/animation-context';
+import { useTenant } from '@/hooks/useTenant';
 
 interface SaveOfferModalProps {
   isVisible: boolean;
@@ -22,13 +22,8 @@ const SaveOfferModal: React.FC<SaveOfferModalProps> = ({
   closeModal,
 }) => {
   const [selectedOfferId, setSelectedOfferId] = useState('');
-  const { data: tenants } = useQuery({
-    queryKey: ['tenants'],
-    queryFn: getTenants,
-  });
-  const offers = tenants?.find(
-    t => t.id === request.providerTenantId,
-  )?.saveOffers;
+  const { data: provider } = useTenant(request.providerTenantId);
+  const offers = provider?.saveOffers;
 
   const queryClient = useQueryClient();
   const { userData } = useAuth();
