@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { Modal, Button } from '@/components/ui/';
 import { Request, DeclineReason } from '@/lib/db/schema';
-import UserInfoCard from './UserInfoCard';
+import CustomerInfoCard from '@/components/CustomerInfoCard/CustomerInfoCard';
 import {
   IoMdCheckmarkCircleOutline,
   IoMdCloseCircleOutline,
@@ -9,8 +9,8 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateRequest } from '@/lib/api/request';
 import { useAuth } from '@/hooks/useAuth';
-import DeclineReasonComponent from './DeclineReason';
-import { useTableRowAnimation } from '../ui/table/animation-context';
+import DeclineReasonComponent from './CancellationDeclineReason';
+import { useTableRowAnimation } from '@/components/ui/table/animation-context';
 
 interface Props {
   shown: boolean;
@@ -19,7 +19,12 @@ interface Props {
   action: 'cancel' | 'decline' | null;
 }
 
-const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
+const ResolveCancellationRequestModal: FC<Props> = ({
+  shown,
+  request,
+  closeModal,
+  action,
+}) => {
   const [declineReasons, setDeclineReasons] = useState<DeclineReason[]>([]);
 
   const queryClient = useQueryClient();
@@ -106,7 +111,7 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
         </div>
       }
     >
-      <UserInfoCard request={request} />
+      <CustomerInfoCard customerInfo={request.customerInfo} />
       <div
         className={`mt-6 border-l-4 p-4 flex items-start space-x-4 ${resolveStatus?.color}`}
         role="alert"
@@ -148,4 +153,4 @@ const ResolveModal: FC<Props> = ({ shown, request, closeModal, action }) => {
   );
 };
 
-export default ResolveModal;
+export default ResolveCancellationRequestModal;

@@ -1,5 +1,6 @@
 // file: lib/db/schema.ts
-export type RequestStatus =
+import authFields from '@/constants/authFields.json';
+export type CancellationStatus =
   | 'Pending'
   | 'Canceled'
   | 'Declined'
@@ -8,11 +9,13 @@ export type RequestStatus =
   | 'Save Accepted'
   | 'Save Confirmed';
 
-export type CustomerInfoField =
-  | 'customerName'
-  | 'customerEmail'
-  | 'accountNumber'
-  | 'lastFourCCDigits';
+export type DiscountStatus =
+  | 'Pending'
+  | 'Declined'
+  | 'Applied'
+  | 'Not Qualified';
+
+export type CustomerInfoField = (typeof authFields)[number]['field'];
 
 export type CustomerInfo = { [K in CustomerInfoField]?: string };
 
@@ -21,12 +24,15 @@ export type DeclineReason = {
   value: string;
 };
 
+export type RequestType = 'Cancellation' | 'Discount';
+export type RequestStatus = CancellationStatus | DiscountStatus;
+
 export interface Request {
   id: string;
   version: number;
   status: RequestStatus;
   submittedBy: string;
-  requestType: string;
+  requestType: RequestType;
   dateSubmitted: string;
   dateResponded: string | null;
   proxyTenantId: string;
@@ -108,6 +114,7 @@ export interface Tenant {
   createdAt: string;
   active: boolean;
   requiredCustomerInfo?: CustomerInfoField[]; // Only for provider tenants
+  requestTypes?: RequestType[];
   saveOffers?: SaveOffer[];
   admins: string[];
 }

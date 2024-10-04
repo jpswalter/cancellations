@@ -1,7 +1,6 @@
 import { Request, DeclineReason } from '@/lib/db/schema';
-import { getDisplayHeader } from '@/utils/template.utils';
-import { getTenants } from '@/lib/api/tenant';
-import { useQuery } from '@tanstack/react-query';
+import { getCustomerFieldDisplayName } from '@/utils/template.utils';
+import { useTenant } from '@/hooks/useTenant';
 
 type Props = {
   request: Request;
@@ -9,32 +8,34 @@ type Props = {
   selectedDeclineReasons: DeclineReason[];
 };
 
-const DeclineReasonComponent: React.FC<Props> = ({
+const DiscountDeclineReason: React.FC<Props> = ({
   request,
   setDeclineReasons,
   selectedDeclineReasons,
 }) => {
-  const { data: tenants } = useQuery({
-    queryKey: ['tenants'],
-    queryFn: getTenants,
-  });
-
-  const provider = tenants?.find(
-    tenant => tenant.id === request.providerTenantId,
-  );
+  const { data: provider } = useTenant(request.providerTenantId);
 
   if (!provider) {
     return <p>No provider found</p>;
   }
 
-  const options =
+  const wrongInfoOptions =
     provider?.requiredCustomerInfo?.map(field => ({
       field,
-      label: 'Wrong ' + getDisplayHeader(field),
+      label: 'Wrong ' + getCustomerFieldDisplayName(field),
       value: request.customerInfo[field] || '',
     })) ?? [];
 
-  const handleChange = (option: (typeof options)[0]) => {
+  const allOptions = [
+    ...wrongInfoOptions,
+    {
+      field: 'notQualified',
+      label: 'Not Qualified',
+      value: 'notQualified',
+    },
+  ];
+
+  const handleChange = (option: (typeof wrongInfoOptions)[0]) => {
     const isAlreadySelected = selectedDeclineReasons.some(
       reason => reason.field === option.field,
     );
@@ -55,7 +56,7 @@ const DeclineReasonComponent: React.FC<Props> = ({
 
   return (
     <div onClick={e => e.stopPropagation()} className="text-base">
-      {options.map(option => (
+      {allOptions.map(option => (
         <div
           key={option.field}
           className="p-2 hover:bg-gray-100 cursor-pointer"
@@ -77,4 +78,4 @@ const DeclineReasonComponent: React.FC<Props> = ({
   );
 };
 
-export default DeclineReasonComponent;
+export default DiscountDeclineReason;

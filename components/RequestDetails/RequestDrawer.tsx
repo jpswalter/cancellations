@@ -1,7 +1,7 @@
 // file: components/RequestDrawer/RequestDrawer.tsx
 'use client';
 import { Request, RequestWithLog } from '@/lib/db/schema';
-import RequestActions from '../RequestDetails/RequestActions';
+import RequestWidgets from './RequestWidgets';
 import RequestCard from '../RequestDetails/RequestCard';
 import { Drawer } from '../ui/drawer';
 import { useAuth } from '@/hooks/useAuth';
@@ -52,7 +52,7 @@ const RequestDrawer: React.FC<RequestDrawerProps> = ({
       <div className="flex flex-col h-full">
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 space-y-4">
-            {request && <RequestActions request={request} onFix={onFix} />}
+            {request && <RequestWidgets request={request} onFix={onFix} />}
             <RequestCard request={requestWithLog} />
             <RequestHistory request={requestWithLog} isLoading={isLogLoading} />
           </div>

@@ -2,6 +2,7 @@
 import { useContext } from 'react';
 import { UPLOAD_ACTION_TYPES, StructuredCSVResponse } from '../upload.types';
 import { UploadCSVContext } from './UploadCSVProvider';
+import { RequestType } from '@/lib/db/schema';
 
 export const useUpload = () => {
   const context = useContext(UploadCSVContext);
@@ -57,6 +58,13 @@ export const useUpload = () => {
     });
   };
 
+  const setSelectedRequestType = (payload: RequestType) => {
+    dispatch({
+      type: UPLOAD_ACTION_TYPES.SET_SELECTED_REQUEST_TYPE,
+      payload,
+    });
+  };
+
   return {
     ...state,
     dispatch,
@@ -65,5 +73,6 @@ export const useUpload = () => {
     setUploadedFilename,
     setCsvFormData,
     setSelectedProvider,
+    setSelectedRequestType,
   };
 };

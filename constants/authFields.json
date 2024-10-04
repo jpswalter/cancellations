@@ -13,7 +13,7 @@
   },
   {
     "field": "lastFourCCDigits",
-    "display": "Last 4 Credit Card Digits"
+    "display": "Last 4 CC Digits"
   },
   {
     "field": "phoneNumber",

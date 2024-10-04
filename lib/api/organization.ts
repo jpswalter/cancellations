@@ -1,5 +1,5 @@
 import { parseErrorMessage } from '@/utils/general';
-import { TenantType, CustomerInfoField } from '../db/schema';
+import { TenantType, CustomerInfoField, RequestType } from '../db/schema';
 
 export type Organization = {
   id: string; // Unique identifier for the tenant
@@ -30,11 +30,13 @@ export const createOrganization = async ({
   adminEmails,
   orgType,
   authFields,
+  requestTypes,
 }: {
   name: string;
   adminEmails: string[];
   orgType: 'proxy' | 'provider';
   authFields: string[];
+  requestTypes: RequestType[];
 }): Promise<{
   message: string;
 }> => {
@@ -43,7 +45,13 @@ export const createOrganization = async ({
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ orgName: name, adminEmails, orgType, authFields }),
+    body: JSON.stringify({
+      orgName: name,
+      adminEmails,
+      orgType,
+      authFields,
+      requestTypes,
+    }),
   });
   if (!response.ok) {
     throw new Error('Failed to create organization');

@@ -7,9 +7,9 @@ import {
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
-import { getTenants } from '@/lib/api/tenant';
 import OrganizationsList from '@/components/OrganizationsList/OrganizationsList';
 import { AUTH_COOKIE_NAME } from '@/constants/app.contants';
+import { getOrganisations } from '@/lib/api/organization';
 
 export const metadata: Metadata = {
   title: 'ProxyLink | Organisations',
@@ -36,8 +36,8 @@ export default async function OrganisationsPage() {
     const queryClient = new QueryClient();
 
     await queryClient.prefetchQuery({
-      queryKey: ['tenants'],
-      queryFn: getTenants,
+      queryKey: ['organizations'],
+      queryFn: getOrganisations,
     });
 
     return (

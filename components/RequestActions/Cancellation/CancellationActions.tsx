@@ -1,21 +1,13 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Request } from '@/lib/db/schema';
-import SaveOfferModal from './SaveOfferModal';
-import ResolveModal from '../ResolveModal';
-import { Row } from '@tanstack/react-table';
+import { FC, useMemo, useState } from 'react';
 import ConfirmSaveOfferModal from './ConfirmSaveOfferModal';
-import { InfoTooltip } from '@/components/ui/tooltip';
+import SaveOfferModal from './SaveOfferModal';
+import ResolveCancellationModal from './ResolveCancellationModal';
+import { InfoTooltip } from '../../ui/tooltip';
+import { Request } from '@/lib/db/schema';
+import { useTenant } from '@/hooks/useTenant';
 
-interface ActionsCellProps {
-  row: Row<Request>;
-  tenantHasSaveOffers: boolean;
-}
-
-const ActionsCell: React.FC<ActionsCellProps> = ({
-  row,
-  tenantHasSaveOffers,
-}) => {
+const CancellationActions: FC<{ request: Request }> = ({ request }) => {
   const [saveOfferModal, setSaveOfferModal] = useState(false);
   const [resolveModal, setResolveModal] = useState(false);
   const [confirmSaveOfferModal, setConfirmSaveOfferModal] = useState(false);
@@ -36,8 +28,8 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
   const openConfirmSaveOfferModal = () => setConfirmSaveOfferModal(true);
   const closeConfirmSaveOfferModal = () => setConfirmSaveOfferModal(false);
 
-  const status = row.original.status;
-  const requestAlreadyHadSaveOffer = row.original.saveOffer !== null;
+  const status = request.status;
+  const requestAlreadyHadSaveOffer = request.saveOffer !== null;
 
   const renderSaveOfferConfirmButton = () => {
     if (status === 'Save Accepted')
@@ -53,6 +45,12 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
     return null;
   };
 
+  const { data: provider, isLoading } = useTenant(request.providerTenantId);
+
+  const providerHasSaveOffersEnabled = useMemo(() => {
+    return Number(provider?.saveOffers?.length) > 0;
+  }, [provider]);
+
   const renderSaveOfferButton = () => {
     if (
       status === 'Save Declined' ||
@@ -65,14 +63,15 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
     }
     return (
       <div className="flex items-center space-x-2">
-        {!tenantHasSaveOffers && (
+        {!providerHasSaveOffersEnabled && (
           <InfoTooltip text="Your organization has not created any save offers yet." />
         )}
         <Button
           onClick={openSaveOfferModal}
           color="blue"
           className="w-24"
-          disabled={!tenantHasSaveOffers}
+          disabled={!providerHasSaveOffersEnabled}
+          loading={isLoading}
         >
           Save Offer
         </Button>
@@ -121,21 +120,21 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
       <SaveOfferModal
         isVisible={saveOfferModal}
         closeModal={closeSaveOfferModal}
-        request={row.original}
+        request={request}
       />
-      <ResolveModal
+      <ResolveCancellationModal
         shown={resolveModal}
-        request={row.original}
+        request={request}
         closeModal={closeResolveModal}
         action={action}
       />
       <ConfirmSaveOfferModal
         isVisible={confirmSaveOfferModal}
-        request={row.original}
+        request={request}
         onClose={closeConfirmSaveOfferModal}
       />
     </div>
   );
 };
 
-export default ActionsCell;
+export default CancellationActions;

@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getRequest } from '@/lib/api/request';
 import { useAuth } from '@/hooks/useAuth';
-import RequestActions from './RequestActions';
+import RequestWidgets from './RequestWidgets';
 import RequestCard from './RequestCard';
 import RequestHistory from '../RequestHistory/RequestHistory';
 
@@ -51,7 +51,7 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({ requestId }) => {
         </div>
         <div className="h-full flex-1 bg-gray-50">
           <div className="max-w-4xl p-4 flex flex-col space-y-4">
-            <RequestActions request={request} />
+            <RequestWidgets request={request} />
             <RequestCard request={request} />
             <RequestHistory request={request} isLoading={isLoading} />
           </div>

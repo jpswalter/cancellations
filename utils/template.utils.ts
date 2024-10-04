@@ -1,28 +1,26 @@
-import { CustomerInfoField } from '@/lib/db/schema';
+import { CustomerInfoField, DeclineReason } from '@/lib/db/schema';
+import AUTH_FIELDS from '@/constants/authFields.json';
 
-// Custom header mapping based on CustomerInfoField
-const CUSTOMER_INFO_HEADERS_MAP: { [K in CustomerInfoField]: string } = {
-  customerName: 'Customer Name',
-  customerEmail: 'Customer Email',
-  accountNumber: 'Account Number',
-  lastFourCCDigits: 'Last 4 CC Digits',
-};
-
-export const getDisplayHeader = (header: string): string => {
-  return header in CUSTOMER_INFO_HEADERS_MAP
-    ? CUSTOMER_INFO_HEADERS_MAP[header as CustomerInfoField]
-    : header;
-};
-
-export const getCustomerInfoField = (
+export const getCustomerAuthField = (
   name: string,
 ): CustomerInfoField | undefined => {
-  const entry = Object.entries(CUSTOMER_INFO_HEADERS_MAP).find(
-    ([_, value]) => value === name,
-  );
-  return entry ? (entry[0] as CustomerInfoField) : undefined;
+  return AUTH_FIELDS.find(authField => authField.display === name)?.field;
 };
 
-export const generateHeaders = (headers: string[]) => {
-  return headers.map(getDisplayHeader).join(',');
+export const generateCSVHeaders = (headers: string[]) => {
+  return headers.map(getCustomerFieldDisplayName).join(',');
+};
+
+export const getCustomerFieldDisplayName = (field: string): string =>
+  AUTH_FIELDS.find(authField => authField.field === field)?.display || field;
+
+export const getDeclineReason = (reasons: DeclineReason[]) => {
+  return reasons
+    .map(reason => {
+      if (reason.field === 'notQualified') {
+        return 'Customer is not qualified for the discount';
+      }
+      return 'Wrong ' + getCustomerFieldDisplayName(reason.field);
+    })
+    .join(', ');
 };

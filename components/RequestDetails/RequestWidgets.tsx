@@ -4,7 +4,7 @@ import SaveOfferWidget from './SaveOfferWidget';
 import { useMemo, useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
-const RequestActions: React.FC<{
+const RequestWidgets: React.FC<{
   request: Request;
   onFix?: () => void;
 }> = ({ request, onFix }) => {
@@ -57,4 +57,4 @@ const RequestActions: React.FC<{
   return null;
 };
 
-export default RequestActions;
+export default RequestWidgets;

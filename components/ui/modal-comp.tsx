@@ -5,10 +5,10 @@ import { Dialog, DialogPanel, Button } from '@tremor/react';
 interface ModalProps {
   shown: boolean;
   onClose?: () => void;
-  title: string;
+  title?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -23,13 +23,14 @@ export const Modal: React.FC<ModalProps> = ({
     sm: 'max-w-sm',
     md: 'max-w-md',
     lg: 'max-w-lg',
+    xl: 'max-w-xl',
   };
 
   return (
     <Dialog open={shown} onClose={onClose || (() => {})} static={true}>
       <DialogPanel className={`w-full ${sizeClasses[size]}`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">{title}</h3>
+          <h3 className="text-lg font-semibold">{title ? title : ''}</h3>
           {onClose && (
             <Button
               size="xs"

@@ -1,5 +1,5 @@
 import { DeclineReason, RequestChange, TenantType } from '@/lib/db/schema';
-import { getDisplayHeader } from '@/utils/template.utils';
+import { getCustomerFieldDisplayName } from '@/utils/template.utils';
 
 export type ChangeGroup = {
   changedBy: string;
@@ -37,6 +37,12 @@ export const renderHistoryTitle = (group: ChangeGroup): string => {
         return `Save offer accepted by ${changedBy}`;
       case 'Save Declined':
         return `Save offer declined by ${changedBy}`;
+      case 'Applied':
+        return `Discount applied by ${changedBy}`;
+      case 'Not Qualified':
+        return `Discount not qualified by ${changedBy}`;
+      case 'Canceled':
+        return `Request canceled by ${changedBy}`;
     }
   }
 
@@ -105,7 +111,7 @@ export const renderDescription = (
             const customerFieldChanged = change.field.split('.')[1];
             const newValue =
               typeof change.newValue === 'string' ? change.newValue : 'updated';
-            return `${getDisplayHeader(customerFieldChanged)} changed from ${change.oldValue} to ${newValue}`;
+            return `${getCustomerFieldDisplayName(customerFieldChanged)} changed from ${change.oldValue} to ${newValue}`;
           })
           .join(', ');
         return <p>{changedFields}</p>;
@@ -113,7 +119,7 @@ export const renderDescription = (
     }
     const declineReasons = (declineReasonChange.newValue as DeclineReason[])
       ?.map((reason: DeclineReason) => {
-        return `Wrong ${getDisplayHeader(reason.field)}`;
+        return `Wrong ${getCustomerFieldDisplayName(reason.field)}`;
       })
       .join(', ');
     return <p>Reason: {declineReasons}</p>;

@@ -1,12 +1,14 @@
 import { RequestWithLog } from '@/lib/db/schema';
-import { getDisplayHeader } from '@/utils/template.utils';
+import { getCustomerFieldDisplayName } from '@/utils/template.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import useFirebase from '@/hooks/useFirebase';
 import Spinner from '../ui/spinner';
 import { TenantCell } from '../RequestsTable/cells/Cell';
 import { FC } from 'react';
+import RequestTypeComponent from '../RequestType/RequestType';
+import { getDeclineReason } from '@/utils/template.utils';
 
-const RequestDetails: React.FC<{
+const RequestDetails: FC<{
   request: RequestWithLog | null | undefined;
 }> = ({ request }) => {
   const { data: tenants, loading: tenantsLoading } = useFirebase({
@@ -50,7 +52,7 @@ const RequestDetails: React.FC<{
           </div>
           <InfoItem
             label="Request Type"
-            value={<RequestType type={requestType as 'Cancellation'} />}
+            value={<RequestTypeComponent type={requestType} />}
           />
           <InfoItem
             label="Source"
@@ -85,7 +87,7 @@ const RequestDetails: React.FC<{
               .map(([key, value]) => (
                 <InfoItem
                   key={key}
-                  label={getDisplayHeader(key)}
+                  label={getCustomerFieldDisplayName(key)}
                   value={value}
                 />
               ))}
@@ -123,9 +125,7 @@ const RequestDetails: React.FC<{
               {declineReason && (
                 <InfoItem
                   label="Decline Reason"
-                  value={declineReason
-                    .map(reason => 'Wrong ' + getDisplayHeader(reason.field))
-                    .join(', ')}
+                  value={getDeclineReason(declineReason)}
                 />
               )}
               {notes && <InfoItem label="Notes" value={notes} />}
@@ -148,20 +148,6 @@ const InfoItem: React.FC<{
       <span className="font-medium whitespace-nowrap">{label}: </span>
       {isLoading ? <Spinner className="p-2" /> : valueElement}
     </div>
-  );
-};
-
-const RequestType: FC<{ type: 'Cancellation' }> = ({ type }) => {
-  const colorMap = {
-    Cancellation: 'bg-sky-100 text-sky-800',
-  };
-
-  return (
-    <span
-      className={`px-2 py-1 rounded-full text-xs font-medium ${colorMap[type]}`}
-    >
-      {type}
-    </span>
   );
 };
 

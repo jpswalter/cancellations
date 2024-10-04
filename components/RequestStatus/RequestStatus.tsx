@@ -15,6 +15,8 @@ const RequestStatus = ({
     'Save Declined': 'bg-amber-100 text-red-600',
     'Save Accepted': 'bg-amber-100 text-green-800',
     'Save Confirmed': 'bg-amber-100 text-amber-800',
+    Applied: 'bg-green-100 text-green-800',
+    'Not Qualified': 'bg-red-100 text-red-800',
   };
 
   return (

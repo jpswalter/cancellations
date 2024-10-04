@@ -1,7 +1,11 @@
 // file: components/ResolvedList/ResolvedTable.tsx
 'use client';
 import React, { FC, useState } from 'react';
-import { Request, RequestStatus as RequestStatusType } from '@/lib/db/schema';
+import {
+  Request,
+  RequestStatus as RequestStatusType,
+  RequestType,
+} from '@/lib/db/schema';
 import { Cell } from '@tanstack/react-table';
 import { useAuth } from '@/hooks/useAuth';
 import { DateCell, TenantCell } from '../RequestsTable/cells/Cell';
@@ -12,7 +16,9 @@ import EmptyRequestsState from '../RequestsTable/EmptyTable';
 import { generateCustomerInfoColumns } from '../RequestsTable/table.utils';
 import RequestStatus from '../RequestStatus/RequestStatus';
 import DataTable, { CustomColumnDef } from '@/components/ui/table/table';
-import { Loader } from 'lucide-react';
+import { Loader } from '@/components/ui/spinner';
+import RequestTypeComponent from '../RequestType/RequestType';
+
 interface Props {
   requests: Request[];
   EmptyComponent?: React.ComponentType;
@@ -29,7 +35,7 @@ const RequestsTable: FC<Props> = ({
   const { userData } = useAuth();
   const { data: tenants, isLoading: tenantsLoading } = useQuery({
     queryKey: ['tenants'],
-    queryFn: getTenants,
+    queryFn: () => getTenants({ minimal: true }),
   });
   const isProviderUser = userData?.tenantType === 'provider';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -47,13 +53,25 @@ const RequestsTable: FC<Props> = ({
   const customerInfoColumns = generateCustomerInfoColumns(requests);
   const columns: CustomColumnDef<Request>[] = [
     {
+      header: 'Type',
+      accessorKey: 'requestType',
+      meta: {
+        className: 'text-center',
+      },
+      cell: ({ cell }: { cell: Cell<Request, RequestType> }) => (
+        <RequestTypeComponent type={cell.getValue()} />
+      ),
+    },
+    {
       header: 'Status',
       meta: {
         className: 'text-center',
       },
       accessorKey: 'status',
       cell: ({ cell }: { cell: Cell<Request, RequestStatusType> }) => (
-        <RequestStatus status={cell.getValue()} />
+        <div className="flex justify-center">
+          <RequestStatus status={cell.getValue()} />
+        </div>
       ),
       size: 130,
     },
@@ -76,10 +94,6 @@ const RequestsTable: FC<Props> = ({
       header: 'Last Update',
       accessorKey: 'dateResponded',
       cell: DateCell,
-    },
-    {
-      header: 'Save Offer',
-      accessorKey: 'saveOffer.title',
     },
   ];
 
