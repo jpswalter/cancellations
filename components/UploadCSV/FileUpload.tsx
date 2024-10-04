@@ -1,5 +1,5 @@
 import { FC, useCallback, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { Upload } from 'lucide-react';
 import { FileUploader } from 'react-drag-drop-files';
@@ -11,9 +11,10 @@ import { Text } from '@/components/ui/text';
 import Spinner from '@/components/ui/spinner';
 
 import { SelectItem, Select as SelectTremor } from '@tremor/react';
-import useFirebase from '@/hooks/useFirebase';
 import { generateCSVHeaders } from '@/utils/template.utils';
 import { RequestType } from '@/lib/db/schema';
+import { useTenant } from '@/hooks/useTenant';
+import { getTenants } from '@/lib/api/tenant';
 
 // Add this type definition at the top of your file
 type ErrorResponse = {
@@ -38,10 +39,13 @@ const FileUpload: FC = () => {
   } = useUpload();
   const [uploadError, setUploadError] = useState<string | undefined>();
 
-  const { data: tenants, loading: providersLoading } = useFirebase({
-    collectionName: 'tenants',
-    filterBy: 'type',
-    filterValue: 'provider',
+  const { data: provider, isLoading: isProviderLoading } =
+    useTenant(selectedProviderId);
+
+  const { data: tenants, isLoading: isTenantsLoading } = useQuery({
+    queryKey: ['tenants'],
+    queryFn: () =>
+      getTenants({ filterBy: 'type', filterValue: 'provider', minimal: true }),
   });
 
   const deleteFile = (event: React.MouseEvent<HTMLElement>) => {
@@ -80,19 +84,17 @@ const FileUpload: FC = () => {
   };
 
   const generateCSVTemplate = useCallback(() => {
-    if (!selectedProviderId || !tenants) return '';
+    if (!selectedProviderId || !provider?.requiredCustomerInfo) return null;
 
-    const selectedProvider = tenants.find(p => p.id === selectedProviderId);
-    if (!selectedProvider || !selectedProvider.requiredCustomerInfo) return '';
-
-    return generateCSVHeaders(selectedProvider.requiredCustomerInfo);
-  }, [selectedProviderId, tenants]);
+    return generateCSVHeaders(provider.requiredCustomerInfo);
+  }, [selectedProviderId, provider]);
 
   const handleDownloadTemplate = useCallback(() => {
     const csvContent = generateCSVTemplate();
+    if (!csvContent) return;
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-    const providerName = tenants?.find(p => p.id === selectedProviderId)?.name;
+    const providerName = provider?.name;
     if (link.download !== undefined) {
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
@@ -102,7 +104,7 @@ const FileUpload: FC = () => {
       link.click();
       document.body.removeChild(link);
     }
-  }, [generateCSVTemplate, selectedProviderId, tenants]);
+  }, [generateCSVTemplate, provider]);
 
   const uploadMutation = useMutation({
     mutationFn: async (formData: FormData) => {
@@ -138,7 +140,7 @@ const FileUpload: FC = () => {
             enableClear={false}
             className="z-30 w-52"
             defaultValue="1"
-            disabled={providersLoading}
+            disabled={isTenantsLoading}
             placeholder="Select a provider"
             onValueChange={handleSelectProvider}
           >
@@ -150,8 +152,9 @@ const FileUpload: FC = () => {
           </SelectTremor>
           <Button
             onClick={handleDownloadTemplate}
-            disabled={!selectedProviderId}
+            disabled={!selectedProviderId || isProviderLoading}
             outline={true}
+            loading={isProviderLoading}
           >
             Download template
           </Button>
@@ -172,9 +175,14 @@ const FileUpload: FC = () => {
             placeholder="Select request type"
             onValueChange={handleSelectRequestType}
             value={selectedRequestType}
+            disabled={isProviderLoading || !selectedProviderId}
+            icon={isProviderLoading ? Spinner : undefined}
           >
-            <SelectItem value="Cancellation">Cancellation</SelectItem>
-            <SelectItem value="Discount">Discount</SelectItem>
+            {provider?.requestTypes?.map(requestType => (
+              <SelectItem value={requestType} key={requestType}>
+                {requestType}
+              </SelectItem>
+            ))}
           </SelectTremor>
         </div>
       </div>

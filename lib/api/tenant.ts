@@ -1,19 +1,41 @@
 // file: lib/api/tenant.ts
 import { Tenant, SaveOffer } from '@/lib/db/schema';
 
+type GetTenantsParams = {
+  filterBy?: string;
+  filterValue?: string;
+  minimal?: boolean;
+};
+
 /**
  * Sends a GET request to fetch tenants based on tenant type and ID.
  * @returns {Promise<Tenant[]>} A promise that resolves to an array of tenants.
  * @throws {Error} If the request fails.
  */
-export const getTenants = async (): Promise<Tenant[]> => {
+export const getTenants = async (
+  options?: GetTenantsParams,
+): Promise<Tenant[]> => {
+  const { filterBy, filterValue, minimal } = options || {};
   try {
-    const response = await fetch(`/api/tenants`, { next: { revalidate: 0 } });
+    let url = '/api/tenants';
+    const params = new URLSearchParams();
+
+    if (filterBy && filterValue) {
+      params.append(filterBy, filterValue);
+    }
+    if (minimal) {
+      params.append('minimal', 'true');
+    }
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+
+    const response = await fetch(url, { next: { revalidate: 0 } });
     if (!response.ok) {
       throw new Error('Failed to fetch tenants');
     }
-    const tenants = await response.json();
-    return tenants;
+    return await response.json();
   } catch (error) {
     throw new Error('Error getting tenants: ' + (error as Error).message);
   }
