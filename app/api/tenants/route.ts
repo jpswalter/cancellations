@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFirestore, Firestore } from 'firebase-admin/firestore';
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
 
-initializeFirebaseAdmin();
+export const dynamic = 'force-dynamic';
 
 /**
  * Handles GET requests to fetch all tenants.
@@ -12,6 +12,7 @@ initializeFirebaseAdmin();
  * @returns {Promise<NextResponse>} A response containing the fetched tenants or an error message.
  */
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  initializeFirebaseAdmin();
   const db: Firestore = getFirestore();
   const tenantsRef = db.collection('tenants');
 

@@ -1970,6 +1970,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/logrocket-react@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@types/logrocket-react/-/logrocket-react-3.0.3.tgz#544aedcd1313fc01653fe8f9cb090c1358638b9e"
+  integrity sha512-fGpJV4ccwfWAL0293EQx5HrS4PGMvXBpTQOXpA/SLXSCm7fC2O19w7Y3CcgWDmyawQnqbzd8faKAL12VhPdZKA==
+  dependencies:
+    logrocket "1.0.1"
+
 "@types/long@^4.0.0":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.2.tgz#b74129719fc8d11c01868010082d483b7545591a"
@@ -5487,6 +5494,16 @@ lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+
+logrocket-react@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/logrocket-react/-/logrocket-react-6.0.3.tgz#62c2ce18b9197058f5ba60e54e3f2b084d6588ee"
+  integrity sha512-mU2QMFy5lfogXeAb+djy5XcAL5lAxPovRiN62lb4EzeuvuYmXJJmArniK3K2P9Gu02auWTiSwKHISFS0JH+eyA==
+
+logrocket@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/logrocket/-/logrocket-1.0.1.tgz#0555ec619d2db54a7b345c4e8df09baea835b176"
+  integrity sha512-oPA0c5GzMKsWp/6p19OaujZQMzttluqVOI+989uHeciPAljPZvGEpZRbNO3Rr+jC/8jVLJdlMP9IHuyhKsASGA==
 
 logrocket@^9.0.0:
   version "9.0.0"
