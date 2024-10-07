@@ -3,6 +3,8 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { initializeFirebaseAdmin } from '@/lib/firebase/admin';
 import { collections, Invitation } from '@/lib/db/schema';
 
+export const dynamic = 'force-static';
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);

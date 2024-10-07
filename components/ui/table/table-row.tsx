@@ -52,6 +52,7 @@ const RequestRow = <T extends { id: string }>({
               style={{
                 width: `${width}px`,
               }}
+              data-private
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </td>
