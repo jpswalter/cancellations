@@ -5,6 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { auth, database } from '@/lib/firebase/config';
 import { User } from '@/lib/db/schema';
 import LogRocket from 'logrocket';
+import { getFullName } from '@/utils/general';
 
 export function useAuth() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -20,15 +21,23 @@ export function useAuth() {
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
           const data = userDoc.data() as User;
+          const {
+            firstName,
+            lastName,
+            email,
+            tenantId,
+            tenantName,
+            tenantType,
+          } = data;
           setUserData(data);
 
           if (!logRocketInitialized.current) {
             LogRocket.identify(data.id, {
-              name: `${data.firstName} ${data.lastName}`,
-              email: data.email,
-              tenantId: data.tenantId,
-              tenantName: data.tenantName,
-              tenantType: data.tenantType,
+              name: getFullName(firstName, lastName),
+              email,
+              tenantId,
+              tenantName,
+              tenantType,
             });
             logRocketInitialized.current = true;
           }

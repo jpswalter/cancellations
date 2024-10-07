@@ -89,6 +89,7 @@ const RequestDetails: FC<{
                   key={key}
                   label={getCustomerFieldDisplayName(key)}
                   value={value}
+                  isDataPrivate
                 />
               ))}
           </div>
@@ -141,10 +142,11 @@ const InfoItem: React.FC<{
   label: string;
   value: string | React.ReactNode;
   isLoading?: boolean;
-}> = ({ label, value, isLoading }) => {
+  isDataPrivate?: boolean;
+}> = ({ label, value, isLoading, isDataPrivate }) => {
   const valueElement = typeof value === 'string' ? <span>{value}</span> : value;
   return (
-    <div className="mb-2 flex items-start gap-2">
+    <div className="mb-2 flex items-start gap-2" data-private={isDataPrivate}>
       <span className="font-medium whitespace-nowrap">{label}: </span>
       {isLoading ? <Spinner className="p-2" /> : valueElement}
     </div>
