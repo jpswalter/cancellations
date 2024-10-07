@@ -91,7 +91,9 @@ export const renderDescription = (
   );
 
   if (saveOfferChangeTitle) {
-    return <p>Offer: {saveOfferChangeTitle?.newValue as string}</p>;
+    return (
+      <p data-private>Offer: {saveOfferChangeTitle?.newValue as string}</p>
+    );
   }
 
   const declineReasonChange = changes.find(
@@ -114,7 +116,7 @@ export const renderDescription = (
             return `${getCustomerFieldDisplayName(customerFieldChanged)} changed from ${change.oldValue} to ${newValue}`;
           })
           .join(', ');
-        return <p>{changedFields}</p>;
+        return <p data-private>{changedFields}</p>;
       }
     }
     const declineReasons = (declineReasonChange.newValue as DeclineReason[])
